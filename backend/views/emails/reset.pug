@@ -1,0 +1,21 @@
+extends baseEmail
+
+block content
+  p Dear #{firstName},
+  p We received a request to reset the password for your account on Z Nova. 
+  p To proceed with the password reset, please click on the button below:
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, id='mybtn2' target='_blank') Reset Password
+  p If you did not request this password reset link, you can safely ignore this email. Your account security is important to us, and no changes will be made to your account unless you confirm this request. 
+  p If you are unable to reset your password, please click the link below 
+  a(href=`${url}`, target='_blank' id='url') #{url}
+  p Please note that this link will expire in 10 minutes.
+  p Thank you for choosing Z Nova 
+  p - Adnan Chaudhary, CEO
