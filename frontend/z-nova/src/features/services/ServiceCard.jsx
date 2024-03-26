@@ -151,9 +151,9 @@ function ServiceCard({ service }) {
             <StyledCardPrice>
               Starting From ${service?.packages[0]?.price}
             </StyledCardPrice>
-            <Button size="small" variation="secondary">
+            <p style={{fontSize: '1.5rem'}}>
               {service?.category}
-            </Button>
+            </p>
           </div>
         </StyledCardBody>
       </Link>

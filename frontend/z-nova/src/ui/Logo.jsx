@@ -21,17 +21,17 @@ const StyledLogo = styled.div`
   }
 `;
 
-function Logo({ height = '5rem', margin = '0', hide = false }) {
+function Logo({ height = '2.5rem', margin = '0', hide = false }) {
   const navigate = useNavigate();
   const { isDarkMode } = useDarkMode();
-  const src = isDarkMode ? '/logo-dark.png' : '/logo-light.png';
+  const src = isDarkMode ? '/znova_solutions_dark.png' : '/znova_solutions_dark.png';
   return (
     <StyledLogo
       style={{ margin }}
       onClick={() => navigate('/home')}
       hide={hide}
     >
-      <img style={{ height }} src={src} alt="Logo" />
+      <img style={{ height, margin }} src={src} alt="Logo" />
     </StyledLogo>
   );
 }

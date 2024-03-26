@@ -43,7 +43,7 @@ function Article() {
   const { post, isLoading, error, isSuccess } = usePost(slug);
   const { posts } = usePosts('latest');
   const [breadcrumbsData, setBreadcrumbsData] = useState([]);
-  const [body, setBody] = useState(null);
+  // const [body, setBody] = useState(null);
 
   useEffect(() => {
     if (isSuccess) {
@@ -61,17 +61,17 @@ function Article() {
           link: `/blog/${post?.post?.slug}`,
         },
       ]);
-      setBody(
-        parse(
-          generateHTML(post?.post?.body, [
-            Bold,
-            Italic,
-            Text,
-            Paragraph,
-            Document,
-          ]),
-        ),
-      );
+      // setBody(
+      //   parse(
+      //     generateHTML(post?.post?.body, [
+      //       Bold,
+      //       Italic,
+      //       Text,
+      //       Paragraph,
+      //       Document,
+      //     ]),
+      //   ),
+      // );
     }
   }, [isSuccess, post]);
 
@@ -125,7 +125,7 @@ function Article() {
           {mainPost?.title}
         </h1>
         <div style={{ marginTop: '2rem', color: 'var(--color-grey-700)' }}>
-          {body}
+          {/* {body} */}
         </div>
         <CommentsContainer
           comments={mainPost?.comments}

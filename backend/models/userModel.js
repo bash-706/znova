@@ -53,7 +53,7 @@ const userSchema = new mongoose.Schema({
   },
   country: {
     type: String,
-    required: [true, 'Please provide your country'],
+    // required: [true, 'Please provide your country'],
   },
   biodata: {
     type: String,

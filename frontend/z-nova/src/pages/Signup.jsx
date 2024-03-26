@@ -23,7 +23,7 @@ function Signup() {
   const navigate = useNavigate();
   return (
     <SignupLayout>
-      <Logo height="6rem" margin="0 auto" onClick={() => navigate('/home')} />
+      <Logo height="3rem" margin="0 auto" onClick={() => navigate('/home')} />
       <Heading as="h4">Create a new account</Heading>
       <SignupForm />
     </SignupLayout>

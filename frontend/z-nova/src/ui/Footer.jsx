@@ -112,7 +112,7 @@ function Footer() {
     <>
       <StyledFooter>
         <section style={styles}>
-          <Logo height="5rem" />
+          <Logo height="2.5rem"/>
           <p>
             ZNOVA is an online, non-profitable website which provides digital
             services to its customers and is well known for its best work. we

@@ -32,7 +32,7 @@ exports.resizeServiceImages = catchAsync(async (req, res, next) => {
   // if (!req.files.imageCover && !req.files.images) return next();
 
   // Cover Image
-  if (req.files.imageCover) {
+  if (req?.files?.imageCover) {
     req.body.imageCover = req.params.id
       ? `service-${req.params.id}-${Date.now()}-cover.jpeg`
       : `service-${uuidv4()}-cover.jpeg`;
@@ -45,7 +45,7 @@ exports.resizeServiceImages = catchAsync(async (req, res, next) => {
   }
 
   // Images
-  if (req.files.images) {
+  if (req?.files?.images) {
     req.body.images = [];
     await Promise.all(
       req.files.images.map(async (file, i) => {

@@ -25,7 +25,7 @@ function SuggestedPosts({ posts, tags }) {
       </h2>
       <StyledPosts>
         {posts.map((post, index) => (
-          <>
+          <div key={index} >
             <Link to={`/blog/${post?.slug}`}>
               <div
                 style={{
@@ -34,7 +34,6 @@ function SuggestedPosts({ posts, tags }) {
                   flexWrap: 'nowrap',
                   alignItems: 'center',
                 }}
-                key={index}
               >
                 <img
                   style={{
@@ -66,7 +65,7 @@ function SuggestedPosts({ posts, tags }) {
                 </div>
               </div>
             </Link>
-          </>
+          </div>
         ))}
 
         <h2
@@ -74,7 +73,7 @@ function SuggestedPosts({ posts, tags }) {
         >
           Tags
         </h2>
-        {tags.length === 0 ? (
+        {tags?.length === 0 ? (
           <p style={{ color: 'var(--color-grey-500)', fontSize: '1.5rem' }}>
             {`There is no tag for this post :(`}
           </p>
@@ -86,7 +85,7 @@ function SuggestedPosts({ posts, tags }) {
               gap: '1rem',
             }}
           >
-            {tags.map((tag, index) => (
+            {tags?.map((tag, index) => (
               <Link
                 key={index}
                 to="/"

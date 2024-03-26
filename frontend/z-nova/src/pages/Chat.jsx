@@ -87,6 +87,7 @@ function Chat() {
     error: messagesError,
   } = useMessages(currentChat?._id);
   const { recipient } = useRecipient(user, currentChat);
+  console.log(recipient);
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
   }, []);

@@ -54,4 +54,15 @@ module.exports = class Email {
   async resetEmail() {
     await this.send('reset', 'Reset Your Password');
   }
+  async sendContactEmail(name, email, subject, message) {
+    const html = `<p>Name: ${name}</p><p>Email: ${email}</p><p>Subject: ${subject}</p><p>Message: ${message}</p>`;
+    const mailOptions = {
+      from: email, 
+      to: this.to, 
+      subject: `ZNOVA - Message From ${name}`,
+      html,
+      text: htmlToText.convert(html),
+    };
+    await this.newTransport().sendMail(mailOptions);
+  }
 };

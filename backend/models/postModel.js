@@ -32,7 +32,7 @@ const postSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.ObjectId,
         ref: 'PostCategory',
-        required: [true, 'A post must belong to a category.'],
+        // required: [true, 'A post must belong to a category.'],
       },
     ],
     slug: String,
