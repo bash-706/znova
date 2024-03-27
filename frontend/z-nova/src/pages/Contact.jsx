@@ -7,7 +7,7 @@ import Input from '../ui/Input';
 import TextArea from '../ui/TextArea';
 import Button from '../ui/Button';
 import Hero from '../ui/Hero';
-import { useSignup } from '../features/authentication/useSignup';
+import useContact from '../features/contact/useContact';
 
 const StyledSection = styled.section`
   display: grid;
@@ -52,12 +52,19 @@ const StyledContactRight = styled.div`
 `;
 
 function Contact() {
-  const { signup } = useSignup();
-  const { register, formState, getValues, handleSubmit, reset } = useForm();
+  const { contact, isLoading } = useContact();
+  const { register, formState, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
-  function onSubmit({fullName: name, email, subject, message}) {
-    signup({ name, email, subject, message })
+  function onSubmit({ fullName: name, email, subject, message }) {
+    contact(
+      { name, email, subject, message },
+      // {
+      //   onSettled: () => {
+      //     reset();
+      //   },
+      // },
+    );
     reset();
   }
 
@@ -81,21 +88,34 @@ function Contact() {
           <StyledHeading>Say Hello!</StyledHeading>
           <StyledParagraph>We Are Always Ready To Serve Ya!</StyledParagraph>
           <FormRow label="Your Name" star="*" error={errors?.fullName?.message}>
-            <Input type="text" id="fullName" placeholder="Enter Your Name"
-            {...register('fullName', { required: 'This field is required' })} />
+            <Input
+              type="text"
+              id="fullName"
+              placeholder="Enter Your Name"
+              {...register('fullName', { required: 'This field is required' })}
+            />
           </FormRow>
           <FormRow label="Your Email" star="*" error={errors?.email?.message}>
-            <Input type="email" id="email" placeholder="Enter Your Email" {...register('email', {
-            required: 'This field is required',
-            pattern: {
-              value: /\S+@\S+\.\S+/,
-              message: 'Please provide a valid email address',
-            },
-          })}/>
+            <Input
+              type="email"
+              id="email"
+              placeholder="Enter Your Email"
+              {...register('email', {
+                required: 'This field is required',
+                pattern: {
+                  value: /\S+@\S+\.\S+/,
+                  message: 'Please provide a valid email address',
+                },
+              })}
+            />
           </FormRow>
           <FormRow label="Subject" star="*" error={errors?.subject?.message}>
-            <Input type="text" id="subject" placeholder="Query Related To" 
-            {...register('subject', { required: 'This field is required' })}/>
+            <Input
+              type="text"
+              id="subject"
+              placeholder="Query Related To"
+              {...register('subject', { required: 'This field is required' })}
+            />
           </FormRow>
           <FormRow label="Your Message" error={errors?.message?.message}>
             <TextArea
@@ -108,7 +128,7 @@ function Contact() {
           </FormRow>
           <FormRow orientation="vertical">
             <Button
-              onClick={reset}
+              disabled={isLoading}
               size="large"
               style={{
                 width: '100%',

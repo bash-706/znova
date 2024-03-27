@@ -17,6 +17,7 @@ const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const postRouter = require('./routes/postRoutes');
 const commentRouter = require('./routes/commentRoutes');
+const Email = require('./utils/email');
 // const postCategoryRouter = require('./routes/postCategoryRoutes');
 
 const app = express();
@@ -81,6 +82,21 @@ app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comments', commentRouter);
 // app.use('/api/v1/post-categories', postCategoryRouter);
 // app.use('/api/v1/categories', categoryRouter);
+
+app.post('/contact', async (req, res) => {
+  const { name, email, subject, message } = req.body;
+
+  try {
+    await new Email().sendContactEmail(name, email, subject, message);
+    res
+      .status(200)
+      .json({ status: 'success', message: 'Email sent successfully!' });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: 'An error occurred while sending the email' });
+  }
+});
 
 // Handling unhandled routes
 app.all('*', (req, res, next) => {

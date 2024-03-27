@@ -3,9 +3,11 @@ const pug = require('pug');
 const htmlToText = require('html-to-text');
 
 module.exports = class Email {
-  constructor(user, url) {
-    this.to = user.email;
-    this.firstName = user.name.split(' ')[0];
+  constructor(user = null, url = null) {
+    if (user) {
+      this.to = user.email;
+      this.firstName = user.name.split(' ')[0];
+    }
     this.url = url;
     this.from = `Adnan Chaudhary <${process.env.EMAIL_From}>`;
   }
@@ -54,15 +56,17 @@ module.exports = class Email {
   async resetEmail() {
     await this.send('reset', 'Reset Your Password');
   }
+
   async sendContactEmail(name, email, subject, message) {
-    const html = `<p>Name: ${name}</p><p>Email: ${email}</p><p>Subject: ${subject}</p><p>Message: ${message}</p>`;
-    const mailOptions = {
-      from: email, 
-      to: this.to, 
+    const html = `<div style='font-family: sans-serif; font-size: 1.4rem, text-shadow: 1px 1px 1px;'> <p>Name: ${name}</p><p>Email: ${email}</p><p>Subject: ${subject}</p><p>Message: <pre>${message}</pre></p></div>`;
+
+    const mailOption = {
+      from: email,
+      to: process.env.EMAIL_From,
       subject: `ZNOVA - Message From ${name}`,
       html,
       text: htmlToText.convert(html),
     };
-    await this.newTransport().sendMail(mailOptions);
+    await this.newTransport().sendMail(mailOption);
   }
 };
