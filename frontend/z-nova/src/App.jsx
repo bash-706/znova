@@ -15,6 +15,7 @@ import Contact from './pages/Contact';
 import PageNotFound from './pages/PageNotFound';
 import Account from './pages/Account';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import CookiePolicy from './pages/CookiePolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import Orders from './pages/Orders';
 import Order from './pages/Order';
@@ -85,6 +86,7 @@ function App() {
                   element={<TermsAndConditions />}
                 />
                 <Route path="privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="cookie-policy" element={<CookiePolicy />} />
                 <Route element={<AccountLayout />}>
                   <Route path="my-account" element={<Account />} />
                   <Route path="orders" element={<Orders />} />

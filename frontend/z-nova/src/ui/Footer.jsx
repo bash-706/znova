@@ -23,6 +23,7 @@ import {
   FaInstagram,
   FaLinkedinIn,
   FaYoutube,
+  FaCookieBite,
 } from 'react-icons/fa6';
 
 const StyledFooter = styled.footer`
@@ -112,9 +113,9 @@ function Footer() {
     <>
       <StyledFooter>
         <section style={styles}>
-          <Logo height="2.5rem"/>
+          <Logo height="2.5rem" />
           <p>
-            ZNOVA is an online, non-profitable website which provides digital
+            ZNova is an online, non-profitable website which provides digital
             services to its customers and is well known for its best work. we
             are dedicated to being your trusted source for all things tech.
           </p>
@@ -151,7 +152,7 @@ function Footer() {
             <li>
               <StyledNavLink to="/services">
                 <HiComputerDesktop />
-                <span>Service</span>
+                <span>Services</span>
               </StyledNavLink>
             </li>
             <li>
@@ -178,12 +179,6 @@ function Footer() {
               </StyledNavLink>
             </li>
             <li>
-              <StyledNavLink to="/contact">
-                <HiChatBubbleLeftRight />
-                <span>Contact Us</span>
-              </StyledNavLink>
-            </li>
-            <li>
               <StyledNavLink to="/terms-and-conditions">
                 <HiDocumentText />
                 <span>Terms & Conditions</span>
@@ -195,11 +190,23 @@ function Footer() {
                 <span>Privacy Policy</span>
               </StyledNavLink>
             </li>
+            <li>
+              <StyledNavLink to="/cookie-policy">
+                <FaCookieBite />
+                <span>Cookie Policy</span>
+              </StyledNavLink>
+            </li>
           </NavList>
         </section>
         <section style={styles}>
           <Heading as="h2">Contact</Heading>
           <NavList>
+            <li>
+              <StyledNavLink to="/contact">
+                <HiChatBubbleLeftRight />
+                <span>Contact Us</span>
+              </StyledNavLink>
+            </li>
             <li>
               <StyledNavLink to="#">
                 <HiDevicePhoneMobile />

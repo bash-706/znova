@@ -107,7 +107,7 @@ function HomePage() {
           <Heading as="h5">How It Works</Heading>
           <StyledChracteristic>
             <img
-              src="/5570025.jpg"
+              src="/hiw-1.png"
               style={{
                 width: '100%',
                 borderRadius: '1rem',

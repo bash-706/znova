@@ -73,8 +73,8 @@ const StyledSocial = styled.div`
 
 const teamMembers = [
   {
-    name: 'Steven',
-    role: 'Web Developer',
+    name: 'Adnan Chaudhary',
+    position: 'Cyber Security Expert',
     image: './member-1.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '/home' },
@@ -84,9 +84,9 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Ethan',
-    role: 'Graphic Designer',
-    image: './member-2.jpg',
+    name: 'Ahsan Nadeem',
+    position: 'Web Engineer',
+    image: './1694950956441 - 2.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
       { icon: FaInstagram, link: '' },
@@ -95,8 +95,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Mitsuha',
-    role: 'Web Designer',
+    name: 'Saqlain Haider',
+    position: 'Graphics Designer',
     image: './member-3.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -106,8 +106,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Taki',
-    role: 'Graphic Designer',
+    name: 'Talha Star',
+    position: 'Videographer',
     image: './member-4.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -118,7 +118,7 @@ const teamMembers = [
   },
   {
     name: 'Bruce',
-    role: 'Graphic Designer',
+    position: 'Graphic Designer',
     image: './member-5.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -129,7 +129,7 @@ const teamMembers = [
   },
   {
     name: 'Rocky',
-    role: 'Graphic Designer',
+    position: 'Graphic Designer',
     image: './member-6.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -140,7 +140,7 @@ const teamMembers = [
   },
   {
     name: 'Mathews',
-    role: 'Graphic Designer',
+    position: 'Graphic Designer',
     image: './member-7.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -151,7 +151,7 @@ const teamMembers = [
   },
   {
     name: 'Angelina',
-    role: 'Graphic Designer',
+    position: 'Graphic Designer',
     image: './member-8.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -169,7 +169,7 @@ function Team() {
         <StyledMember key={index}>
           <img src={member.image} alt={member.name} />
           <Heading as="h3">{member.name}</Heading>
-          <Paragraph>{member.role}</Paragraph>
+          <Paragraph>{member.position}</Paragraph>
           <StyledSocial>
             {member.socialLinks.map((socialLink, index) => (
               <Link key={index} to={socialLink.link}>
