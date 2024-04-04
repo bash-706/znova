@@ -73,7 +73,7 @@ const StyledSocial = styled.div`
 
 const teamMembers = [
   {
-    name: 'Adnan Chaudhary',
+    name: 'Adnan Akram',
     position: 'Cyber Security Expert',
     image: './member-1.jpg',
     socialLinks: [
@@ -106,7 +106,7 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Talha Star',
+    name: 'Talha Abdul Satar',
     position: 'Videographer',
     image: './member-4.jpg',
     socialLinks: [
@@ -117,8 +117,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Bruce',
-    position: 'Graphic Designer',
+    name: 'Abdul Haq Khalid',
+    position: 'Computer Enthusiast',
     image: './member-5.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -128,8 +128,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Rocky',
-    position: 'Graphic Designer',
+    name: 'Saad Bin Arshad',
+    position: 'MERN Stack Developer',
     image: './member-6.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -139,8 +139,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Mathews',
-    position: 'Graphic Designer',
+    name: 'Abdullah Zafar',
+    position: 'Computer Engineer',
     image: './member-7.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -150,8 +150,8 @@ const teamMembers = [
     ],
   },
   {
-    name: 'Angelina',
-    position: 'Graphic Designer',
+    name: 'Mitusha Taki',
+    position: 'Co-ordinator',
     image: './member-8.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
@@ -168,7 +168,9 @@ function Team() {
       {teamMembers.map((member, index) => (
         <StyledMember key={index}>
           <img src={member.image} alt={member.name} />
-          <Heading as="h3">{member.name}</Heading>
+          <Heading as="h3" style={{ textAlign: 'center' }}>
+            {member.name}
+          </Heading>
           <Paragraph>{member.position}</Paragraph>
           <StyledSocial>
             {member.socialLinks.map((socialLink, index) => (
