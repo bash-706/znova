@@ -13,6 +13,7 @@ const StyledLogo = styled.div`
     `}
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1.5rem;
   cursor: pointer;
 
@@ -24,7 +25,9 @@ const StyledLogo = styled.div`
 function Logo({ height = '2.5rem', margin = '0', hide = false }) {
   const navigate = useNavigate();
   const { isDarkMode } = useDarkMode();
-  const src = isDarkMode ? '/znova_solutions_dark.png' : '/znova_solutions_dark.png';
+  const src = isDarkMode
+    ? '/znova_solutions_dark.png'
+    : '/znova_solutions_dark.png';
   return (
     <StyledLogo
       style={{ margin }}

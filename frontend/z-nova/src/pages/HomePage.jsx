@@ -1,14 +1,8 @@
 import { Link } from 'react-router-dom';
 // import { useUser } from '../features/authentication/useUser';
 import Row from '../ui/Row';
-import {
-  HiArrowRight,
-  HiComputerDesktop,
-  HiCreditCard,
-  HiFire,
-} from 'react-icons/hi2';
 // import Spinner from '../ui/Spinner';
-
+import { HiArrowRight } from 'react-icons/hi2';
 import Hero from '../ui/Hero';
 import Heading from '../ui/Heading';
 import Button from '../ui/Button';
@@ -17,6 +11,7 @@ import ChooseUs from '../ui/ChooseUs';
 import Features from './Features';
 import Banner from '../ui/Banner';
 import Articles from '../ui/Articles';
+import BusinessPlansSection from '../ui/BusinessPlans';
 
 const StyledHome = styled.section`
   display: grid;
@@ -35,8 +30,8 @@ const StyledChracteristic = styled.div`
   }
 
   & .icon {
-    height: 7rem;
-    width: 7rem;
+    height: 8rem;
+    width: 8rem;
     background: var(--color-brand-200);
     border-radius: 50%;
     padding: 1rem;
@@ -123,15 +118,13 @@ function HomePage() {
                 gap: '2rem',
               }}
             >
-              <div className="icon">
-                <HiComputerDesktop />
-              </div>
-              <Heading as="h2">01. Open up the service page</Heading>
+              <img src="ds-1.png" style={{ width: '6rem' }} />
+              <Heading as="h2">01. Explore Services</Heading>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
-                placeat eveniet ullam vitae eaque consectetur numquam molestiae
-                exercitationem maxime deserunt aut corporis ipsam reprehenderit
-                ad, quae nisi aperiam suscipit ut?
+                Browse through our comprehensive range of digital services
+                available on the <b>Services</b> page. Discover solutions
+                tailored to your needs, from web development to cybersecurity
+                and graphic design.
               </p>
             </div>
           </StyledChracteristic>
@@ -146,15 +139,12 @@ function HomePage() {
                 gap: '2rem',
               }}
             >
-              <div className="icon">
-                <HiCreditCard />
-              </div>
-              <Heading as="h2">02. Let us know the details</Heading>
+              <img src="ds-16.png" style={{ width: '6rem' }} />
+              <Heading as="h2">02. Select the Desired Service</Heading>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Reiciendis dolor ab excepturi veniam placeat ducimus modi
-                corporis, magni quia nam repudiandae cum ratione expedita
-                quibusdam voluptatem quos ipsa velit ad.{' '}
+                Choose the specific service that meets your requirements.
+                Utilize our user-friendly filters, sorting options, and
+                pagination to easily find the perfect solution for your project.
               </p>
             </div>
             <img
@@ -177,18 +167,70 @@ function HomePage() {
                 gap: '2rem',
               }}
             >
-              <div className="icon">
-                <HiFire />
-              </div>
-              <Heading as="h2">03. Purchase the service</Heading>
+              <img src="ds-6.png" style={{ width: '6rem' }} />
+              <Heading as="h2">03. Select a Suitable Package</Heading>
               <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Ea
-                placeat eveniet ullam vitae eaque consectetur numquam molestiae
-                exercitationem maxime deserunt aut corporis ipsam reprehenderit
-                ad, quae nisi aperiam suscipit ut?
+                Customize your experience by selecting the package that best
+                suits your needs: Basic, Standard, or Premium. Each package
+                offers varying levels of features and benefits to accommodate
+                your budget and goals.
               </p>
             </div>
           </StyledChracteristic>
+          <StyledChracteristic>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                height: '100%',
+                gap: '2rem',
+              }}
+            >
+              <img src="ds-7.png" style={{ width: '6rem' }} />
+              <Heading as="h2">04. Checkout Securely</Heading>
+              <p>
+                Click the <b>Buy Now</b> button to proceed to our secure
+                checkout page powered by Stripe. Complete your payment quickly
+                and securely, knowing that your transaction is protected by
+                industry-leading encryption and security measures.
+              </p>
+            </div>
+            <img
+              src="/i-8.jpg"
+              style={{ width: '100%', borderRadius: '1rem' }}
+            />
+          </StyledChracteristic>
+          <StyledChracteristic>
+            <img
+              src="/ds-15.jpg"
+              style={{ width: '100%', borderRadius: '1rem' }}
+            />
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                height: '100%',
+                gap: '2rem',
+              }}
+            >
+              <img src="ds-10.png" style={{ width: '6rem' }} />
+              <Heading as="h2">05. Sit Back and Relax!</Heading>
+              <p>
+                Once your payment is confirmed, our team will get to work on
+                delivering your project promptly and efficiently. We&apos;ll
+                keep you updated on the progress and ensure that your project is
+                completed to your satisfaction within the specified timeframe.
+              </p>
+            </div>
+          </StyledChracteristic>
+        </Row>
+        <Row>
+          <Heading as="h5">Business Plans</Heading>
+          <BusinessPlansSection />
         </Row>
         <Row>
           <Heading as="h5">Explore Our Blog</Heading>

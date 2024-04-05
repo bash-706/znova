@@ -88,7 +88,6 @@ function SignupForm() {
         },
       },
     );
-    reset();
   }
 
   return (
@@ -210,7 +209,7 @@ function SignupForm() {
           Cancel
         </Button>
         <Button disabled={isLoading}>
-          {!isLoading ? 'Signup' : <SpinnerMini />}
+          {isLoading ? <SpinnerMini /> : 'Signup'}
         </Button>
       </FormRow>
     </Form>
