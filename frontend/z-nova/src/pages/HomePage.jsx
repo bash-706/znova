@@ -204,7 +204,7 @@ function HomePage() {
           </StyledChracteristic>
           <StyledChracteristic>
             <img
-              src="/ds-15.jpg"
+              src="/ds-13.jpg"
               style={{ width: '100%', borderRadius: '1rem' }}
             />
             <div

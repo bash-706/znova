@@ -58,12 +58,16 @@ module.exports = class Email {
   }
 
   async sendContactEmail(name, email, subject, message) {
-    const html = `<div style='font-family: sans-serif; font-size: 1.4rem, text-shadow: 1px 1px 1px;'> <p>Name: ${name}</p><p>Email: ${email}</p><p>Subject: ${subject}</p><p>Message: <pre>${message}</pre></p></div>`;
-
+    const html = pug.renderFile(`${__dirname}/../views/emails/contact.pug`, {
+      name,
+      email,
+      subject,
+      message,
+    });
     const mailOption = {
       from: email,
       to: process.env.EMAIL_From,
-      subject: `ZNOVA - Message From ${name}`,
+      subject: `ZNova - ${subject} | ${name}`,
       html,
       text: htmlToText.convert(html),
     };

@@ -29,7 +29,7 @@ function VerifyAccount() {
             'Account Verified Successfully. Now you can feel free to use our services.',
           );
           setTimeout(() => {
-            navigate('/auth/login');
+            navigate('/home');
           }, 2000);
         } else {
           setMessage('Account Verification Failed!');
