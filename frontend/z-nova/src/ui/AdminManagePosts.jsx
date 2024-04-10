@@ -6,10 +6,9 @@ function AdminManagePosts() {
   return (
     <>
       <Row type="horizontal" style={{ alignItems: 'flex-start' }}>
-        <Heading as="h1" style={{ fontWeight: '500', fontSize: '2.6rem' }}>
-          All Posts
+        <Heading as="h1" style={{ fontWeight: '500', fontSize: '1.8rem' }}>
+          Manage Posts
         </Heading>
-        <p>Posts Management Page</p>
       </Row>
 
       <Row style={{ justifyContent: 'flex-start' }}>

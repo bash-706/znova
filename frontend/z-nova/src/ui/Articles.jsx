@@ -29,7 +29,7 @@ function Articles() {
     <StyledArticles>
       {isLoading
         ? [...Array(3)].map((item, index) => <PostCardSkeleton key={index} />)
-        : posts?.map((post) => <PostCard key={post?._id} post={post} />)}
+        : posts?.data?.map((post) => <PostCard key={post?._id} post={post} />)}
     </StyledArticles>
   );
 }

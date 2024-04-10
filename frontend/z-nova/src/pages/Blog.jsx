@@ -4,12 +4,23 @@ import { usePosts } from '../features/posts/usePosts';
 import PostCardSkeleton from '../ui/PostCardSkeleton';
 import Hero from '../ui/Hero';
 import Heading from '../ui/Heading';
+import Row from '../ui/Row';
+import ServiceOperations from '../features/services/ServiceOperations';
+import Pagination from '../ui/Pagination';
 
-const StyledBlog = styled.div`
+const StyledBlog = styled.section`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6.4rem;
+  padding: 6.4rem 8rem 6.4rem;
+  /* padding: 4rem 8rem; */
+`;
+
+const StyledBlogPosts = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 6rem 4rem;
-  padding: 8rem;
+  // padding: 8rem;
 `;
 
 const Center = styled.div`
@@ -19,8 +30,15 @@ const Center = styled.div`
   height: 100%;
 `;
 
+const StyledFooter = styled.footer`
+  background-color: var(--color-grey-50);
+  display: flex;
+  /* justify-content: center; */
+  padding: 1.2rem;
+`;
+
 function Blog() {
-  const { posts, isLoading, error } = usePosts('all');
+  const { posts, isLoading, error, totalDocs } = usePosts('all');
   if (error)
     return (
       <Center>
@@ -43,9 +61,24 @@ function Blog() {
         <p style={{ zIndex: 1 }}>Crafting tommorow&apos;s digital experience</p>
       </Hero>
       <StyledBlog>
-        {isLoading
-          ? [...Array(3)].map((item, index) => <PostCardSkeleton key={index} />)
-          : posts?.map((post) => <PostCard key={post?._id} post={post} />)}
+        <Row type="horizontal">
+          <Heading as="h3" style={{ fontSize: '2.8rem' }}>
+            All Posts
+          </Heading>
+          <ServiceOperations />
+        </Row>
+        <StyledBlogPosts>
+          {isLoading
+            ? [...Array(3)].map((item, index) => (
+                <PostCardSkeleton key={index} />
+              ))
+            : posts?.data?.map((post) => (
+                <PostCard key={post?._id} post={post} />
+              ))}
+        </StyledBlogPosts>
+        <StyledFooter>
+          <Pagination count={totalDocs} />
+        </StyledFooter>
       </StyledBlog>
     </>
   );

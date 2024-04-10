@@ -51,7 +51,7 @@ function PostRow({ post }) {
     _id: postId,
     title,
     createdAt,
-    categories,
+    category,
     tags,
     image,
     body,
@@ -63,7 +63,7 @@ function PostRow({ post }) {
   function handleDuplicate() {
     createPost({
       title: title.startsWith('Copy') ? title : `Copy of ${title}`,
-      categories,
+      category,
       tags,
       image,
       body,

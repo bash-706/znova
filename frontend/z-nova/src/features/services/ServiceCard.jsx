@@ -2,12 +2,10 @@ import styled from 'styled-components';
 import { HiStar } from 'react-icons/hi2';
 import { Link } from 'react-router-dom';
 
-import Button from '../../ui/Button';
-
 const StyledCard = styled.article`
   background-color: var(--color-grey-0);
   box-shadow: var(--shadow-md);
-  border-radius: 15px;
+  border-radius: 1.6rem;
   overflow: hidden;
   /* padding: 1.25rem; */
   position: relative;
@@ -151,9 +149,7 @@ function ServiceCard({ service }) {
             <StyledCardPrice>
               Starting From ${service?.packages[0]?.price}
             </StyledCardPrice>
-            <p style={{fontSize: '1.5rem'}}>
-              {service?.category}
-            </p>
+            <p style={{ fontSize: '1.5rem' }}>{service?.category}</p>
           </div>
         </StyledCardBody>
       </Link>

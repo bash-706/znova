@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const StyledTable = styled.div`
   border: 1px solid var(--color-grey-200);
 
-  font-size: 1.4rem;
+  font-size: 1.25rem;
   background-color: var(--color-grey-0);
   border-radius: 7px;
   overflow: hidden;
@@ -54,7 +54,7 @@ const Footer = styled.footer`
 `;
 
 const Empty = styled.p`
-  font-size: 1.6rem;
+  font-size: 1.4rem;
   font-weight: 500;
   text-align: center;
   margin: 2.4rem;

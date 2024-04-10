@@ -10,7 +10,6 @@ const StyledServices = styled.section`
   grid-template-columns: 1fr;
   gap: 6.4rem;
   padding: 6.4rem 8rem 6.4rem;
-  /* padding: 4rem 8rem; */
 `;
 
 function Services() {

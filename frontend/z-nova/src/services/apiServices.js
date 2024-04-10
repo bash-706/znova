@@ -56,3 +56,16 @@ export async function getService(slug) {
     throw new Error(err.response.data.message);
   }
 }
+
+export async function deleteService(serviceId) {
+  try {
+    const res = await axios({
+      method: 'DELETE',
+      url: `${BASE_URL}/${serviceId}`,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}

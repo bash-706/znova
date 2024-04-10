@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema(
     },
     body: {
       type: Object,
-      // required: [true, 'A post must have a body.'],
+      required: [true, 'A post must have a body.'],
     },
     image: {
       type: String,
@@ -28,13 +28,10 @@ const postSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    categories: [
-      {
-        type: mongoose.Schema.ObjectId,
-        ref: 'PostCategory',
-        // required: [true, 'A post must belong to a category.'],
-      },
-    ],
+    category: {
+      type: String,
+      required: [true, 'A service must belong to a category'],
+    },
     slug: String,
     createdAt: Date,
   },

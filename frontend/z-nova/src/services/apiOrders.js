@@ -17,3 +17,17 @@ export async function checkoutSession({ serviceId, item }) {
     throw new Error(err.response.data.message);
   }
 }
+
+export async function checkoutBusinessSession(plan) {
+  try {
+    console.log(plan);
+    const res = await axios({
+      method: 'POST',
+      url: `${BASE_URL}/checkout-business-session?plan=${plan}`,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}

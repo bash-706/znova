@@ -17,7 +17,10 @@ const StyledHome = styled.section`
   display: grid;
   grid-template-columns: 1fr;
   gap: 12rem;
-  padding: 6.4rem 4.8rem 6.4rem;
+  padding: 6.4rem 0;
+  & .box {
+    padding: 0 4.8rem;
+  }
 `;
 
 const StyledChracteristic = styled.div`
@@ -89,16 +92,23 @@ function HomePage() {
       <StyledHome>
         {/* <h4>{isLoading ? 'Loading...' : user?.name}</h4> */}
         {/* <Spinner /> */}
-        <Row>
+        <Row className="box">
           <Heading as="h5" style={{ textAlign: 'center' }}>
             Features
           </Heading>
           <Features />
         </Row>
-        <Row>
+        <Row className="box">
           <ChooseUs />
         </Row>
-        <Row style={{ display: 'grid', gap: '5rem' }}>
+        <div
+          style={{
+            display: 'grid',
+            gap: '5rem',
+            background: 'var(--color-grey-0)',
+            padding: '4.8rem',
+          }}
+        >
           <Heading as="h5">How It Works</Heading>
           <StyledChracteristic>
             <img
@@ -227,12 +237,12 @@ function HomePage() {
               </p>
             </div>
           </StyledChracteristic>
-        </Row>
-        <Row>
+        </div>
+        <Row className="box">
           <Heading as="h5">Business Plans</Heading>
           <BusinessPlansSection />
         </Row>
-        <Row>
+        <Row className="box">
           <Heading as="h5">Explore Our Blog</Heading>
           <Articles />
           <Button
@@ -252,7 +262,7 @@ function HomePage() {
             <HiArrowRight />
           </Button>
         </Row>
-        <Row>
+        <Row className="box">
           <Banner />
         </Row>
       </StyledHome>

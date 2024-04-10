@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import useCreateBusinessSession from '../features/orders/useCreateBusinessSession';
+import { useState } from 'react';
 
 const PlansContainer = styled.section`
   margin-top: 20px;
@@ -54,6 +56,13 @@ const PlanButton = styled.button`
 `;
 
 const BusinessPlansSection = () => {
+  const { createBusinessSession, status } = useCreateBusinessSession();
+  const [button, setButton] = useState(null);
+
+  const handleSession = (plan) => {
+    createBusinessSession(plan);
+  };
+
   return (
     <PlansContainer>
       <Plan>
@@ -77,7 +86,16 @@ const BusinessPlansSection = () => {
             and basic SEO setup.
           </PlanListItem>
         </PlanList>
-        <PlanButton>Choose Plan</PlanButton>
+        <PlanButton
+          onClick={() => {
+            handleSession('basic');
+            setButton('basic');
+          }}
+        >
+          {(status === 'pending') & (button === 'basic')
+            ? 'Processing...'
+            : 'Buy Now'}
+        </PlanButton>
       </Plan>
       <Plan>
         <h1 style={{ textAlign: 'center', fontSize: '3rem' }}>$200</h1>
@@ -101,7 +119,16 @@ const BusinessPlansSection = () => {
             social media integration.
           </PlanListItem>
         </PlanList>
-        <PlanButton>Choose Plan</PlanButton>
+        <PlanButton
+          onClick={() => {
+            handleSession('standard');
+            setButton('standard');
+          }}
+        >
+          {(status === 'pending') & (button === 'standard')
+            ? 'Processing...'
+            : 'Buy Now'}
+        </PlanButton>
       </Plan>
       <Plan>
         <h1 style={{ textAlign: 'center', fontSize: '3rem' }}>$500</h1>
@@ -124,7 +151,16 @@ const BusinessPlansSection = () => {
             and SSL security.
           </PlanListItem>
         </PlanList>
-        <PlanButton>Choose Plan</PlanButton>
+        <PlanButton
+          onClick={() => {
+            handleSession('premium');
+            setButton('premium');
+          }}
+        >
+          {(status === 'pending') & (button === 'premium')
+            ? 'Processing...'
+            : 'Buy Now'}
+        </PlanButton>
       </Plan>
     </PlansContainer>
   );

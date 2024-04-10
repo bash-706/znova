@@ -8,6 +8,7 @@ export function useCreateSession() {
   const { mutate: createCheckoutSession, status } = useMutation({
     mutationFn: async ({ serviceId, item }) => {
       const data = await checkoutApi({ serviceId, item });
+      console.log(data);
       return data;
     },
     onSuccess: async (data) => {

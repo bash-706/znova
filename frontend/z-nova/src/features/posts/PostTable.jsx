@@ -5,7 +5,7 @@ import Table from '../../ui/Table';
 import Menus from '../../ui/Menus';
 
 function PostTable() {
-  const { isLoading, posts } = usePosts('all');
+  const { isLoading, posts } = usePosts('latest');
 
   if (isLoading) return <Spinner />;
 
@@ -22,7 +22,7 @@ function PostTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={posts}
+          data={posts.data}
           render={(post) => <PostRow post={post} key={post?._id} />}
         ></Table.Body>
       </Table>

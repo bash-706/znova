@@ -24,7 +24,17 @@ exports.getAll = (Model, ...popOptions) =>
         .populate(popOptions[1]);
 
     const docs = await features.query;
-    const totalDocs = await Model.countDocuments();
+
+    const totalDocsQuery = Model.find(filter);
+    const totalDocs = await new APIFeatures(totalDocsQuery, req.query)
+      .filter()
+      .sort()
+      .limit()
+      .search()
+      .query.countDocuments();
+
+    // const totalDocs = await Model.countDocuments();
+
     res.status(200).json({
       status: 'success',
       results: docs.length,

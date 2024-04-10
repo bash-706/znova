@@ -81,19 +81,22 @@ const StyledNavLink = styled(NavLink)`
     color: var(--color-grey-800);
     font-size: 1.6rem;
     font-weight: 500;
-    padding: 1.2rem 1.6rem;
+    padding: 1rem 1.4rem;
     transition: all 0.3s;
   }
 
-  /* This works because react-router places the active class on the active NavLink */
-  &:hover,
-  &:active,
-  &.active:link,
-  &.active:visited {
+  &:hover:not(.services-dropdown) svg,
+  &:active:not(.services-dropdown) svg,
+  &.active:link:not(.services-dropdown) svg,
+  &.active:visited:not(.services-dropdown) svg {
     color: var(--color-brand-600);
-    /* border-bottom: 2px solid var(--color-brand-600); */
-    /* background-color: var(--color-grey-50); */
-    /* border-radius: var(--border-radius-sm); */
+  }
+
+  &:hover:not(.services-dropdown) span,
+  &:active:not(.services-dropdown) span,
+  &.active:link:not(.services-dropdown) span,
+  &.active:visited:not(.services-dropdown) span {
+    color: var(--color-brand-600);
   }
 
   & svg {
@@ -103,10 +106,18 @@ const StyledNavLink = styled(NavLink)`
     transition: all 0.3s;
   }
 
-  &:hover svg,
-  &:active svg,
-  &.active:link svg,
-  &.active:visited svg {
+  &.services-dropdown:hover svg,
+  &.services-dropdown:active svg,
+  &.services-dropdown.active:link svg,
+  &.services-dropdown.active:visited svg {
+    color: var(--color-brand-600);
+  }
+
+  &.services-dropdown:hover span,
+  &.services-dropdown:active span,
+  &.services-dropdown.active:link span,
+  &.services-dropdown.active:visited span {
+    color: var(--color-brand-600);
   }
 `;
 
@@ -141,7 +152,7 @@ const dropdownServiceItems = [
 ];
 
 function MainNav() {
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(true);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -196,13 +207,19 @@ function MainNav() {
               <HiXMark style={{ height: '3rem', width: '3rem' }} />
             </ButtonIcon>
           </li>
-          <li>
+          <li style={{ height: '100%' }}>
             <StyledNavLink to="/home" onClick={toggleNavbar}>
               <HiHomeModern />
               <span>Home</span>
             </StyledNavLink>
           </li>
-          <li onClick={toggleServicesDropdown}>
+          <li
+            onMouseEnter={toggleServicesDropdown}
+            onMouseLeave={() =>
+              setTimeout(() => setIsServicesDropdownOpen(false), 200)
+            }
+            className={isServicesDropdownOpen ? 'services-dropdown' : ''}
+          >
             <StyledNavLink to="/services" onClick={toggleNavbar}>
               <HiComputerDesktop />
               <DropdownSpan>

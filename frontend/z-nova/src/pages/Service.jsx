@@ -165,7 +165,6 @@ function Service() {
   const { service, isLoading, error } = useService(slug);
   if (isLoading) return <Spinner />;
   if (error) return <Row type="center">{error.message}</Row>;
-
   const slides = [];
   service?.images?.map((image) => {
     slides.push({ src: `http://127.0.0.1:8000/services/${image}` });
@@ -263,7 +262,7 @@ function Service() {
                 <StyledItem>
                   <HiMapPin />
                   <span>
-                    {service.user?.location[0].toUpperCase() +
+                    {service.user?.location[0]?.toUpperCase() +
                       service.user?.location.slice(1)}
                   </span>
                 </StyledItem>

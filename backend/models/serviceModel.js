@@ -32,13 +32,12 @@ const serviceSchema = new mongoose.Schema(
     imageCover: {
       type: String,
       required: [true, 'A service must have a cover image'],
-      default: 'default.jpg',
+      default: 'default.png',
     },
     category: {
       type: String,
       required: [true, 'A service must belong to a category'],
     },
-    price: Number,
     packages: [
       {
         name: {
@@ -80,6 +79,8 @@ const serviceSchema = new mongoose.Schema(
       required: [true, 'A service must belong to a user'],
     },
     images: [String],
+    price: Number,
+    duration: Number,
     slug: String,
     createdAt: Date,
   },
@@ -101,6 +102,7 @@ serviceSchema.virtual('reviews', {
 serviceSchema.pre('save', function (next) {
   this.createdAt = Date.now();
   this.price = this.packages[0].price;
+  this.duration = parseFloat(this.packages[0].duration);
   next();
 });
 

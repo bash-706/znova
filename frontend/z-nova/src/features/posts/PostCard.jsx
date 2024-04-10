@@ -3,10 +3,22 @@ import Heading from '../../ui/Heading';
 import { Link } from 'react-router-dom';
 
 const StyledPost = styled.div`
+  background-color: var(--color-grey-0);
   border-radius: 1.6rem;
   overflow: hidden;
   box-shadow: var(--shadow-md);
   width: 100%;
+  position: relative;
+  transition: 0.2s ease-in;
+  cursor: pointer;
+
+  &:hover,
+  &:focus-within {
+    box-shadow:
+      0 0 0 2px #16c79a,
+      0 10px 60px 0 rgba(#000, 0.1);
+    transform: translatey(-6px);
+  }
 `;
 
 const StyledImg = styled.img`

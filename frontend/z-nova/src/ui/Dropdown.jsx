@@ -10,7 +10,7 @@ const StyledDropdown = styled.ul`
   background: var(--color-grey-0);
   padding: 1rem;
   width: auto;
-  top: 6rem;
+  top: 5.5rem;
   padding-right: 1rem;
   border-radius: 0 0 1rem 1rem;
 

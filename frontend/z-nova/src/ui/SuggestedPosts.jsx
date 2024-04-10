@@ -24,8 +24,8 @@ function SuggestedPosts({ posts, tags }) {
         Latest Articles
       </h2>
       <StyledPosts>
-        {posts.map((post, index) => (
-          <div key={index} >
+        {posts?.data?.map((post, index) => (
+          <div key={index}>
             <Link to={`/blog/${post?.slug}`}>
               <div
                 style={{

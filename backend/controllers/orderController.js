@@ -42,6 +42,61 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getBusinessPlansCheckoutSession = catchAsync(async (req, res, next) => {
+  const { plan } = req.query;
+  let price;
+  let planName;
+
+  switch (plan) {
+    case 'basic':
+      price = 5000;
+      planName = 'Basic Plan';
+      break;
+    case 'standard':
+      price = 10000;
+      planName = 'Standard Plan';
+      break;
+    case 'premium':
+      price = 20000;
+      planName = 'Premium Plan';
+      break;
+    default:
+      return res.status(400).json({
+        status: 'error',
+        message: 'Invalid plan selected',
+      });
+  }
+
+  // Create checkout session
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    success_url: `http://localhost:5173/home?plan=${plan}&user=${req.user.id}&price=${price}`,
+    cancel_url: `http://localhost:5173/plans`,
+    customer_email: req.user.email,
+    mode: 'payment',
+
+    line_items: [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: `Z Nova - ${planName}`,
+            description: 'Business Plan Subscription',
+          },
+          unit_amount: price,
+        },
+        quantity: 1,
+      },
+    ],
+  });
+
+  // Send the session as response
+  res.status(200).json({
+    status: 'success',
+    session,
+  });
+});
+
 // exports.createOrderCheckout = catchAsync(async (req, res, next) => {
 //   const { service, user, price } = req.query;
 

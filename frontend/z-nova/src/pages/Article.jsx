@@ -2,19 +2,14 @@ import styled from 'styled-components';
 import Breadcrumbs from '../ui/Breadcrumbs';
 import { Link, useParams } from 'react-router-dom';
 import SuggestedPosts from '../ui/suggestedPosts';
-import { generateHTML } from '@tiptap/html';
-import Bold from '@tiptap/extension-bold';
-import Document from '@tiptap/extension-document';
-import Paragraph from '@tiptap/extension-paragraph';
-import Text from '@tiptap/extension-text';
-import Italic from '@tiptap/extension-italic';
-import parse from 'html-react-parser';
+import parseJsonToHtml from '../utils/parseJsonToHtml';
 import CommentsContainer from '../features/comments/CommentsContainer';
 import { usePost } from '../features/posts/usePost';
 import Spinner from '../ui/Spinner';
 import { useEffect, useState } from 'react';
 import { usePosts } from '../features/posts/usePosts';
 import SocialShareButtons from '../ui/SocialShareButtons';
+import Editor from '../ui/Editor';
 
 const StyledArticle = styled.div`
   margin: 0 auto;
@@ -28,7 +23,7 @@ const StyledArticle = styled.div`
 const StyledImage = styled.img`
   border-radius: 2rem;
   width: 100%;
-  height: 48rem;
+  height: 40rem;
 `;
 
 const Center = styled.div`
@@ -61,26 +56,7 @@ function Article() {
           link: `/blog/${post?.post?.slug}`,
         },
       ]);
-      console.log(
-        generateHTML(post?.post?.body, [
-          Bold,
-          Italic,
-          Text,
-          Paragraph,
-          Document,
-        ]),
-      );
-      setBody(
-        parse(
-          generateHTML(post?.post?.body, [
-            Bold,
-            Italic,
-            Text,
-            Paragraph,
-            Document,
-          ]),
-        ),
-      );
+      setBody(parseJsonToHtml(post?.post?.body));
     }
   }, [isSuccess, post]);
 
@@ -133,8 +109,16 @@ function Article() {
         >
           {mainPost?.title}
         </h1>
-        <div style={{ marginTop: '2rem', color: 'var(--color-grey-700)' }}>
-          {body}
+        <div
+          style={{
+            width: '100%',
+            marginTop: '2rem',
+            color: 'var(--color-grey-700)',
+          }}
+        >
+          {!isLoading && !error && (
+            <Editor content={mainPost?.body} editable={false} />
+          )}
         </div>
         <CommentsContainer
           comments={mainPost?.comments}

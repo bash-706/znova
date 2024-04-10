@@ -18,7 +18,6 @@ const messageRouter = require('./routes/messageRoutes');
 const postRouter = require('./routes/postRoutes');
 const commentRouter = require('./routes/commentRoutes');
 const Email = require('./utils/email');
-// const postCategoryRouter = require('./routes/postCategoryRoutes');
 
 const app = express();
 
@@ -80,7 +79,6 @@ app.use('/api/v1/chats', chatRouter);
 app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comments', commentRouter);
-// app.use('/api/v1/post-categories', postCategoryRouter);
 // app.use('/api/v1/categories', categoryRouter);
 
 app.post('/contact', async (req, res) => {
