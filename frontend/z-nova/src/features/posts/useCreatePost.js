@@ -11,6 +11,7 @@ export function useCreatePost() {
     onSuccess: () => {
       toast.success('Post has been created successfully!', { duration: 2000 });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
     onError: (err) => {
       console.log(err);

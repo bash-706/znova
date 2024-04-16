@@ -5,7 +5,7 @@ import Table from '../../ui/Table';
 import Menus from '../../ui/Menus';
 
 function PostTable() {
-  const { isLoading, posts } = usePosts('latest');
+  const { isLoading, posts } = usePosts('full');
 
   if (isLoading) return <Spinner />;
 

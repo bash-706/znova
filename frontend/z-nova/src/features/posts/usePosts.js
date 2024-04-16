@@ -17,7 +17,10 @@ export function usePosts(type) {
   const sort = field !== '' && direction !== '' ? { field, direction } : {};
 
   // 3. Pagination
-  const page = !searchParams.get('page') ? 1 : searchParams.get('page');
+  let page;
+  type === 'full'
+    ? (page = null)
+    : (page = !searchParams.get('page') ? 1 : searchParams.get('page'));
 
   const {
     isLoading,

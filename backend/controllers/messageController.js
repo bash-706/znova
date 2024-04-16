@@ -4,7 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 exports.createMessage = catchAsync(async (req, res, next) => {
   const { chatId, senderId, text } = req.body;
   const message = Message.create({ chatId, senderId, text });
-  res.status(200).json({ status: 'success', message });
+  res.status(200).json({ status: 'success', text, message });
 });
 
 exports.getMessages = catchAsync(async (req, res, next) => {

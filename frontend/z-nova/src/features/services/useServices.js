@@ -3,7 +3,7 @@ import { getAllServices } from '../../services/apiServices';
 import { useSearchParams } from 'react-router-dom';
 import { PAGE_SIZE } from '../../utils/constants';
 
-export function useServices() {
+export function useServices(type) {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
 
@@ -17,7 +17,11 @@ export function useServices() {
   const sort = field !== '' && direction !== '' ? { field, direction } : {};
 
   // 3. Pagination
-  const page = !searchParams.get('page') ? 1 : searchParams.get('page');
+  // 3. Pagination
+  let page;
+  type === 'full'
+    ? (page = null)
+    : (page = !searchParams.get('page') ? 1 : searchParams.get('page'));
 
   const {
     isLoading,

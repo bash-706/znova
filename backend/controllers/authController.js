@@ -111,6 +111,14 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Incorrect email/username or password', 401));
   }
 
+  if (!user.active) {
+    return next(
+      new AppError(
+        'Your account is no longer active. In order to activate your account, please click on the link we just sent to your email address.',
+      ),
+    );
+  }
+
   if (!user.isVerified) {
     return next(
       new AppError(
@@ -120,13 +128,6 @@ exports.login = catchAsync(async (req, res, next) => {
     );
   }
 
-  if (!user.active) {
-    return next(
-      new AppError(
-        'Your account is no longer active. In order to activate your account, please click on the link we just sent to your email address.',
-      ),
-    );
-  }
   // Send the JWT to the user
   createSendToken(user, 200, res);
 });

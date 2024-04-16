@@ -1,15 +1,19 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useDeleteComment } from './useDeleteComment';
-import { HiPencil, HiSquare2Stack, HiTrash } from 'react-icons/hi2';
+import { HiPencil, HiSquare2Stack, HiTrash, HiXCircle } from 'react-icons/hi2';
+import { FaCheckCircle } from 'react-icons/fa';
 import { useCreateComment } from './useCreateComment';
+import { useUpdateComment } from './useUpdateComment';
+import { useToggleCommentCheck } from './useToggleCommentCheck';
 import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
+import CommentForm from './CommentForm';
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 0.3fr 1.4fr 1fr 3fr 1fr 1fr 0.3fr;
+  grid-template-columns: 00.4fr 1.4fr 1fr 3fr 1.2fr 1fr 1fr 0.3fr;
   column-gap: 2.4rem;
   align-items: center;
   /* text-align: center; */
@@ -22,7 +26,7 @@ const TableRow = styled.div`
 
 const Img = styled.img`
   display: block;
-  width: 5rem;
+  min-width: 1rem;
   aspect-ratio: 3 / 2;
   object-fit: cover;
   object-position: center;
@@ -30,47 +34,90 @@ const Img = styled.img`
   margin: 0 1.2rem;
 `;
 
+const IDCellWrapper = styled.div`
+  position: relative;
+`;
+
+const IDCellText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  cursor: pointer;
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 0.6rem;
+  border-radius: 4px;
+  z-index: 1;
+  bottom: calc(100% + 0px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  display: ${(props) => (props.isVisible ? 'block' : 'none')};
+`;
+
 function CommentRow({ comment }) {
+  const [showTooltip, setShowTooltip] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const { deleteComment, isDeleting } = useDeleteComment();
   const { isCreating, createComment } = useCreateComment();
+  const { isLoading: isUpdating, updateComment } = useUpdateComment();
+  const { toggleCommentCheck } = useToggleCommentCheck();
 
-  const { _id: commentId, user, text, post, parent, createdAt } = comment;
+  const {
+    _id: commentId,
+    user,
+    text,
+    post,
+    parent,
+    replyOnUser,
+    check,
+    createdAt,
+  } = comment;
 
   function handleDuplicate() {
-    // createPost({
-    //   title: `Copy of ${title}`,
-    //   categories,
-    //   tags,
-    //   image,
-    //   body,
-    //   caption,
-    //   user,
-    //   slug,
-    //   createdAt,
-    // });
+    createComment({
+      user: user?._id,
+      slug: post?.slug,
+      check: false,
+      text,
+      parent,
+      replyOnUser,
+    });
+  }
+
+  function handleApprove() {
+    toggleCommentCheck({ data: 'approve', commentId });
+  }
+
+  function handleDisapprove() {
+    toggleCommentCheck({ data: 'disapprove', commentId });
   }
 
   return (
     <>
       <TableRow role="row">
-        <Img src={'/123.jpg'} />
-        <div style={{ textAlign: 'start' }}>Post 1</div>
-        <div>Ahsan Nadeem</div>
+        <Img src={`http://127.0.0.1:8000/posts/${post?.image}`} />
+        <div style={{ textAlign: 'start' }}>{post?.title}</div>
+        <div>
+          {user?.name} ({user?.username})
+        </div>
         <div>{text}</div>
-        <div>Unknown User</div>
-        {/* <div> */}
-        {/* {post?.categories?.length > 0 ? post?.categories : 'Uncategorized'} */}
-        {/* </div> */}
-        {/* <div> */}
-        {/* {post?.tags.length > 0 ? ( */}
-        {/* post?.tags.map((tag, index) => */}
-        {/* tags[tags.length - 1] !== tag ? `${tag}, ` : `${tag}`, */}
-        {/* ) */}
-        {/* ) : ( */}
-        {/* <span>&mdash;</span> */}
-        {/* )} */}
-        {/* </div> */}
+        {parent ? (
+          <IDCellWrapper
+            onMouseEnter={() => setShowTooltip(true)}
+            onMouseLeave={() => setShowTooltip(false)}
+          >
+            <IDCellText>{parent || 'No Parent'}</IDCellText>
+            <Tooltip isVisible={showTooltip}>{parent}</Tooltip>
+          </IDCellWrapper>
+        ) : (
+          <IDCellText>{parent || 'No Parent'}</IDCellText>
+        )}
         <div>
           {new Date(comment?.createdAt).toLocaleDateString('en-US', {
             day: 'numeric',
@@ -81,11 +128,39 @@ function CommentRow({ comment }) {
           })}
         </div>
         <div>
+          <span
+            style={{
+              borderRadius: '5rem',
+              fontSize: '1rem',
+              padding: '0.5rem',
+              backgroundColor: check ? '#35db35' : '#fc3d3d',
+              color: '#fff',
+            }}
+          >
+            {check ? 'Approved' : 'Not Approved'}
+          </span>
+        </div>
+        <div>
           <Modal>
             {/* <button onClick={() => setShowForm((show) => !show)}>Edit</button> */}
             <Menus.Menu>
               <Menus.Toggle id={commentId} />
               <Menus.List id={commentId}>
+                {!check ? (
+                  <Menus.Button
+                    icon={<FaCheckCircle />}
+                    onClick={() => handleApprove()}
+                  >
+                    Approve
+                  </Menus.Button>
+                ) : (
+                  <Menus.Button
+                    icon={<HiXCircle />}
+                    onClick={() => handleDisapprove()}
+                  >
+                    Disapprove
+                  </Menus.Button>
+                )}
                 <Menus.Button
                   icon={<HiPencil />}
                   onClick={() => setShowForm((show) => !show)}
@@ -114,20 +189,19 @@ function CommentRow({ comment }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div> */}
-        {/* <button disabled={isCreating} onClick={handleDuplicate}> */}
-        {/* <HiSquare2Stack /> */}
-        {/* </button> */}
-        {/* <button onClick={() => setShowForm((show) => !show)}> */}
-        {/* <HiPencil /> */}
-        {/* </button> */}
-        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}> */}
-        {/* <HiTrash /> */}
-        {/* </button> */}
-        {/* </div> */}
       </TableRow>
-      {/* {showForm && <CreateCabinForm cabinToEdit={cabin} />} */}
-      {showForm && <p>Form</p>}
+      {showForm && (
+        <CommentForm
+          btnLabel="Update"
+          initialText={text}
+          formSubmitHandler={(data) => {
+            updateComment({ data, commentId });
+            setShowForm(false);
+          }}
+          formCancelHandler={() => setShowForm(false)}
+          isLoading={isUpdating}
+        />
+      )}
     </>
   );
 }

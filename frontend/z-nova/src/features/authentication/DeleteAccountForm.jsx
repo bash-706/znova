@@ -50,6 +50,7 @@ function DeleteAccountForm() {
               width: '18px',
               height: '18px',
               position: 'absolute',
+              cursor: 'pointer',
               top: '5rem',
               right: '1rem',
             }}
@@ -61,6 +62,7 @@ function DeleteAccountForm() {
               width: '18px',
               height: '18px',
               position: 'absolute',
+              cursor: 'pointer',
               top: '5rem',
               right: '1rem',
             }}
@@ -68,7 +70,12 @@ function DeleteAccountForm() {
         )}
       </FormRow>
       <FormRow orientation="vertical">
-        <Button size="medium" variation="danger" disabled={isDeleting}>
+        <Button
+          size="medium"
+          variation="danger"
+          disabled={isDeleting}
+          style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}
+        >
           <span>Delete Account</span>
           <HiTrash />
         </Button>

@@ -6,8 +6,10 @@ import {
   HiComputerDesktop,
   HiDocumentText,
   HiOutlineCalendarDays,
+  HiSparkles,
   HiUserGroup,
 } from 'react-icons/hi2';
+import { FiBox } from 'react-icons/fi';
 import { BiSolidDashboard } from 'react-icons/bi';
 import { AiOutlineDashboard } from 'react-icons/ai';
 import AdminNavItem from './AdminNavItem';
@@ -39,24 +41,19 @@ const StyledSidebarContainer = styled.div`
 const StyledMainSidebar = styled.div`
   position: fixed;
   top: 0;
-  bottom: 0;
   left: 0;
+  bottom: 0;
   z-index: 5;
-  width: 75%;
+  width: 19%;
   overflow-y: auto;
   background: var(--color-grey-100);
   padding: 3rem;
-
-  position: static;
-  width: 100%;
-  height: 100%;
-  padding: 2rem;
 `;
 
 const StyledMenuItems = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.8rem;
 `;
 
 const menuItems = [
@@ -71,7 +68,7 @@ const menuItems = [
     title: 'Services',
     content: [
       { title: 'All Services', link: '/admin/services' },
-      { title: 'New Service', link: '/admin/services/new' },
+      { title: 'Create Service', link: '/admin/services/new' },
     ],
     icon: <HiComputerDesktop />,
     name: 'services',
@@ -80,15 +77,29 @@ const menuItems = [
   {
     title: 'Orders',
     link: '/admin/orders',
-    icon: <HiOutlineCalendarDays />,
+    icon: <FiBox />,
     name: 'orders',
+    type: 'link',
+  },
+  {
+    title: 'Reviews',
+    link: '/admin/reviews',
+    icon: <HiSparkles />,
+    name: 'reviews',
+    type: 'link',
+  },
+  {
+    title: 'Chats',
+    link: '/admin/chats',
+    icon: <HiOutlineCalendarDays />,
+    name: 'chats',
     type: 'link',
   },
   {
     title: 'Posts',
     content: [
       { title: 'All Posts', link: '/admin/posts' },
-      { title: 'Add New Post', link: '/admin/posts/new' },
+      { title: 'Create Post', link: '/admin/posts/new' },
     ],
     icon: <HiDocumentText />,
     name: 'posts',
@@ -104,8 +115,8 @@ const menuItems = [
   {
     title: 'Categories',
     content: [
-      { title: 'New', link: '/admin/categories/new' },
-      { title: 'Manage', link: '/admin/categories/manage' },
+      { title: 'All Categories', link: '/admin/categories/manage' },
+      { title: 'Create Category', link: '/admin/categories/new' },
     ],
     icon: <BiSolidDashboard />,
     name: 'categories',
@@ -132,7 +143,7 @@ function AdminSidebar() {
       <Logo height="2rem" margin="0 auto" hide={true} />
       <StyledSidebarContainer>
         <StyledMainSidebar>
-          <Logo height="2.4rem" margin="1rem 0 2rem 0" />
+          <Logo height="2.4rem" margin="0.8rem 0 1.6rem 0" />
           {/* Menu Items */}
           <StyledMenuItems>
             {menuItems.map((item, index) =>

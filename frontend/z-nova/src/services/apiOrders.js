@@ -31,3 +31,31 @@ export async function checkoutBusinessSession(plan) {
     throw new Error(err.response.data.message);
   }
 }
+
+export async function getAllOrders() {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL}`,
+      withCredentials: true,
+    });
+    const { data } = res.data.data;
+    return { data };
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function deleteOrder(orderId) {
+  try {
+    const res = await axios({
+      method: 'DELETE',
+      url: `${BASE_URL}/${orderId}`,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}

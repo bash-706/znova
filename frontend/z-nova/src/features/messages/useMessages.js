@@ -4,12 +4,12 @@ import { getAllMessages } from '../../services/apiMessages';
 export function useMessages(chatId) {
   const {
     isLoading,
-    data: messages,
+    data: messagesData,
     error,
   } = useQuery({
     queryKey: ['messages', chatId],
     queryFn: async () => await getAllMessages(chatId),
     retry: false,
   });
-  return { messages, isLoading, error };
+  return { messagesData, isLoading, error };
 }

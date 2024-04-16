@@ -15,7 +15,8 @@ export function useCreateComment() {
           duration: 2000,
         },
       );
-      queryClient.invalidateQueries({ queryKey: ['post'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['posts'] });
     },
     onError: (err) => {
       console.log(err);

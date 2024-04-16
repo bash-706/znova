@@ -53,7 +53,7 @@ function AdminEditPost() {
   useEffect(() => {
     if (!isLoading && !error) {
       setInitialImage(mainPost?.image);
-      setBody(mainPost?.body);
+      // setBody(mainPost?.body);
     }
   }, [post, isLoading, error, mainPost, body]);
 
@@ -72,6 +72,7 @@ function AdminEditPost() {
       formData.append('image', initialImage);
     }
     formData.append('body', JSON.stringify(body));
+    console.log(formData.get('body'));
     await updatePost({ formData, postId });
   };
 

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createMessage as messageApi } from '../../services/apiMessages';
 import { toast } from 'react-hot-toast';
 
-export function useCreateMessage() {
+export function useCreateMessage(setNewMessage) {
   const queryClient = useQueryClient();
   const { mutate: createMessage, isLoading } = useMutation({
     mutationFn: async (data) => {

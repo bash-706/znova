@@ -2,6 +2,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import 'highlight.js/styles/atom-one-dark.css';
 import MenuBar from './MenuBar';
 import { extensions } from '../utils/tiptapExtensions';
+// import '../styles/GlobalStyles';
 
 const Editor = ({ onDataChange, content, editable }) => {
   const editor = useEditor({
@@ -9,8 +10,7 @@ const Editor = ({ onDataChange, content, editable }) => {
     extensions: extensions,
     editorProps: {
       attributes: {
-        class:
-          'prose dark:prose-invert prose-sm sm:prose-base lg:prose-lg max-w-none m-5 focus:outline-none prose-pre:bg-[#282c34] prose-pre:text-[#abb2bf]',
+        class: 'prose',
       },
     },
     onUpdate: ({ editor }) => {
@@ -21,7 +21,15 @@ const Editor = ({ onDataChange, content, editable }) => {
   });
 
   return (
-    <div style={{ width: '100%', position: 'relative' }}>
+    <div
+      style={{
+        width: '100%',
+        position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+      }}
+    >
       {editable && <MenuBar editor={editor} />}
       <EditorContent editor={editor} />
     </div>

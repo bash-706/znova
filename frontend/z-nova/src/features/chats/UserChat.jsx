@@ -14,7 +14,7 @@ const StyledUserChat = styled.div`
   /* border-bottom: 1px solid var(--color-grey-200); */
 `;
 
-const StyledOnline = styled.div`
+const StyledMessagesCount = styled.div`
   display: flex;
   background: var(--color-brand-500);
   color: var(--color-grey-50);
@@ -27,15 +27,42 @@ const StyledOnline = styled.div`
   justify-content: center;
 `;
 
+const StyledDot = styled.div`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: #00da00;
+  border-radius: 50%;
+  border: 1px solid white;
+`;
+
 const TimeAgo = ({ createdAt, style }) => {
   const timeAgo = moment(createdAt).fromNow();
 
   return <span style={style}>{timeAgo}</span>;
 };
 
-function UserChat({ chat, user, setActiveChat, activeChat }) {
+function UserChat({ chat, user, setActiveChat, activeChat, onlineUsers }) {
   const { recipient } = useRecipient(user, chat);
-  const { messages } = useMessages(chat?._id);
+  const { messagesData: messages } = useMessages(chat?._id);
+
+  const getLastMessageTime = () => {
+    if (messages?.length > 0) {
+      return messages[messages?.length - 1].createdAt;
+    } else {
+      return chat?.createdAt;
+    }
+  };
+
+  const truncateText = (text) => {
+    if (text?.length > 15) {
+      return text.slice(0, 15) + '...';
+    }
+    return text;
+  };
+
   return (
     <StyledUserChat
       onClick={() => {
@@ -49,20 +76,27 @@ function UserChat({ chat, user, setActiveChat, activeChat }) {
       }}
     >
       <div style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
-        <img
-          style={{ width: '5rem', height: '5rem', borderRadius: '50%' }}
-          src={`http://127.0.0.1:8000/users/${recipient?.photo}`}
-        />
+        <div style={{ position: 'relative' }}>
+          <img
+            style={{ width: '5rem', height: '5rem', borderRadius: '50%' }}
+            src={`http://127.0.0.1:8000/users/${recipient?.photo}`}
+          />
+          {onlineUsers?.some((onlineUser) => {
+            return onlineUser?.userId === recipient?._id;
+          }) && <StyledDot />}
+        </div>
         <div
           style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}
         >
           <span style={{ fontSize: '1.4rem', fontWeight: '500' }}>
-            {recipient?.name}
+            {truncateText(recipient?.name)}
           </span>
           <span style={{ fontSize: '1.2rem', color: 'var(--color-grey-500)' }}>
-            {messages?.length >= 1
-              ? messages?.at(messages?.length - 1)?.text
-              : 'Please start new conversation'}
+            {truncateText(
+              messages?.length >= 1
+                ? messages?.at(messages?.length - 1)?.text
+                : 'Please start new conversation',
+            )}
           </span>
         </div>
       </div>
@@ -74,11 +108,11 @@ function UserChat({ chat, user, setActiveChat, activeChat }) {
           flexDirection: 'column',
         }}
       >
-        <StyledOnline>2</StyledOnline>
+        <StyledMessagesCount>2</StyledMessagesCount>
         <span>
           <TimeAgo
             style={{ fontSize: '1.2rem' }}
-            createdAt={chat?.createdAt}
+            createdAt={getLastMessageTime()}
           ></TimeAgo>
         </span>
       </div>

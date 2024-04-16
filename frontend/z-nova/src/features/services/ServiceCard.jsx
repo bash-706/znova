@@ -7,10 +7,10 @@ const StyledCard = styled.article`
   box-shadow: var(--shadow-md);
   border-radius: 1.6rem;
   overflow: hidden;
-  /* padding: 1.25rem; */
   position: relative;
   transition: 0.2s ease-in;
   cursor: pointer;
+  position: relative;
 
   &:hover,
   &:focus-within {
@@ -84,9 +84,29 @@ const StyledUserInfo = styled.div`
   }
 `;
 
-const StyledCardRating = styled.div`
+const StyledCategory = styled.span`
+  text-transform: capitalize;
+  font-weight: 500;
+  font-size: 1.4rem;
+  color: var(--color-grey-0);
+  background: var(--color-brand-700);
+  padding: 0.4rem 0.8rem;
+  margin: 1rem 0;
+  display: inline-block;
+  border-radius: 0.4rem;
+  position: absolute;
+  top: 10px;
+  left: 20px;
+`;
+
+const StyledCardInfo = styled.div`
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const StyledRating = styled.div`
+  display: flex;
   align-items: center;
   gap: 0.4rem;
   padding: 0.6rem 0;
@@ -133,24 +153,29 @@ function ServiceCard({ service }) {
             </StyledUserInfo>
           </StyledCardUser>
           <StyledCardTitle>{service?.name}</StyledCardTitle>
-          <StyledCardRating>
-            <HiStar />
-            <span>{service?.ratingsAverage}</span>
-            <span>({service.ratingsQuantity})</span>
-          </StyledCardRating>
-          <div
+          <StyledCardInfo>
+            <StyledRating>
+              <HiStar />
+              <span>{service?.ratingsAverage}</span>
+              <span>({service.ratingsQuantity})</span>
+            </StyledRating>
+            <StyledCardPrice>
+              Starting From ${service?.packages[0]?.price}
+            </StyledCardPrice>
+          </StyledCardInfo>
+          <StyledCategory>
+            {service?.category?.split('-').join(' ')}
+          </StyledCategory>
+          {/* <div
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '0.6rem 0',
             }}
-          >
-            <StyledCardPrice>
-              Starting From ${service?.packages[0]?.price}
-            </StyledCardPrice>
-            <p style={{ fontSize: '1.5rem' }}>{service?.category}</p>
-          </div>
+          > */}
+
+          {/* </div> */}
         </StyledCardBody>
       </Link>
     </StyledCard>

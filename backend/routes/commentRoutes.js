@@ -14,7 +14,7 @@ router
   .get(commentController.getComment)
   .patch(
     authController.protect,
-    commentController.checkToFalse,
+    // commentController.checkToFalse,
     commentController.updateComment,
   )
   .delete(authController.protect, commentController.deleteComment);

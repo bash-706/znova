@@ -1,4 +1,4 @@
-// import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { HiOutlineChevronDown } from 'react-icons/hi2';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
@@ -14,9 +14,10 @@ const StyledItem = styled.div`
 const StyledSubItem = styled.div`
   flex-direction: column;
   gap: 1rem;
-  padding: 0 4rem;
+  padding: 0 0 0 4rem;
   margin-top: 1rem;
   font-size: 1.6rem;
+  color: var(--color-grey-600);
 
   & svg {
     width: 20rem;
@@ -32,19 +33,19 @@ function AdminNavItemCollapse({
   activeNavName,
   setActiveNavName,
 }) {
-  // const [isChecked, setIsChecked] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  // useEffect(() => {
-  // if (activeNavName !== name) setIsChecked(false);
-  // }, [activeNavName, name]);
+  const handleClick = () => {
+    if (name === activeNavName) {
+      setIsOpen(!isOpen);
+    } else {
+      setActiveNavName(name);
+      setIsOpen(true);
+    }
+  };
 
   return (
-    <div
-      onClick={() => {
-        setActiveNavName(name);
-        // setIsChecked(!isChecked);
-      }}
-    >
+    <div onClick={handleClick}>
       <StyledItem
         style={
           name === activeNavName
@@ -58,7 +59,7 @@ function AdminNavItemCollapse({
       </StyledItem>
       <StyledSubItem
         style={{
-          display: name === activeNavName ? 'flex' : 'none',
+          display: name === activeNavName && isOpen ? 'flex' : 'none',
         }}
       >
         {content.map((item, index) => (

@@ -38,7 +38,6 @@ function Comment({
 
   const repliedCommentId = parentId ? parentId : comment?._id;
   const repliedOnUserId = comment?.user?._id;
-
   return (
     <StyledComment>
       <img

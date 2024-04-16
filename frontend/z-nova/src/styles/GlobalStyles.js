@@ -195,6 +195,23 @@ img {
   text-indent: 0.4rem;
 }
 
+/* styles.css */
+.prose {
+  font-family: Arial, sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  max-width: none;
+  margin: 1.25rem;
+  outline: none;
+}
+
+.prose-pre {
+  background-color: #282c34; /* prose-pre:bg-[#282c34] */
+  color: #abb2bf; /* prose-pre:text-[#abb2bf] */
+}
+
+
+
 `;
 
 export default GlobalStyles;

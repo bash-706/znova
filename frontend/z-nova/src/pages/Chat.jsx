@@ -7,11 +7,13 @@ import styled from 'styled-components';
 import Spinner from '../ui/Spinner';
 import UserChat from '../features/chats/UserChat';
 import Heading from '../ui/Heading';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment-timezone';
 import InputEmoji from 'react-input-emoji';
 import { HiMiniPaperAirplane } from 'react-icons/hi2';
 import { useCreateMessage } from '../features/messages/useCreateMessage';
+import NoChats from '../ui/NoChats';
+import { io } from 'socket.io-client';
 
 const StyledChat = styled.div`
   display: grid;
@@ -59,6 +61,13 @@ const StyledDot = styled.div`
   border: 1px solid white;
 `;
 
+const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-grey-200);
+  margin: 1rem 0;
+`;
+
 const getLocalTime = () => {
   // Get the timezone for the specified country
   const userTimezone = moment.tz.guess();
@@ -79,15 +88,20 @@ const getLocalTime = () => {
 
 function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState(null);
+  const [socket, setSocket] = useState(null);
+  const [onlineUsers, setOnlineUsers] = useState([]);
   const { user } = useUser();
   const { chats, isLoading, error } = useChats(user?._id);
-  const {
-    messages,
+  let {
+    messagesData,
     isLoading: isLoadingMessages,
     error: messagesError,
   } = useMessages(currentChat?._id);
+
   const { recipient } = useRecipient(user, currentChat);
-  console.log(recipient);
+
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
   }, []);
@@ -97,14 +111,71 @@ function Chat() {
 
   const { createMessage } = useCreateMessage();
 
+  useEffect(() => {
+    if (messagesData) {
+      setMessages(messagesData);
+    }
+  }, [messagesData]);
+
+  // establishing socket connection
+  useEffect(() => {
+    const newSocket = io('http://localhost:3000');
+    setSocket(newSocket);
+
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [setSocket]);
+
+  // add and remove online users
+  useEffect(() => {
+    if (socket === null) return;
+    if (user) {
+      socket.emit('addNewUser', user?._id);
+      socket.on('getOnlineUsers', (res) => {
+        setOnlineUsers(res);
+      });
+      return () => {
+        socket.off('getOnlineUsers');
+      };
+    }
+  }, [socket, user]);
+
+  // send realtime messages
+  useEffect(() => {
+    if (socket === null) return;
+    socket.emit('sendMessage', { ...newMessage }, recipient?._id);
+  }, [socket, recipient, newMessage]);
+
+  // recieve realtime message
+  useEffect(() => {
+    if (socket === null) return;
+    socket.on('getMessage', (res) => {
+      if (currentChat?._id !== res.chatId) return;
+      setMessages((prev) => [...prev, res]);
+    });
+
+    return () => {
+      socket.off('getMessage');
+    };
+  }, [socket, currentChat]);
+
   const handleSendMessage = () => {
     if (!text) return;
-    createMessage({ chatId: currentChat?._id, senderId: user?._id, text });
+    createMessage({
+      chatId: currentChat?._id,
+      senderId: user?._id,
+      text,
+    });
+    setNewMessage(text);
     setText('');
   };
 
   if (error) return <div>Chats not found!</div>;
   if (isLoading) return <Spinner />;
+  if (chats.length < 1) {
+    return <NoChats />;
+  }
   return (
     <StyledChat>
       <div
@@ -119,8 +190,9 @@ function Chat() {
           gap: '0.6rem',
         }}
       >
-        <Heading as="h4" style={{ fontSize: '2rem' }}>
-          All Messages
+        <Heading as="h4" style={{ fontSize: '2rem', margin: '0.6rem' }}>
+          All Conversations
+          <Divider />
         </Heading>
         {chats?.map((chat, index) => {
           return (
@@ -128,6 +200,7 @@ function Chat() {
               <UserChat
                 chat={chat}
                 user={user}
+                onlineUsers={onlineUsers}
                 setActiveChat={updateCurrentChat}
                 activeChat={currentChat}
               />
@@ -175,7 +248,9 @@ function Chat() {
                   <StyledUser
                     src={`http://127.0.0.1:8000/users/${recipient?.photo}`}
                   ></StyledUser>
-                  <StyledDot />
+                  {onlineUsers?.some((onlineUser) => {
+                    return onlineUser?.userId === recipient?._id;
+                  }) && <StyledDot />}
                 </div>
                 <span>{recipient?.name}</span>
               </span>
@@ -248,12 +323,19 @@ function Chat() {
 }
 
 function Messages({ messages, user }) {
+  const scroll = useRef();
+
+  useEffect(() => {
+    scroll.current?.scrollIntoView({ behaviour: 'smooth' });
+  }, [messages]);
+
   return (
     <StyledMessages>
       {messages?.map((message, index) => {
         return (
           <div
             key={index}
+            ref={scroll}
             style={{
               display: 'flex',
               flexDirection: 'column',

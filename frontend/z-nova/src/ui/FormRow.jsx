@@ -52,9 +52,9 @@ const StyledStar = styled.span`
   font-weight: 500;
 `;
 
-function FormRow({ label, error, children, star }) {
+function FormRow({ label, error, children, star, style }) {
   return (
-    <StyledFormRow>
+    <StyledFormRow style={style}>
       {label && (
         <Label htmlFor={children?.props?.id}>
           {label} {star ? <StyledStar>{star}</StyledStar> : ''}

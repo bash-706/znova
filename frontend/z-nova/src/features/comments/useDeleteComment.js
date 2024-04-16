@@ -13,7 +13,7 @@ export function useDeleteComment() {
       toast.success('Comment has been deleted successfully!', {
         duration: 2000,
       });
-      queryClient.invalidateQueries({ queryKey: ['post'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
     },
     onError: (err) => {
       toast.error(err.message, { duration: 2000 });

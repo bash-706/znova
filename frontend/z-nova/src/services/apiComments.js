@@ -16,7 +16,6 @@ export async function getAllComments() {
 }
 
 export async function createComment(data) {
-  console.log(data);
   try {
     const res = await axios({
       method: 'POST',
@@ -32,11 +31,28 @@ export async function createComment(data) {
 
 export async function updateComment(data, commentId) {
   try {
+    console.log(data, commentId);
     const res = await axios({
       method: 'PATCH',
       url: `${BASE_URL}/${commentId}`,
       data: {
         text: data,
+      },
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function toggleCommentCheck(data, commentId) {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `${BASE_URL}/${commentId}`,
+      data: {
+        check: data === 'approve' ? true : false,
       },
       withCredentials: true,
     });

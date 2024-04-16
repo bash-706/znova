@@ -12,6 +12,7 @@ export function useSignup() {
       email,
       photo,
       username,
+      country,
       password,
       passwordConfirm,
     }) => {
@@ -21,6 +22,7 @@ export function useSignup() {
       formData.append('email', email);
       formData.append('photo', photo);
       formData.append('username', username);
+      formData.append('country', country);
       formData.append('password', password);
       formData.append('passwordConfirm', passwordConfirm);
       return await signupApi(formData);

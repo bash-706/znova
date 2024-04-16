@@ -43,6 +43,8 @@ import AdminManagePostCategories from './ui/AdminManagePostCategories';
 import AdminNewService from './ui/AdminNewService';
 import AdminManageServices from './ui/AdminManageServices';
 import AdminEditPost from './ui/AdminEditPost';
+import AdminReviews from './ui/AdminReviews';
+import AdminChats from './ui/AdminChats';
 
 const StyledApp = styled.div`
   height: 100vh;
@@ -111,6 +113,8 @@ function App() {
                 <Route path="users/new" element={<AdminAddUser />} />
                 <Route path="users/profile" element={<AdminUserProfile />} />
                 <Route path="orders" element={<AdminOrders />} />
+                <Route path="chats" element={<AdminChats />} />
+                <Route path="reviews" element={<AdminReviews />} />
                 <Route path="posts/new" element={<AdminNewPost />} />
                 <Route path="posts" element={<AdminManagePosts />} />
                 <Route path="posts/edit/:slug" element={<AdminEditPost />} />

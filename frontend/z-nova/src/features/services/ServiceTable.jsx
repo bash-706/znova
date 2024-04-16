@@ -5,7 +5,7 @@ import Table from '../../ui/Table';
 import Menus from '../../ui/Menus';
 
 function ServiceTable() {
-  const { isLoading, services } = useServices();
+  const { isLoading, services } = useServices('full');
 
   if (isLoading) return <Spinner />;
   return (

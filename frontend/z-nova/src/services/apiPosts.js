@@ -80,14 +80,12 @@ export async function createPost(data) {
 
 export async function updatePost(data, postId) {
   try {
-    console.log('api post', postId, data);
     const res = await axios({
       method: 'PATCH',
       url: `${BASE_URL}/${postId}`,
       data,
       withCredentials: true,
     });
-    console.log(res?.data);
     return res?.data;
   } catch (err) {
     throw new Error(err.response.data.message);

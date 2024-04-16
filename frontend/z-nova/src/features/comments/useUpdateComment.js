@@ -13,7 +13,7 @@ export function useUpdateComment() {
       toast.success(
         'Comment has been edited successfully! You can see the comment once it is approved by the admin.',
       );
-      queryClient.invalidateQueries({ queryKey: ['post'] });
+      queryClient.invalidateQueries({ queryKey: ['comments'] });
       // queryClient.setQueryData(['post']);
     },
     onError: (err) => {

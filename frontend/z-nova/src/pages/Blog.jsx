@@ -5,7 +5,7 @@ import PostCardSkeleton from '../ui/PostCardSkeleton';
 import Hero from '../ui/Hero';
 import Heading from '../ui/Heading';
 import Row from '../ui/Row';
-import ServiceOperations from '../features/services/ServiceOperations';
+import PostOperations from '../features/posts/PostOpertions';
 import Pagination from '../ui/Pagination';
 
 const StyledBlog = styled.section`
@@ -65,7 +65,7 @@ function Blog() {
           <Heading as="h3" style={{ fontSize: '2.8rem' }}>
             All Posts
           </Heading>
-          <ServiceOperations />
+          <PostOperations />
         </Row>
         <StyledBlogPosts>
           {isLoading

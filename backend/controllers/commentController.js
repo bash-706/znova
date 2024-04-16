@@ -39,10 +39,21 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
 });
 
 exports.checkToFalse = (req, res, next) => {
+  if (req.body.check) return next();
   req.body.check = false;
   next();
 };
 
-exports.getAllComments = handleFactory.getAll(Comment);
+exports.getAllComments = handleFactory.getAll(
+  Comment,
+  {
+    path: 'post',
+    select: 'title image slug',
+  },
+  {
+    path: 'user',
+    select: 'name username',
+  },
+);
 exports.getComment = handleFactory.getOne(Comment);
 exports.updateComment = handleFactory.updateOne(Comment);
