@@ -34,6 +34,10 @@ const StyledHero = styled.section`
   background-size: cover;
   filter: blur(0.1px);
   color: #efefef;
+
+  @media (min-width: 84em) {
+    font-size: 1.1em;
+  }
 `;
 
 const StyledOverlay = styled.div`

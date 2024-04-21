@@ -88,6 +88,7 @@ function Comment({
               updateComment(data, comment?._id);
             }}
             formCancelHandler={() => setAffectedComment(null)}
+            styles={{ width: '100%', margin: 0 }}
           />
         )}
         <div
@@ -160,6 +161,7 @@ function Comment({
               addComment(value, repliedCommentId, repliedOnUserId)
             }
             formCancelHandler={() => setAffectedComment(null)}
+            styles={{ width: '100%', margin: 0 }}
           />
         )}
         {replies?.length > 0 && (

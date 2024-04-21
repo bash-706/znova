@@ -9,7 +9,7 @@ function PostOperations() {
         filterField="category"
         options={[
           { value: 'all', label: 'All' },
-          { value: 'web-development11', label: 'Web Development' },
+          { value: 'web-development', label: 'Web Development' },
           { value: 'app-development', label: 'App Development' },
           { value: 'cyber-security', label: 'Cyber Security' },
           { value: 'graphic-designing', label: 'Graphic Designing' },

@@ -80,7 +80,6 @@ exports.updateOne = (Model) =>
       req.body.body = JSON.parse(req.body.body);
     }
 
-    // console.log('hello');
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,

@@ -88,8 +88,8 @@ const getLocalTime = () => {
 
 function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
+  const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState(null);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const { user } = useUser();
@@ -144,7 +144,7 @@ function Chat() {
   // send realtime messages
   useEffect(() => {
     if (socket === null) return;
-    socket.emit('sendMessage', { ...newMessage }, recipient?._id);
+    socket.emit('sendMessage', { ...newMessage, recipientId: recipient?._id });
   }, [socket, recipient, newMessage]);
 
   // recieve realtime message
@@ -167,8 +167,8 @@ function Chat() {
       senderId: user?._id,
       text,
     });
-    setNewMessage(text);
     setText('');
+    setNewMessage(text);
   };
 
   if (error) return <div>Chats not found!</div>;

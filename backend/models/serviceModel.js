@@ -42,7 +42,6 @@ const serviceSchema = new mongoose.Schema(
       {
         name: {
           type: String,
-          unique: true,
           trim: true,
           required: [true, 'A package must have a name'],
           maxlength: [40, 'A package name cannot exceed 40 chracters'],

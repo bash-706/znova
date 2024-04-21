@@ -119,7 +119,18 @@ exports.setPhoto = (req, res, next) => {
   next();
 };
 
-exports.getAllUsers = handleFactory.getAll(User);
+exports.getAllUsers = catchAsync(async (req, res, next) => {
+  const data = await User.find().select('+active +isVerified');
+
+  res.status(200).json({
+    status: 'success',
+    results: data.length,
+    data: {
+      data,
+    },
+  });
+});
+
 exports.getUser = handleFactory.getOne(User);
 exports.updateUser = handleFactory.updateOne(User);
 exports.deleteUser = handleFactory.deleteOne(User);

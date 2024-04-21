@@ -1,18 +1,22 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useDeleteUser } from './useDeleteUser';
-import { HiPencil, HiSquare2Stack, HiTrash } from 'react-icons/hi2';
-// import { useCreatePost } from '../posts/useCreatePost';
+import { useUpdateUser } from './useUpdateUser';
+import { HiPencil, HiTrash } from 'react-icons/hi2';
+import { RiForbid2Fill } from 'react-icons/ri';
+import { RiVerifiedBadgeFill } from 'react-icons/ri';
 import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
+import Tooltip from '../../ui/Tooltip';
+import { FaToggleOff, FaToggleOn } from 'react-icons/fa';
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 0.3fr 1fr 1fr 2fr 1fr 1fr 1fr 0.3fr;
+  grid-template-columns: 0.3fr 1.4fr 1.4fr 2fr 1fr 1fr 1fr 1fr 0.3fr;
   column-gap: 2.4rem;
   align-items: center;
-  /* text-align: center; */
+  // text-align: center;
   padding: 1.4rem 2.4rem;
 
   &:not(:last-child) {
@@ -30,10 +34,32 @@ const Img = styled.img`
   margin: 0 1.2rem;
 `;
 
+const CellWrapper = styled.div`
+  position: relative;
+`;
+
+const CellText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+  cursor: pointer;
+`;
+
+const StyledLabel = styled.div`
+  border-radius: 5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 0.6rem;
+  color: #fff;
+  width: fit-content;
+`;
+
 function UserRow({ user }) {
   const [showForm, setShowForm] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const { deleteUser, isDeleting } = useDeleteUser();
-  // const { isCreating, createPost } = useCreatePost();
+  const { updateUser } = useUpdateUser('Hello');
 
   const {
     _id: userId,
@@ -43,59 +69,48 @@ function UserRow({ user }) {
     role,
     active,
     isVerified,
-    photo: image,
+    photo,
     location,
-    skills,
+    languages,
     createdAt,
   } = user;
 
-  function handleDuplicate() {
-    // createPost({
-    // title: `Copy of ${title}`,
-    // categories,
-    // tags,
-    // image,
-    // body,
-    // caption,
-    // user,
-    // slug,
-    // createdAt,
-    // });
+  function handleVerifyStatus() {
+    updateUser({ data: { isVerified: !isVerified }, userId });
+  }
+
+  function handleActiveStatus() {
+    updateUser({ data: { active: !active }, userId });
   }
 
   return (
     <>
       <TableRow role="row">
-        <Img src={`http://127.0.0.1:8000/users/${image}`} />
-        <div style={{ textAlign: 'left' }}>{username}</div>
+        <Img src={`http://127.0.0.1:8000/users/${photo}`} />
         <div>{name}</div>
-        <div>{email}</div>
-        <div>
-          Verified
-          {/* {active && isVerified && 'Verified'} */}
-          {/* {!active && 'Inactive'} */}
-          {/* {!isVerified && 'Unverified'} */}
-        </div>
-        <div>{role}</div>
+        <div>{username}</div>
+        <CellWrapper
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+        >
+          <CellText>{email}</CellText>
+          <Tooltip isVisible={showTooltip}>{email}</Tooltip>
+        </CellWrapper>
+        <div>{location || 'Undefined'}</div>
         {/* <div>
-          {skills.length > 0 ? (
-            skills.map((skill) =>
-              skills[skill.length - 1] !== skill ? `${skill}, ` : `${skill}`,
-            )
-          ) : (
-            <span>&mdash;</span>
-          )}
+          {languages ? languages?.map((lang) => `${lang} `) : 'Undefined'}
         </div> */}
-        <div>{location ? location : 'Undefined'}</div>
-        {/* <div> */}
-        {/* {new Date(user?.createdAt).toLocaleDateString('en-US', { */}
-        {/* day: 'numeric', */}
-        {/* month: 'short', */}
-        {/* year: 'numeric', */}
-        {/* hour: '2-digit', */}
-        {/* minute: 'numeric', */}
-        {/* })} */}
-        {/* </div> */}
+        <div>{role}</div>
+        <StyledLabel
+          style={{ backgroundColor: active ? '#35db35' : '#fc3d3d' }}
+        >
+          {active ? 'Active' : 'Inactive'}
+        </StyledLabel>
+        <StyledLabel
+          style={{ backgroundColor: isVerified ? '#35db35' : '#fc3d3d' }}
+        >
+          {isVerified ? 'Verified' : 'Unverified'}
+        </StyledLabel>
         <div>
           <Modal>
             {/* <button onClick={() => setShowForm((show) => !show)}>Edit</button> */}
@@ -103,17 +118,24 @@ function UserRow({ user }) {
               <Menus.Toggle id={userId} />
               <Menus.List id={userId}>
                 <Menus.Button
+                  icon={active ? <FaToggleOn /> : <FaToggleOff />}
+                  onClick={() => handleActiveStatus()}
+                >
+                  {active ? 'Deactivate' : 'Activate'}
+                </Menus.Button>
+                <Menus.Button
+                  icon={
+                    isVerified ? <RiForbid2Fill /> : <RiVerifiedBadgeFill />
+                  }
+                  onClick={() => handleVerifyStatus()}
+                >
+                  {isVerified ? 'Unverify' : 'Verify'}
+                </Menus.Button>
+                <Menus.Button
                   icon={<HiPencil />}
                   onClick={() => setShowForm((show) => !show)}
                 >
                   Edit
-                </Menus.Button>
-                <Menus.Button
-                  icon={<HiSquare2Stack />}
-                  onClick={() => handleDuplicate()}
-                  // disabled={isCreating}
-                >
-                  Duplicate
                 </Menus.Button>
                 <Modal.Open>
                   <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>

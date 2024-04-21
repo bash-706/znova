@@ -36,10 +36,7 @@ import AdminManagePosts from './ui/AdminManagePosts';
 import AdminNewPost from './ui/AdminNewPost';
 import AdminOrders from './ui/AdminOrders';
 import AdminUsers from './ui/AdminUsers';
-import AdminAddUser from './ui/AdminAddUser';
-import AdminUserProfile from './ui/AdminUserProfile';
-import AdminNewPostCategory from './ui/AdminNewPostCategory';
-import AdminManagePostCategories from './ui/AdminManagePostCategories';
+import AdminPostCategories from './ui/AdminPostCategories';
 import AdminNewService from './ui/AdminNewService';
 import AdminManageServices from './ui/AdminManageServices';
 import AdminEditPost from './ui/AdminEditPost';
@@ -110,8 +107,6 @@ function App() {
                 <Route index element={<Admin />} />
                 <Route path="comments" element={<AdminComments />} />
                 <Route path="users" element={<AdminUsers />} />
-                <Route path="users/new" element={<AdminAddUser />} />
-                <Route path="users/profile" element={<AdminUserProfile />} />
                 <Route path="orders" element={<AdminOrders />} />
                 <Route path="chats" element={<AdminChats />} />
                 <Route path="reviews" element={<AdminReviews />} />
@@ -120,14 +115,7 @@ function App() {
                 <Route path="posts/edit/:slug" element={<AdminEditPost />} />
                 <Route path="services/new" element={<AdminNewService />} />
                 <Route path="services" element={<AdminManageServices />} />
-                <Route
-                  path="categories/new"
-                  element={<AdminNewPostCategory />}
-                />
-                <Route
-                  path="categories/manage"
-                  element={<AdminManagePostCategories />}
-                />
+                <Route path="categories" element={<AdminPostCategories />} />
               </Route>
               <Route path="*" element={<PageNotFound />} />
             </Routes>

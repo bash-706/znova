@@ -18,7 +18,9 @@ const StyledMainComments = styled.section`
 `;
 
 function CommentsContainer({ comments, slug }) {
-  const { createComment, isLoading: isCreating } = useCreateComment();
+  const { createComment, isLoading: isCreating } = useCreateComment(
+    'Comment has been posted successfully! You can see the comment once it is approved by the admin.',
+  );
   const { updateComment } = useUpdateComment();
   const { deleteComment } = useDeleteComment();
   const [affectedComment, setAffectedComment] = useState(null);
@@ -49,6 +51,7 @@ function CommentsContainer({ comments, slug }) {
         btnLabel="Submit"
         formSubmitHandler={(value) => addCommentHandler(value)}
         isLoading={isCreating}
+        styles={{ width: '100%', margin: 0 }}
       />
       <StyledMainComments>
         {comments?.map((comment) => (

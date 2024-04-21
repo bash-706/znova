@@ -10,16 +10,12 @@ const StyledButton = styled.button`
   padding: 1rem 2rem;
 `;
 
-function CommentForm({
+function PostCategoryEditForm({
   btnLabel,
   initialText = '',
   formSubmitHandler,
   formCancelHandler = null,
   isLoading,
-  placeholder = 'Leave your comments here...',
-  right = '1.6rem',
-  bottom = '2.6rem',
-  styles,
 }) {
   const { register, handleSubmit, reset } = useForm();
 
@@ -41,10 +37,14 @@ function CommentForm({
             resize: 'none',
             borderRadius: '1rem',
             disabled: { isLoading },
-            ...styles,
+            position: 'relative',
+            width: '96%',
+            margin: '2rem',
+            fontSize: '1.3rem',
+            fontWeight: '500',
             // background: 'transparent',
           }}
-          placeholder={placeholder}
+          placeholder="Edit Category Name"
         >
           {initialText}
         </TextArea>
@@ -53,8 +53,8 @@ function CommentForm({
             display: 'flex',
             gap: '1rem',
             position: 'absolute',
-            right,
-            bottom,
+            right: '3rem',
+            bottom: '4rem',
           }}
         >
           {formCancelHandler && (
@@ -77,4 +77,4 @@ function CommentForm({
   );
 }
 
-export default CommentForm;
+export default PostCategoryEditForm;

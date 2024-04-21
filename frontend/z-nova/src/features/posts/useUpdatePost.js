@@ -14,6 +14,7 @@ export function useUpdatePost() {
         duration: 2000,
       });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
+      queryClient.invalidateQueries({ queryKey: ['post'] });
     },
     onError: (err) => {
       toast.error(err.message, { duration: 2000 });

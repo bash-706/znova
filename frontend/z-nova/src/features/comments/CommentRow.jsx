@@ -10,6 +10,7 @@ import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
 import CommentForm from './CommentForm';
+import Tooltip from '../../ui/Tooltip';
 
 const TableRow = styled.div`
   display: grid;
@@ -46,25 +47,13 @@ const IDCellText = styled.div`
   cursor: pointer;
 `;
 
-const Tooltip = styled.div`
-  position: absolute;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  padding: 0.6rem;
-  border-radius: 4px;
-  z-index: 1;
-  bottom: calc(100% + 0px);
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  display: ${(props) => (props.isVisible ? 'block' : 'none')};
-`;
-
 function CommentRow({ comment }) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const { deleteComment, isDeleting } = useDeleteComment();
-  const { isCreating, createComment } = useCreateComment();
+  const { isCreating, createComment } = useCreateComment(
+    'Comment has been duplicated successfully!',
+  );
   const { isLoading: isUpdating, updateComment } = useUpdateComment();
   const { toggleCommentCheck } = useToggleCommentCheck();
 
@@ -200,6 +189,15 @@ function CommentRow({ comment }) {
           }}
           formCancelHandler={() => setShowForm(false)}
           isLoading={isUpdating}
+          placeholder="Edit Comment Text"
+          styles={{
+            margin: '2rem',
+            fontSize: '1.3rem',
+            fontWeight: '500',
+            width: '96%',
+          }}
+          right="3rem"
+          bottom="4rem"
         />
       )}
     </>

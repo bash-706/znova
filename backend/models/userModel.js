@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     minlength: [6, 'Username must contain atleast 6 chracters'],
-    maxlength: [30, 'Username cannot have more than 30 chracters'],
+    maxlength: [20, 'Username cannot have more than 20 chracters'],
     validate: [
       {
         validator: function (value) {

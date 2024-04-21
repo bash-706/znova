@@ -28,10 +28,7 @@ const postSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    category: {
-      type: String,
-      required: [true, 'A service must belong to a category'],
-    },
+    categories: [{ type: mongoose.Schema.ObjectId, ref: 'PostCategory' }],
     slug: String,
     createdAt: Date,
   },

@@ -7,7 +7,6 @@ const StyledChoose = styled.div`
   background: var(--color-grey-0);
   box-shadow: var(--shadow-lg);
   border-radius: 2rem;
-  height: 40rem;
 `;
 
 const StyledChooseContent = styled.div`
@@ -16,6 +15,26 @@ const StyledChooseContent = styled.div`
   align-items: center;
   gap: 1rem;
   padding: 2.5rem 0;
+  font-size: 1.6rem;
+
+  @media (min-width: 84em) {
+    font-size: 1.2em;
+    gap: 2rem;
+
+    & h5 {
+      font-size: 1.5em;
+    }
+  }
+
+  @media (min-width: 108em) {
+    font-size: 1.3em;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 118em) {
+    font-size: 1.4em;
+    gap: 3rem;
+  }
 `;
 
 const StyledLi = styled.li`
@@ -28,12 +47,13 @@ function Choose() {
     <StyledChoose>
       <img
         src="/1.png"
-        height="100%"
         width="100%"
-        style={{ borderRadius: '2rem 0 0 2rem' }}
+        style={{ borderRadius: '2rem 0 0 2rem', alignSelf: 'stretch' }}
       ></img>
       <StyledChooseContent>
-        <Heading as="h5">Why Choose Us?</Heading>
+        <Heading style={{ margin: 0 }} as="h5">
+          Why Choose Us?
+        </Heading>
         <ul style={{ padding: '0 6rem' }}>
           <StyledLi>
             Comprehensive suite of digital services, including tailored

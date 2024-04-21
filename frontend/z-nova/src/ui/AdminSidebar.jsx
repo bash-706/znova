@@ -114,24 +114,17 @@ const menuItems = [
   },
   {
     title: 'Categories',
-    content: [
-      { title: 'All Categories', link: '/admin/categories/manage' },
-      { title: 'Create Category', link: '/admin/categories/new' },
-    ],
+    link: '/admin/categories',
     icon: <BiSolidDashboard />,
     name: 'categories',
-    type: 'collapse',
+    type: 'link',
   },
   {
     title: 'Users',
-    content: [
-      { title: 'All Users', link: '/admin/users' },
-      { title: 'Add New User', link: '/admin/users/new' },
-      { title: 'Profile', link: '/admin/users/profile' },
-    ],
+    link: '/admin/users',
     icon: <HiUserGroup />,
     name: 'users',
-    type: 'collapse',
+    type: 'link',
   },
 ];
 

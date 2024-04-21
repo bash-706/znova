@@ -6,6 +6,14 @@ const StyledFeatures = styled.section`
   grid-template-columns: repeat(5, 1fr);
   grid-template-rows: 1fr;
   gap: 4rem;
+
+  @media (min-width: 84em) {
+    gap: 6rem;
+
+    & h6 {
+      font-size: 0.9em;
+    }
+  }
 `;
 
 const StyledFeature = styled.div`
