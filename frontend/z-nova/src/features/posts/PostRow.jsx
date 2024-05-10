@@ -80,8 +80,8 @@ function PostRow({ post }) {
         <Img src={`http://127.0.0.1:8000/posts/${image}`} />
         <div style={{ textAlign: 'start' }}>{title}</div>
         <div>{user?.username}</div>
-        <div>
-          {post?.categories?.length > 0 ? post?.categories : 'Uncategorized'}
+        <div style={{ textTransform: 'capitalize' }}>
+          {post?.category.split('-').join(' ')}
         </div>
         <div>
           {post?.tags.length > 0 ? (

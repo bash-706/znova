@@ -7,12 +7,22 @@ export function useUpdateAccount() {
   // const queryClient = useQueryClient();
 
   const { mutate: updateAccount, isLoading: isUpdating } = useMutation({
-    mutationFn: async ({ name, email, username, photo, biodata }) => {
+    mutationFn: async ({
+      name,
+      email,
+      username,
+      country,
+      photo,
+      skills,
+      biodata,
+    }) => {
       const formData = new FormData();
       formData.append('name', name);
       formData.append('email', email);
       formData.append('username', username);
+      formData.append('country', country);
       formData.append('photo', photo);
+      formData.append('skills', skills);
       formData.append('biodata', biodata);
       await updateAccountApi(formData, 'data');
     },

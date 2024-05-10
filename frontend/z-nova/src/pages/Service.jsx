@@ -261,10 +261,7 @@ function Service() {
               <StyledItems>
                 <StyledItem>
                   <HiMapPin />
-                  <span>
-                    {service.user?.location[0]?.toUpperCase() +
-                      service.user?.location.slice(1)}
-                  </span>
+                  <span>{service?.user?.country}</span>
                 </StyledItem>
                 <StyledItem>
                   <HiChatBubbleOvalLeft />

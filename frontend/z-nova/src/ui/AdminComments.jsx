@@ -2,7 +2,7 @@ import Row from './Row';
 import Heading from './Heading';
 import CommentTable from '../features/comments/CommentTable';
 
-function AdminManagePosts() {
+function AdminComments() {
   return (
     <>
       <Row type="horizontal" style={{ alignItems: 'flex-start' }}>
@@ -18,4 +18,4 @@ function AdminManagePosts() {
   );
 }
 
-export default AdminManagePosts;
+export default AdminComments;

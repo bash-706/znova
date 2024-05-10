@@ -18,9 +18,6 @@ const StyledLink = styled(Link)`
 `;
 
 function LoginForm() {
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // const { login, isLoading } = useLogin();
   const [passwordShown, setPasswordShown] = useState(false);
   const { login, isLoading } = useLogin();
 
@@ -82,6 +79,7 @@ function LoginForm() {
               position: 'absolute',
               top: '6rem',
               right: '1rem',
+              cursor: 'pointer',
             }}
           />
         ) : (
@@ -93,6 +91,7 @@ function LoginForm() {
               position: 'absolute',
               top: '6rem',
               right: '1rem',
+              cursor: 'pointer',
             }}
           />
         )}

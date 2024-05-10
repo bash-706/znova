@@ -10,10 +10,11 @@ import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
 import Tooltip from '../../ui/Tooltip';
 import { FaToggleOff, FaToggleOn } from 'react-icons/fa';
+import UserForm from './UserForm';
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 0.3fr 1.4fr 1.4fr 2fr 1fr 1fr 1fr 1fr 0.3fr;
+  grid-template-columns: 0.3fr 2fr 1.4fr 1.8fr 1fr 1fr 2fr 1fr 1fr 0.3fr;
   column-gap: 2.4rem;
   align-items: center;
   // text-align: center;
@@ -42,7 +43,7 @@ const CellText = styled.div`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
+  max-width: 100px;
   cursor: pointer;
 `;
 
@@ -58,8 +59,8 @@ const StyledLabel = styled.div`
 function UserRow({ user }) {
   const [showForm, setShowForm] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
+  const { updateUser, isLoading: isUpdating } = useUpdateUser();
   const { deleteUser, isDeleting } = useDeleteUser();
-  const { updateUser } = useUpdateUser('Hello');
 
   const {
     _id: userId,
@@ -70,17 +71,28 @@ function UserRow({ user }) {
     active,
     isVerified,
     photo,
-    location,
-    languages,
+    country,
     createdAt,
   } = user;
 
   function handleVerifyStatus() {
-    updateUser({ data: { isVerified: !isVerified }, userId });
+    updateUser({
+      data: { isVerified: !isVerified },
+      userId,
+      message: `Account has been ${
+        isVerified ? 'Unverified' : 'Verified'
+      } successfully!`,
+    });
   }
 
   function handleActiveStatus() {
-    updateUser({ data: { active: !active }, userId });
+    updateUser({
+      data: { active: !active },
+      userId,
+      message: `Account has been ${
+        active ? 'Deactivated' : 'Activated'
+      } successfully!`,
+    });
   }
 
   return (
@@ -96,11 +108,20 @@ function UserRow({ user }) {
           <CellText>{email}</CellText>
           <Tooltip isVisible={showTooltip}>{email}</Tooltip>
         </CellWrapper>
-        <div>{location || 'Undefined'}</div>
+        <div>{country || 'Undefined'}</div>
         {/* <div>
           {languages ? languages?.map((lang) => `${lang} `) : 'Undefined'}
         </div> */}
         <div>{role}</div>
+        <div>
+          {new Date(createdAt).toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: 'numeric',
+          })}
+        </div>
         <StyledLabel
           style={{ backgroundColor: active ? '#35db35' : '#fc3d3d' }}
         >
@@ -152,20 +173,19 @@ function UserRow({ user }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div> */}
-        {/* <button disabled={isCreating} onClick={handleDuplicate}> */}
-        {/* <HiSquare2Stack /> */}
-        {/* </button> */}
-        {/* <button onClick={() => setShowForm((show) => !show)}> */}
-        {/* <HiPencil /> */}
-        {/* </button> */}
-        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}> */}
-        {/* <HiTrash /> */}
-        {/* </button> */}
-        {/* </div> */}
       </TableRow>
-      {/* {showForm && <CreateCabinForm cabinToEdit={cabin} />} */}
-      {showForm && <p>Form</p>}
+      {showForm && (
+        <UserForm
+          btnLabel="Update"
+          user={user}
+          formSubmitHandler={(data) => {
+            updateUser({ data, userId, message: 'User updated successfully!' });
+            setShowForm(false);
+          }}
+          formCancelHandler={() => setShowForm(false)}
+          isLoading={isUpdating}
+        />
+      )}
     </>
   );
 }

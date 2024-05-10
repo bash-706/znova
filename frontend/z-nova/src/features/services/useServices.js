@@ -17,7 +17,6 @@ export function useServices(type) {
   const sort = field !== '' && direction !== '' ? { field, direction } : {};
 
   // 3. Pagination
-  // 3. Pagination
   let page;
   type === 'full'
     ? (page = null)

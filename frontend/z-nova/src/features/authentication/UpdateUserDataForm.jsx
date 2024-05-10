@@ -9,6 +9,7 @@ import { useUser } from './useUser';
 import styled from 'styled-components';
 import { useUpdateAccount } from './useUpdateAccount';
 import TextArea from '../../ui/TextArea';
+import countryOptions from '../../utils/countryOptions';
 
 const FormUserPhotoContainer = styled.div`
   width: 12rem;
@@ -41,8 +42,16 @@ const FormUserPhoto = styled.img`
   object-fit: cover;
 `;
 
+const StyledSelect = styled.select`
+  cursor: pointer;
+  background-color: var(--color-grey-0);
+  border: 1px solid var(--color-grey-300);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 0.8rem 1.2rem;
+`;
+
 function UpdateUserDataForm() {
-  // We don't need the loading state, and can immediately use the user data, because we know that it has already been loaded at this point
   const { user } = useUser();
   const { updateAccount, isUpdating } = useUpdateAccount();
 
@@ -52,6 +61,9 @@ function UpdateUserDataForm() {
     username: currentUsername,
     photo: currentPhoto,
     biodata: currentBio,
+    country: currentCountry,
+    skills: currentSkills,
+    role,
   } = user;
 
   const [name, setName] = useState(currentName);
@@ -59,15 +71,18 @@ function UpdateUserDataForm() {
   const [username, setUsername] = useState(currentUsername);
   const [biodata, setBiodata] = useState(currentBio);
   const [photo, setPhoto] = useState(currentPhoto);
+  const [skills, setSkills] = useState(currentSkills || []);
+  const [country, setCountry] = useState(currentCountry);
   const [avatarSrc, setAvatarSrc] = useState(
     `http://127.0.0.1:8000/users/${currentPhoto}`,
   );
 
   function handleSubmit(e) {
     e.preventDefault();
-    // if (!name || !email || !username || !photo || !biodata) return;
+
+    // if (!name || !email || !username || !country || !photo || !biodata) return;
     updateAccount(
-      { name, email, username, photo, biodata },
+      { name, email, username, country, photo, biodata, skills },
       {
         onSuccess: () => {
           setPhoto(null);
@@ -96,6 +111,7 @@ function UpdateUserDataForm() {
     setBiodata(currentBio);
     setPhoto(currentPhoto);
     setAvatarSrc(`http://127.0.0.1:8000/users/${currentPhoto}`);
+    setCountry(currentCountry);
   }
 
   return (
@@ -152,21 +168,49 @@ function UpdateUserDataForm() {
         />
       </FormRow>
 
-      <FormRow label="Bio">
-        <TextArea
-          type="text"
-          value={biodata}
-          onChange={(e) => setBiodata(e.target.value)}
-          id="biodata"
+      <FormRow label="Country">
+        <StyledSelect
+          onChange={(e) => setCountry(e.target.value)}
+          id="country"
           disabled={isUpdating}
-          style={{ resize: 'none' }}
-          rows="4"
+          value={country}
+        >
+          {countryOptions.map((option) => (
+            <option key={option.name} value={option.name}>
+              <span>{option.name}</span>
+            </option>
+          ))}
+        </StyledSelect>
+      </FormRow>
+
+      {!(role === 'user') && (
+        <FormRow label="Bio">
+          <TextArea
+            type="text"
+            value={biodata}
+            onChange={(e) => setBiodata(e.target.value)}
+            id="biodata"
+            disabled={isUpdating}
+            style={{ resize: 'none' }}
+            rows="4"
+          />
+        </FormRow>
+      )}
+
+      <FormRow label="Skills">
+        <Input
+          type="text"
+          value={skills}
+          onChange={(e) => setSkills(e.target.value)}
+          id="skills"
+          disabled={isUpdating}
+          placeholder="Enter your skills"
         />
       </FormRow>
 
       <FormRow>
         <Button
-          type="reset"
+          type="button"
           variation="secondary"
           disabled={isUpdating}
           onClick={handleCancel}

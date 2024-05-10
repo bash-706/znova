@@ -5,7 +5,6 @@ import {
   HiChatBubbleOvalLeftEllipsis,
   HiComputerDesktop,
   HiDocumentText,
-  HiOutlineCalendarDays,
   HiSparkles,
   HiUserGroup,
 } from 'react-icons/hi2';
@@ -53,7 +52,7 @@ const StyledMainSidebar = styled.div`
 const StyledMenuItems = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
+  gap: 2.4rem;
 `;
 
 const menuItems = [
@@ -86,13 +85,6 @@ const menuItems = [
     link: '/admin/reviews',
     icon: <HiSparkles />,
     name: 'reviews',
-    type: 'link',
-  },
-  {
-    title: 'Chats',
-    link: '/admin/chats',
-    icon: <HiOutlineCalendarDays />,
-    name: 'chats',
     type: 'link',
   },
   {

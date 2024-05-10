@@ -2,7 +2,22 @@ import axios from 'axios';
 
 const BASE_URL = 'http://127.0.0.1:8000/api/v1/services';
 
-export async function getAllReviews(serviceId) {
+export async function getAllReviews() {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `http://127.0.0.1:8000/api/v1/reviews`,
+      withCredentials: true,
+    });
+    const { data } = res.data;
+    return { data };
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function getServiceReviews(serviceId) {
   try {
     const res = await axios({
       method: 'GET',
@@ -26,6 +41,36 @@ export async function createReview(serviceId, rating, review) {
         review: review.review,
         rating: rating.rating,
       },
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function updateReview(data, reviewId) {
+  try {
+    console.log(data, reviewId);
+    const res = await axios({
+      method: 'PATCH',
+      url: `http://127.0.0.1:8000/api/v1/reviews/${reviewId}`,
+      data: {
+        review: data,
+      },
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function deleteReview(reviewId) {
+  try {
+    const res = await axios({
+      method: 'DELETE',
+      url: `http://127.0.0.1:8000/api/v1/reviews/${reviewId}`,
       withCredentials: true,
     });
     return res.data;

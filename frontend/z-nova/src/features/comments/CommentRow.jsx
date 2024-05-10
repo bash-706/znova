@@ -131,7 +131,6 @@ function CommentRow({ comment }) {
         </div>
         <div>
           <Modal>
-            {/* <button onClick={() => setShowForm((show) => !show)}>Edit</button> */}
             <Menus.Menu>
               <Menus.Toggle id={commentId} />
               <Menus.List id={commentId}>

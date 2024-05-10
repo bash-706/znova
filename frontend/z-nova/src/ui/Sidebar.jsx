@@ -1,12 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  HiOutlineCalendarDays,
-  HiOutlineCog6Tooth,
-  HiOutlineUser,
-  HiOutlineHomeModern,
-  HiOutlineUsers,
-} from 'react-icons/hi2';
+import { HiOutlineUser, HiSparkles } from 'react-icons/hi2';
+import { FiBox } from 'react-icons/fi';
+import Logout from '../features/authentication/Logout';
+import { useLogout } from '../features/authentication/useLogout';
 
 const NavList = styled.ul`
   display: flex;
@@ -54,6 +51,7 @@ const StyledNavLink = styled(NavLink)`
 `;
 
 function Sidebar() {
+  const { logout } = useLogout();
   return (
     <nav
       style={{
@@ -73,26 +71,20 @@ function Sidebar() {
         </li>
         <li>
           <StyledNavLink to="/orders">
-            <HiOutlineCalendarDays />
+            <FiBox />
             <span>My Orders</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/cabins">
-            <HiOutlineHomeModern />
+          <StyledNavLink to="/reviews">
+            <HiSparkles />
             <span>My Reviews</span>
           </StyledNavLink>
         </li>
         <li>
-          <StyledNavLink to="/users">
-            <HiOutlineUsers />
-            <span>My Users</span>
-          </StyledNavLink>
-        </li>
-        <li>
-          <StyledNavLink to="/settings">
-            <HiOutlineCog6Tooth />
-            <span>Settings</span>
+          <StyledNavLink to="#" onClick={logout}>
+            <Logout />
+            <span>Logout</span>
           </StyledNavLink>
         </li>
       </NavList>

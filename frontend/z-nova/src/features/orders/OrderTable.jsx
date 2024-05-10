@@ -11,19 +11,20 @@ function OrderTable() {
 
   return (
     <Menus>
-      <Table columns="0.3fr 1fr 1.4fr 1fr 1fr 1fr 1fr 0.3fr">
+      <Table columns="0.3fr 1.4fr 1fr 2fr 1fr 1fr 1fr 1fr 0.3fr">
         <Table.Header>
           <div></div>
           <div>Customer</div>
+          <div>Order Id</div>
           <div>Service</div>
           <div>Price</div>
           <div>Status</div>
-          <div>Paid</div>
+          <div>Payment</div>
           <div>Created At</div>
           <div></div>
         </Table.Header>
         <Table.Body
-          data={orders.data}
+          data={orders?.data}
           render={(order) => <OrderRow order={order} key={order?._id} />}
         ></Table.Body>
       </Table>

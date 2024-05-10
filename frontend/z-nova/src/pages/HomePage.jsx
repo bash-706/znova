@@ -13,6 +13,8 @@ import Banner from '../ui/Banner';
 import Articles from '../ui/Articles';
 import BusinessPlansSection from '../ui/BusinessPlans';
 import HowItWorks from '../ui/HowItWorks';
+import { useCookies } from 'react-cookie';
+import CookieConsent from '../ui/CookieConsent';
 
 const StyledHome = styled.section`
   display: grid;
@@ -25,6 +27,7 @@ const StyledHome = styled.section`
 `;
 
 function HomePage() {
+  const [cookies] = useCookies(['cookieConsent']);
   // const { user, isLoading } = useUser();
 
   return (
@@ -103,6 +106,7 @@ function HomePage() {
         <Row className="box">
           <Banner />
         </Row>
+        {!cookies.cookieConsent && <CookieConsent />}
       </StyledHome>
     </>
   );

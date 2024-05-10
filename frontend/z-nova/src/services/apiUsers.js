@@ -44,7 +44,7 @@ export async function getUser(userId) {
 // }
 // }
 
-export async function updateUser(data, userId) {
+export async function updateUser(data, userId, message) {
   try {
     const res = await axios({
       method: 'PATCH',
@@ -52,7 +52,7 @@ export async function updateUser(data, userId) {
       data,
       withCredentials: true,
     });
-    return res.data;
+    return { data: res.data, message };
   } catch (err) {
     throw new Error(err.response.data.message);
   }

@@ -47,6 +47,34 @@ export async function getAllOrders() {
   }
 }
 
+export async function getOrder(orderId) {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL}/${orderId}`,
+      withCredentials: 'true',
+    });
+    const { data } = res.data;
+    return data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function updateOrder(data, orderId) {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `${BASE_URL}/${orderId}`,
+      data,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
 export async function deleteOrder(orderId) {
   try {
     const res = await axios({

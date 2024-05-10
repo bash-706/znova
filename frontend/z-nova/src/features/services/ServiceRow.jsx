@@ -77,7 +77,9 @@ function ServiceRow({ service }) {
         <Img src={`http://127.0.0.1:8000/services/${imageCover}`} />
         <div style={{ textAlign: 'start' }}>{name}</div>
         <div>{user?.username}</div>
-        <div>{category}</div>
+        <div style={{ textTransform: 'capitalize' }}>
+          {category.split('-').join(' ')}
+        </div>
         <div>{`${ratingsAverage} (${ratingsQuantity})`}</div>
         <div>{`${price}$`}</div>
         <div>

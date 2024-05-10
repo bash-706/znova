@@ -16,6 +16,7 @@ export function useSignup() {
       password,
       passwordConfirm,
     }) => {
+      console.log(country);
       setIsLoading(true);
       const formData = new FormData();
       formData.append('name', name);

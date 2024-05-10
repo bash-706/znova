@@ -2,15 +2,15 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateUser as updateUserApi } from '../../services/apiUsers';
 import toast from 'react-hot-toast';
 
-export function useUpdateUser(message) {
+export function useUpdateUser() {
   const queryClient = useQueryClient();
 
   const { mutate: updateUser, isLoading } = useMutation({
-    mutationFn: async ({ data, userId }) => {
-      return await updateUserApi(data, userId);
+    mutationFn: async ({ data, userId, message }) => {
+      return await updateUserApi(data, userId, message);
     },
-    onSuccess: () => {
-      toast.success(message);
+    onSuccess: (data) => {
+      toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ['users'] });
       // queryClient.setQueryData(['post']);
     },

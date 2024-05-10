@@ -45,6 +45,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     username: req.body.username,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    country: req.body.country,
+    languages: req.body.languages,
   };
   if (req.file) filteredBody.photo = req.file.filename;
 
@@ -112,6 +114,10 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   if (!user.active) {
+    const verificationToken = user.createAccountVerificationToken();
+    const verificationURL = `http://localhost:5173/verify-account/${verificationToken}`;
+    await new Email(user, verificationURL).verifyEmail();
+
     return next(
       new AppError(
         'Your account is no longer active. In order to activate your account, please click on the link we just sent to your email address.',
@@ -120,6 +126,10 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   if (!user.isVerified) {
+    const verificationToken = user.createAccountVerificationToken();
+    const verificationURL = `http://localhost:5173/verify-account/${verificationToken}`;
+    await new Email(user, verificationURL).verifyEmail();
+
     return next(
       new AppError(
         'Your account has not been verified yet. Please check your email for a verification link.',

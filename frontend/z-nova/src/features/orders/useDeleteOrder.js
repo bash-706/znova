@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 export function useDeleteOrder() {
   const queryClient = useQueryClient();
 
-  const { mutate: deleteOrder, isLoading: isDeleting } = useMutation({
+  const { mutate: deleteOrder, isLoading } = useMutation({
     mutationFn: async (orderId) => {
       return await deleteOrderApi(orderId);
     },
@@ -19,5 +19,5 @@ export function useDeleteOrder() {
       toast.error(err.message, { duration: 2000 });
     },
   });
-  return { deleteOrder, isDeleting };
+  return { deleteOrder, isLoading };
 }

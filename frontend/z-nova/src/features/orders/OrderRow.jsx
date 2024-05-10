@@ -1,27 +1,25 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-
-// import CreateCabinForm from "./CreateCabinForm";
 import { useDeleteOrder } from './useDeleteOrder';
-// import { formatCurrency } from '../../utils/helpers';
-// import { HiPencil,
 import {
+  HiCheckBadge,
   HiEye,
+  HiMiniXMark,
+  HiOutlineClock,
   HiPencil,
-  HiPencilSquare,
-  //   HiSquare2Stack,
   HiTrash,
 } from 'react-icons/hi2';
-// import { useCreatePost } from './useCreatePost';
 import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
+import OrderForm from './OrderForm';
 import { useNavigate } from 'react-router-dom';
-import { deleteOrder } from '../../services/apiOrders';
+import Tooltip from '../../ui/Tooltip';
+import useUpdateOrder from './useUpdateOrder';
 
 const TableRow = styled.div`
   display: grid;
-  grid-template-columns: 0.3fr 1fr 1.4fr 1fr 1fr 1fr 1fr 0.3fr;
+  grid-template-columns: 0.3fr 1.4fr 1fr 2fr 1fr 1fr 1fr 1fr 0.3fr;
   column-gap: 2.4rem;
   align-items: center;
   /* text-align: center; */
@@ -42,10 +40,35 @@ const Img = styled.img`
   margin: 0 1.2rem;
 `;
 
+const IDCellWrapper = styled.div`
+  position: relative;
+`;
+
+const IDCellText = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 80px;
+  cursor: pointer;
+`;
+
+const StyledStatus = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.2rem;
+
+  & svg {
+    width: 2rem;
+    height: 2rem;
+  }
+`;
+
 function OrderRow({ order }) {
   const [showForm, setShowForm] = useState(false);
-  const { deletePost, isDeleting } = useDeleteOrder;
-  //   const { isCreating, createPost } = useCreatePost();
+  const { deleteOrder, isDeleting } = useDeleteOrder();
+  const { updateOrder, isLoading: isUpdating } = useUpdateOrder();
+  const [showTooltip, setShowTooltip] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -58,29 +81,52 @@ function OrderRow({ order }) {
     paid,
   } = order;
 
-  //   function handleDuplicate() {
-  //     createPost({
-  //       title: title.startsWith('Copy') ? title : `Copy of ${title}`,
-  //       category,
-  //       tags,
-  //       image,
-  //       body,
-  //       caption,
-  //       user,
-  //       slug,
-  //       createdAt,
-  //     });
-  //   }
-
   return (
     <>
       <TableRow role="row">
         <Img src={`http://127.0.0.1:8000/users/${customer.photo}`} />
         <div style={{ textAlign: 'start' }}>{customer.name}</div>
+
+        <IDCellWrapper
+          onMouseEnter={() => setShowTooltip(true)}
+          onMouseLeave={() => setShowTooltip(false)}
+        >
+          <IDCellText>{orderId}</IDCellText>
+          <Tooltip isVisible={showTooltip}>{orderId}</Tooltip>
+        </IDCellWrapper>
         <div>{service?.name}</div>
         <div>{`${price}$`}</div>
-        <div>{`${status}`}</div>
-        <div>{paid ? 'Paid' : 'Unpaid'}</div>
+        <StyledStatus>
+          <span>
+            {status === 'Pending' && (
+              <HiOutlineClock style={{ color: 'blue' }} />
+            )}
+          </span>
+          <span>
+            {status === 'Cancelled' && <HiMiniXMark style={{ color: 'red' }} />}
+          </span>
+          <span>
+            {status === 'Delivered' && (
+              <HiCheckBadge style={{ color: 'green' }} />
+            )}
+          </span>
+          <span>{status}</span>
+        </StyledStatus>
+        <div
+          style={{
+            background: paid ? '#35db35' : '#fc3d3d',
+            color: 'white',
+            padding: '0.2rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius: '4rem',
+            outline: 'none',
+            border: 'none',
+          }}
+        >
+          {paid ? 'Paid' : 'Unpaid'}
+        </div>
         <div>
           {new Date(order?.createdAt).toLocaleDateString('en-US', {
             day: 'numeric',
@@ -97,29 +143,16 @@ function OrderRow({ order }) {
               <Menus.List id={orderId}>
                 <Menus.Button
                   icon={<HiEye />}
-                  onClick={() => navigate(`/blog`)}
+                  onClick={() => navigate(`/orders/${orderId}`)}
                 >
                   View
                 </Menus.Button>
                 <Menus.Button
                   icon={<HiPencil />}
-                  onClick={() => navigate(`edit`)}
+                  onClick={() => setShowForm((show) => !show)}
                 >
                   Edit
                 </Menus.Button>
-                <Menus.Button
-                  icon={<HiPencilSquare />}
-                  onClick={() => setShowForm((show) => !show)}
-                >
-                  Quick Edit
-                </Menus.Button>
-                {/* <Menus.Button
-                  icon={<HiSquare2Stack />}
-                  onClick={() => handleDuplicate()}
-                  disabled={isCreating}
-                >
-                  Duplicate
-                </Menus.Button> */}
                 <Modal.Open>
                   <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
                 </Modal.Open>
@@ -135,20 +168,21 @@ function OrderRow({ order }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div> */}
-        {/* <button disabled={isCreating} onClick={handleDuplicate}> */}
-        {/* <HiSquare2Stack /> */}
-        {/* </button> */}
-        {/* <button onClick={() => setShowForm((show) => !show)}> */}
-        {/* <HiPencil /> */}
-        {/* </button> */}
-        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}> */}
-        {/* <HiTrash /> */}
-        {/* </button> */}
-        {/* </div> */}
       </TableRow>
-      {/* {showForm && <CreateCabinForm cabinToEdit={cabin} />} */}
-      {showForm && <p>Form</p>}
+      {showForm && (
+        <OrderForm
+          order={order}
+          formSubmitHandler={(data) => {
+            updateOrder({
+              data,
+              orderId,
+            });
+            setShowForm(false);
+          }}
+          formCancelHandler={() => setShowForm(false)}
+          isLoading={isUpdating}
+        />
+      )}
     </>
   );
 }

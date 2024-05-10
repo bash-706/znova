@@ -1,6 +1,5 @@
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
-
 import { useSignup } from './useSignup';
 import Button from '../../ui/Button';
 import Form from '../../ui/Form';
@@ -11,6 +10,8 @@ import { Link } from 'react-router-dom';
 import SpinnerMini from '../../ui/SpinnerMini';
 import FileInput from '../../ui/FileInput';
 import { useState } from 'react';
+import countryOptions from '../../utils/countryOptions';
+import { HiEye, HiEyeSlash } from 'react-icons/hi2';
 
 // Email regex: /\S+@\S+\.\S+/
 
@@ -25,15 +26,16 @@ const FormUserPhotoContainer = styled.div`
   border-radius: 50%;
   overflow: hidden;
   position: relative;
-  cursor: pointer;
+  cursor: ${(props) => (props.isLoading ? 'not-allowed' : 'pointer')};
   margin: auto;
 
   &:hover img {
-    filter: brightness(0.7);
+    filter: ${(props) =>
+      props.isLoading ? 'brightness(1)' : 'brightness(0.7)'};
   }
 
   &:hover::after {
-    content: 'Upload a Photo';
+    content: ${(props) => (props.isLoading ? '""' : '"Upload a Photo"')};
     position: absolute;
     top: 50%;
     left: 50%;
@@ -48,9 +50,21 @@ const FormUserPhoto = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+  cursor: ${(props) => (props.isLoading ? 'not-allowed' : 'pointer')};
+`;
+
+const StyledSelect = styled.select`
+  cursor: ${(props) => (props.isLoading ? 'not-allowed' : 'pointer')};
+  background-color: var(--color-grey-0);
+  border: 1px solid var(--color-grey-300);
+  border-radius: var(--border-radius-sm);
+  box-shadow: var(--shadow-sm);
+  padding: 0.8rem 1.2rem;
 `;
 
 function SignupForm() {
+  const [passwordShown, setPasswordShown] = useState(false);
+  const [passwordConfirmShown, setPasswordConfirmShown] = useState(false);
   const { signup, isLoading } = useSignup();
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
@@ -58,6 +72,14 @@ function SignupForm() {
   const [avatarSrc, setAvatarSrc] = useState(
     'http://127.0.0.1:8000/users/default.jpg',
   );
+
+  const togglePassword = () => {
+    setPasswordShown((prevShown) => !prevShown);
+  };
+
+  const togglePasswordConfirm = () => {
+    setPasswordConfirmShown((prevShown) => !prevShown);
+  };
 
   function handleChangePhoto(e) {
     const selectedPhoto = e.target.files[0];
@@ -77,9 +99,10 @@ function SignupForm() {
     username,
     password,
     passwordConfirm,
+    country,
   }) {
     signup(
-      { name, email, photo, username, password, passwordConfirm },
+      { name, email, photo, username, password, passwordConfirm, country },
       {
         onSettled: () => {
           setAvatarSrc('http://127.0.0.1:8000/users/default.jpg');
@@ -93,12 +116,12 @@ function SignupForm() {
   return (
     <Form onSubmit={handleSubmit(onSubmit)}>
       <FormRow>
-        <FormUserPhotoContainer>
-          <FormUserPhoto src={avatarSrc} />
+        <FormUserPhotoContainer isLoading={isLoading}>
+          <FormUserPhoto isLoading={isLoading} src={avatarSrc} />
           <FileInput
             style={{
               position: 'absolute',
-              cursor: 'pointer',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
               top: '0',
               left: '0',
               width: '100%',
@@ -166,7 +189,7 @@ function SignupForm() {
         error={errors?.password?.message}
       >
         <Input
-          type="password"
+          type={passwordShown ? 'text' : 'password'}
           id="password"
           disabled={isLoading}
           {...register('password', {
@@ -177,6 +200,31 @@ function SignupForm() {
             },
           })}
         />
+        {passwordShown ? (
+          <HiEyeSlash
+            onClick={togglePassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <HiEye
+            onClick={togglePassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </FormRow>
 
       <FormRow
@@ -184,7 +232,7 @@ function SignupForm() {
         error={errors?.passwordConfirm?.message}
       >
         <Input
-          type="password"
+          type={passwordConfirmShown ? 'text' : 'password'}
           id="passwordConfirm"
           disabled={isLoading}
           {...register('passwordConfirm', {
@@ -193,13 +241,52 @@ function SignupForm() {
               value === getValues().password || 'Passwords need to match',
           })}
         />
+        {passwordShown ? (
+          <HiEyeSlash
+            onClick={togglePasswordConfirm}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <HiEye
+            onClick={togglePasswordConfirm}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        )}
+      </FormRow>
+      <FormRow label="Country" error={errors?.country?.message}>
+        <StyledSelect
+          disabled={isLoading}
+          id="country"
+          {...register('country', { required: 'This field is required' })}
+        >
+          <option value="">Select country</option>
+
+          {countryOptions.map((option) => (
+            <option key={option.name} value={option.name}>
+              <span>{option.name}</span>
+            </option>
+          ))}
+        </StyledSelect>
       </FormRow>
 
       <Paragraph size="small">
         Already have an account? <StyledLink to="/auth/login">Login</StyledLink>
       </Paragraph>
       <FormRow>
-        {/* type is an HTML attribute! */}
         <Button
           variation="secondary"
           type="reset"

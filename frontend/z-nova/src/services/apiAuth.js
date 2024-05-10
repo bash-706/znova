@@ -74,7 +74,6 @@ export async function updateAccount(data, type) {
       data,
       withCredentials: true,
     });
-    console.log(res.data);
     return res.data?.data?.user;
   } catch (err) {
     throw new Error(err.response.data.message);

@@ -19,6 +19,7 @@ import CookiePolicy from './pages/CookiePolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
 import Orders from './pages/Orders';
 import Order from './pages/Order';
+import Reviews from './pages/Reviews';
 import styled from 'styled-components';
 import { DarkModeProvider } from './context/DarkModeContext';
 import ProtectedRoute from './ui/ProtectedRoute';
@@ -30,7 +31,6 @@ import Chat from './pages/Chat';
 import Blog from './pages/Blog';
 import Article from './pages/Article';
 import AdminLayout from './ui/AdminLayout';
-import Admin from './ui/Admin';
 import AdminComments from './ui/AdminComments';
 import AdminManagePosts from './ui/AdminManagePosts';
 import AdminNewPost from './ui/AdminNewPost';
@@ -41,7 +41,7 @@ import AdminNewService from './ui/AdminNewService';
 import AdminManageServices from './ui/AdminManageServices';
 import AdminEditPost from './ui/AdminEditPost';
 import AdminReviews from './ui/AdminReviews';
-import AdminChats from './ui/AdminChats';
+import Dashboard from './pages/Dashboard';
 
 const StyledApp = styled.div`
   height: 100vh;
@@ -80,6 +80,7 @@ function App() {
                 <Route path="about" element={<About />} />
                 <Route path="contact" element={<Contact />} />
                 <Route path="inbox" element={<Chat />} />
+                <Route path="orders/:orderId" element={<Order />} />
                 <Route
                   path="terms-and-conditions"
                   element={<TermsAndConditions />}
@@ -89,7 +90,7 @@ function App() {
                 <Route element={<AccountLayout />}>
                   <Route path="my-account" element={<Account />} />
                   <Route path="orders" element={<Orders />} />
-                  <Route path="orders/:orderId" element={<Order />} />
+                  <Route path="reviews" element={<Reviews />} />
                 </Route>
               </Route>
               <Route path="auth/signup" element={<Signup />} />
@@ -104,11 +105,10 @@ function App() {
                 element={<ResetPassword />}
               />
               <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<Admin />} />
+                <Route index element={<Dashboard />} />
                 <Route path="comments" element={<AdminComments />} />
                 <Route path="users" element={<AdminUsers />} />
                 <Route path="orders" element={<AdminOrders />} />
-                <Route path="chats" element={<AdminChats />} />
                 <Route path="reviews" element={<AdminReviews />} />
                 <Route path="posts/new" element={<AdminNewPost />} />
                 <Route path="posts" element={<AdminManagePosts />} />

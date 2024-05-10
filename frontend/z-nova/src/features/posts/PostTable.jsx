@@ -16,7 +16,7 @@ function PostTable() {
           <div></div>
           <div>Title</div>
           <div>Author</div>
-          <div>Categories</div>
+          <div>Category</div>
           <div>Tags</div>
           <div>Created At</div>
           <div></div>

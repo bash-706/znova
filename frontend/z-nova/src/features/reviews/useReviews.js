@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getAllReviews } from '../../services/apiReviews';
+import { getServiceReviews } from '../../services/apiReviews';
 
 export function useReviews(serviceId) {
   const {
@@ -8,7 +8,7 @@ export function useReviews(serviceId) {
     error,
   } = useQuery({
     queryKey: ['reviews', serviceId],
-    queryFn: async () => await getAllReviews(serviceId),
+    queryFn: async () => await getServiceReviews(serviceId),
     retry: false,
   });
 

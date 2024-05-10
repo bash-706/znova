@@ -87,16 +87,8 @@ const StyledUserInfo = styled.div`
 const StyledCategory = styled.span`
   text-transform: capitalize;
   font-weight: 500;
-  font-size: 1.4rem;
-  color: var(--color-grey-0);
-  background: var(--color-brand-700);
-  padding: 0.4rem 0.8rem;
-  margin: 1rem 0;
-  display: inline-block;
-  border-radius: 0.4rem;
-  position: absolute;
-  top: 10px;
-  left: 20px;
+  font-size: 1.5rem;
+  color: var(--color-grey-600);
 `;
 
 const StyledCardInfo = styled.div`
@@ -153,6 +145,9 @@ function ServiceCard({ service }) {
             </StyledUserInfo>
           </StyledCardUser>
           <StyledCardTitle>{service?.name}</StyledCardTitle>
+          <StyledCategory>
+            {service?.category?.split('-').join(' ')}
+          </StyledCategory>
           <StyledCardInfo>
             <StyledRating>
               <HiStar />
@@ -163,9 +158,6 @@ function ServiceCard({ service }) {
               Starting From ${service?.packages[0]?.price}
             </StyledCardPrice>
           </StyledCardInfo>
-          <StyledCategory>
-            {service?.category?.split('-').join(' ')}
-          </StyledCategory>
           {/* <div
             style={{
               display: 'flex',
