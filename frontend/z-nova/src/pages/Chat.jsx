@@ -1,19 +1,19 @@
 import { useChats } from '../features/chats/useChats';
 import { useMessages } from '../features/messages/useMessages';
-import { useSender } from '../features/users/useSender';
 import { useRecipient } from '../features/users/useRecipient';
 import { useUser } from '../features/authentication/useUser';
 import styled from 'styled-components';
 import Spinner from '../ui/Spinner';
 import UserChat from '../features/chats/UserChat';
 import Heading from '../ui/Heading';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import moment from 'moment-timezone';
 import InputEmoji from 'react-input-emoji';
 import { HiMiniPaperAirplane } from 'react-icons/hi2';
 import { useCreateMessage } from '../features/messages/useCreateMessage';
 import NoChats from '../ui/NoChats';
 import { io } from 'socket.io-client';
+import Messages from '../features/chats/Messages';
 
 const StyledChat = styled.div`
   display: grid;
@@ -34,20 +34,6 @@ const StyledUser = styled.img`
   width: 3.4rem;
   height: 3.4rem;
   border-radius: 50%;
-`;
-
-const StyledMessages = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
-  padding: 2rem 4rem;
-`;
-const StyledMessage = styled.span`
-  padding: 1rem 2rem;
-  border-radius: 6rem;
-  display: inline-block;
-  color: #fff;
-  width: fit-content;
 `;
 
 const StyledDot = styled.div`
@@ -92,6 +78,7 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [notifications, setNotifications] = useState([]);
   const { user } = useUser();
   const { chats, isLoading, error } = useChats(user?._id);
   let {
@@ -101,6 +88,7 @@ function Chat() {
   } = useMessages(currentChat?._id);
 
   const { recipient } = useRecipient(user, currentChat);
+  console.log(notifications);
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -110,7 +98,6 @@ function Chat() {
   const [text, setText] = useState('');
 
   const { createMessage } = useCreateMessage();
-
   useEffect(() => {
     if (messagesData) {
       setMessages(messagesData);
@@ -125,7 +112,7 @@ function Chat() {
     return () => {
       newSocket.disconnect();
     };
-  }, [setSocket]);
+  }, [user]);
 
   // add and remove online users
   useEffect(() => {
@@ -144,19 +131,38 @@ function Chat() {
   // send realtime messages
   useEffect(() => {
     if (socket === null) return;
-    socket.emit('sendMessage', { ...newMessage, recipientId: recipient?._id });
-  }, [socket, recipient, newMessage]);
+    socket.emit('sendMessage', {
+      text: newMessage,
+      recipientId: recipient?._id,
+      chatId: currentChat?._id,
+      senderId: user?._id,
+    });
+  }, [newMessage]);
 
-  // recieve realtime message
+  // recieve realtime message and notification
   useEffect(() => {
     if (socket === null) return;
     socket.on('getMessage', (res) => {
-      if (currentChat?._id !== res.chatId) return;
-      setMessages((prev) => [...prev, res]);
+      if (currentChat?._id !== res?.chatId) return;
+      setMessages((prev) => {
+        return [...prev, res];
+      });
+    });
+
+    socket.on('getNotification', (res) => {
+      const isChatOpen = currentChat?.members?.some(
+        (id) => id === res.senderId,
+      );
+      if (isChatOpen) {
+        setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
+      } else {
+        setNotifications((prev) => [res, ...prev]);
+      }
     });
 
     return () => {
       socket.off('getMessage');
+      socket.off('getNotification');
     };
   }, [socket, currentChat]);
 
@@ -319,60 +325,6 @@ function Chat() {
         </CenteredBox>
       )}
     </StyledChat>
-  );
-}
-
-function Messages({ messages, user }) {
-  const scroll = useRef();
-
-  useEffect(() => {
-    scroll.current?.scrollIntoView({ behaviour: 'smooth' });
-  }, [messages]);
-
-  return (
-    <StyledMessages>
-      {messages?.map((message, index) => {
-        return (
-          <div
-            key={index}
-            ref={scroll}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              gap: '1rem',
-              // alignItems:
-              // message?.senderId === user?._id ? 'flex-end' : 'flex-start',
-            }}
-          >
-            <Message message={message} user={user} />
-          </div>
-        );
-      })}
-    </StyledMessages>
-  );
-}
-
-function Message({ message, user }) {
-  const { sender } = useSender(message?.senderId);
-  return (
-    <>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <StyledUser src={`http://127.0.0.1:8000/users/${sender?.photo}`} />
-        <span style={{ fontWeight: '500' }}>{sender?.name.split(' ')[0]}</span>
-        <span style={{ fontSize: '1.4rem' }}>
-          {moment(message?.createdAt)?.calendar()}
-        </span>
-      </div>
-      <StyledMessage
-        style={{
-          background:
-            message?.senderId === user?._id ? 'var(--color-brand-600)' : 'red',
-        }}
-      >
-        {message?.text}
-      </StyledMessage>
-    </>
   );
 }
 

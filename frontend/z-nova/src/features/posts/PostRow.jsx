@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
-// import CreateCabinForm from "./CreateCabinForm";
 import { useDeletePost } from './useDeletePost';
 // import { formatCurrency } from '../../utils/helpers';
 // import { HiPencil,
@@ -13,10 +12,12 @@ import {
   HiTrash,
 } from 'react-icons/hi2';
 import { useCreatePost } from './useCreatePost';
+import { useUpdatePost } from './useUpdatePost';
 import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
 import { useNavigate } from 'react-router-dom';
+import PostForm from './PostForm';
 
 const TableRow = styled.div`
   display: grid;
@@ -45,13 +46,14 @@ function PostRow({ post }) {
   const [showForm, setShowForm] = useState(false);
   const { deletePost, isDeleting } = useDeletePost();
   const { isCreating, createPost } = useCreatePost();
+  const { updatePost, isUpdating } = useUpdatePost();
   const navigate = useNavigate();
 
   const {
     _id: postId,
     title,
     createdAt,
-    category,
+    postCategory,
     tags,
     image,
     body,
@@ -63,7 +65,7 @@ function PostRow({ post }) {
   function handleDuplicate() {
     createPost({
       title: title.startsWith('Copy') ? title : `Copy of ${title}`,
-      category,
+      postCategory,
       tags,
       image,
       body,
@@ -81,7 +83,7 @@ function PostRow({ post }) {
         <div style={{ textAlign: 'start' }}>{title}</div>
         <div>{user?.username}</div>
         <div style={{ textTransform: 'capitalize' }}>
-          {post?.category.split('-').join(' ')}
+          {post?.category?.split('-').join(' ')}
         </div>
         <div>
           {post?.tags.length > 0 ? (
@@ -103,7 +105,6 @@ function PostRow({ post }) {
         </div>
         <div>
           <Modal>
-            {/* <button onClick={() => setShowForm((show) => !show)}>Edit</button> */}
             <Menus.Menu>
               <Menus.Toggle id={postId} />
               <Menus.List id={postId}>
@@ -147,20 +148,18 @@ function PostRow({ post }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div> */}
-        {/* <button disabled={isCreating} onClick={handleDuplicate}> */}
-        {/* <HiSquare2Stack /> */}
-        {/* </button> */}
-        {/* <button onClick={() => setShowForm((show) => !show)}> */}
-        {/* <HiPencil /> */}
-        {/* </button> */}
-        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}> */}
-        {/* <HiTrash /> */}
-        {/* </button> */}
-        {/* </div> */}
       </TableRow>
-      {/* {showForm && <CreateCabinForm cabinToEdit={cabin} />} */}
-      {showForm && <p>Form</p>}
+      {showForm && (
+        <PostForm
+          post={post}
+          formSubmitHandler={(formData) => {
+            updatePost({ formData, postId });
+            setShowForm(false);
+          }}
+          formCancelHandler={() => setShowForm(false)}
+          isLoading={isUpdating}
+        />
+      )}
     </>
   );
 }

@@ -10,7 +10,7 @@ export function useUpdatePostCategory() {
       return await updatePostCategoryApi(data, categoryId);
     },
     onSuccess: () => {
-      toast.success('Post Category has been edited successfully!');
+      toast.success('Post Category has been updated successfully!');
       queryClient.invalidateQueries({ queryKey: ['postCategories'] });
       queryClient.invalidateQueries({ queryKey: ['posts'] });
     },

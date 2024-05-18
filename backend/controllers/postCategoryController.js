@@ -2,16 +2,27 @@ const PostCategory = require('../models/postCategoryModel');
 const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAsync');
 const handleFactory = require('./handleFactory');
+const AppError = require('../utils/appError');
 
 exports.deletePostCategoryField = catchAsync(async (req, res, next) => {
+  const defaultCategory = await PostCategory.findOne({ slug: 'general' });
+
+  if (!defaultCategory) {
+    return next(new AppError('Default category not found', 404));
+  }
+
   await Post.updateMany(
     {
-      categories: { $in: [req.params.id] },
+      postCategory: req.params.id,
     },
     {
-      $pull: { categories: req.params.id },
+      $set: {
+        postCategory: defaultCategory._id,
+        category: defaultCategory.slug,
+      },
     },
   );
+
   next();
 });
 

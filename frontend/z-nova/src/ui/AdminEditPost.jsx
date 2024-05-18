@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { usePost } from '../features/posts/usePost';
 import { useUpdatePost } from '../features/posts/useUpdatePost';
 import styled from 'styled-components';
@@ -41,7 +41,10 @@ function AdminEditPost() {
   const { slug } = useParams();
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
-  const [body, setBody] = useState(null);
+  const [body, setBody] = useState('');
+  const [title, setTitle] = useState(null);
+  const [category, setCategory] = useState(null);
+  const [tags, setTags] = useState(null);
   const { updatePost, isUpdating } = useUpdatePost();
   const { post, isLoading, error } = usePost(slug);
 
@@ -53,9 +56,12 @@ function AdminEditPost() {
   useEffect(() => {
     if (!isLoading && !error) {
       setInitialImage(mainPost?.image);
-      // setBody(mainPost?.body);
+      setCategory(mainPost?.category);
+      setTitle(mainPost?.title);
+      setTags(mainPost?.tags);
+      setBody(mainPost?.body);
     }
-  }, [post, isLoading, error, mainPost, body]);
+  }, [isLoading, error, mainPost]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -63,7 +69,6 @@ function AdminEditPost() {
   };
 
   const handleUpdatePost = async () => {
-    if (!mainPost) return;
     const postId = mainPost?.id;
     const formData = new FormData();
     if (image) {
@@ -71,14 +76,16 @@ function AdminEditPost() {
     } else {
       formData.append('image', initialImage);
     }
+
     formData.append('body', JSON.stringify(body));
-    console.log(formData.get('body'));
     await updatePost({ formData, postId });
   };
 
   const handleDeleteImage = () => {
-    setInitialImage(null);
-    setImage(null);
+    if (window.confirm('Do you want to delete your Post picture?')) {
+      setInitialImage(null);
+      setImage(null);
+    }
   };
 
   if (isLoading)
@@ -143,7 +150,7 @@ function AdminEditPost() {
           Delete Image
         </Button>
 
-        <div style={{ marginTop: '2rem' }}>
+        {/* <div style={{ marginTop: '2rem' }}>
           {mainPost?.categories?.map((category, index) => (
             <Link
               key={index}
@@ -157,7 +164,7 @@ function AdminEditPost() {
               {category?.name}
             </Link>
           ))}
-        </div>
+        </div> */}
         <h1
           style={{
             fontSize: '3rem',
@@ -180,7 +187,7 @@ function AdminEditPost() {
           )}
         </div>
         <Button onClick={handleUpdatePost} disabled={isUpdating}>
-          Update Now
+          Update Post
         </Button>
       </article>
     </StyledArticle>

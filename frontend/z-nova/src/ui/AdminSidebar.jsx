@@ -8,6 +8,7 @@ import {
   HiSparkles,
   HiUserGroup,
 } from 'react-icons/hi2';
+import { MdDashboardCustomize } from 'react-icons/md';
 import { FiBox } from 'react-icons/fi';
 import { BiSolidDashboard } from 'react-icons/bi';
 import { AiOutlineDashboard } from 'react-icons/ai';
@@ -88,6 +89,13 @@ const menuItems = [
     type: 'link',
   },
   {
+    title: 'Categories',
+    link: '/admin/service-categories',
+    icon: <MdDashboardCustomize />,
+    name: 'service categories',
+    type: 'link',
+  },
+  {
     title: 'Posts',
     content: [
       { title: 'All Posts', link: '/admin/posts' },
@@ -106,9 +114,9 @@ const menuItems = [
   },
   {
     title: 'Categories',
-    link: '/admin/categories',
+    link: '/admin/post-categories',
     icon: <BiSolidDashboard />,
-    name: 'categories',
+    name: 'post categories',
     type: 'link',
   },
   {

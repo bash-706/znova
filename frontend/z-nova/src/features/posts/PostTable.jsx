@@ -22,7 +22,7 @@ function PostTable() {
           <div></div>
         </Table.Header>
         <Table.Body
-          data={posts.data}
+          data={posts?.data}
           render={(post) => <PostRow post={post} key={post?._id} />}
         ></Table.Body>
       </Table>

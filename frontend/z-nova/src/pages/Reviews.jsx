@@ -2,7 +2,9 @@ import Row from '../ui/Row';
 import styled from 'styled-components';
 import Heading from '../ui/Heading';
 import ReviewTable from '../features/reviews/AccountReviewTable';
-import { useAllReviews } from '../features/reviews/useAllReviews';
+import { useUserReviews } from '../features/reviews/useUserReviews';
+import { useUser } from '../features/authentication/useUser';
+import Spinner from '../ui/Spinner';
 
 const StyledReviews = styled.main`
   display: grid;
@@ -25,7 +27,11 @@ const StyledImage = styled.img`
 `;
 
 function Reviews() {
-  const { isLoading, reviews } = useAllReviews();
+  const { user } = useUser();
+  const { isLoading, reviews } = useUserReviews(user?._id);
+
+  if (isLoading) return <Spinner />;
+
   return (
     <>
       {reviews?.data?.data?.length > 0 ? (

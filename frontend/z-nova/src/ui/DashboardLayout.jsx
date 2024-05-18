@@ -12,7 +12,7 @@ import SalesChart from './SalesChart';
 const StyledDashboardLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-template-rows: auto auto 34rem auto;
+  grid-template-rows: auto auto 34rem;
   gap: 2.4rem;
 `;
 
@@ -37,8 +37,6 @@ function DashboardLayout() {
         users={users}
       />
       <SalesChart orders={orders?.data} />
-      <div>Today&apos;s Activity</div>
-      <div>Chart Reviews</div>
     </StyledDashboardLayout>
   );
 }

@@ -34,10 +34,6 @@ const serviceSchema = new mongoose.Schema(
       required: [true, 'A service must have a cover image'],
       default: 'default.png',
     },
-    category: {
-      type: String,
-      required: [true, 'A service must belong to a category'],
-    },
     packages: [
       {
         name: {
@@ -67,16 +63,17 @@ const serviceSchema = new mongoose.Schema(
         },
       },
     ],
-    // category: {
-    // type: mongoose.Schema.ObjectId,
-    // ref: 'Category',
-    // required: [true, 'A service must have a category'],
-    // },
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
       required: [true, 'A service must belong to a user'],
     },
+    serviceCategory: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'ServiceCategory',
+      required: [true, 'a service must belong to a category'],
+    },
+    category: String,
     images: [String],
     price: Number,
     duration: Number,
@@ -100,25 +97,41 @@ serviceSchema.virtual('reviews', {
 
 serviceSchema.pre('save', function (next) {
   this.createdAt = Date.now();
+  this.slug = slugify(this.name, {
+    lower: true,
+  });
   this.price = this.packages[0].price;
   this.duration = parseFloat(this.packages[0].duration);
   next();
 });
 
-serviceSchema.pre('save', function (next) {
-  this.slug = slugify(this.name, {
-    lower: true,
-  });
+serviceSchema.pre('save', async function (next) {
+  if (this.isModified('serviceCategory') || this.isNew) {
+    const serviceCategory = await mongoose
+      .model('ServiceCategory')
+      .findById(this.serviceCategory);
+    if (serviceCategory) {
+      this.category = serviceCategory.slug;
+    }
+  }
+
   next();
 });
 
-// serviceSchema.pre(/^find/, function (next) {
-// this.populate({
-// path: 'category',
-// select: 'name description',
-// });
-// next();
-// });
+serviceSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+
+  if (update.serviceCategory) {
+    const serviceCategory = await mongoose
+      .model('ServiceCategory')
+      .findById(update.serviceCategory);
+    if (serviceCategory) {
+      update.category = serviceCategory.slug;
+    }
+  }
+
+  next();
+});
 
 const Service = mongoose.model('Service', serviceSchema);
 

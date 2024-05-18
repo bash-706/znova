@@ -1,12 +1,13 @@
 import axios from 'axios';
 
 const BASE_URL = 'http://127.0.0.1:8000/api/v1/services';
+const BASE_URL2 = 'http://127.0.0.1:8000/api/v1/reviews';
 
 export async function getAllReviews() {
   try {
     const res = await axios({
       method: 'GET',
-      url: `http://127.0.0.1:8000/api/v1/reviews`,
+      url: `${BASE_URL2}`,
       withCredentials: true,
     });
     const { data } = res.data;
@@ -22,6 +23,21 @@ export async function getServiceReviews(serviceId) {
     const res = await axios({
       method: 'GET',
       url: `${BASE_URL}/${serviceId}/reviews`,
+      withCredentials: true,
+    });
+    const { data } = res.data;
+    return { data };
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function getUserReviews(userId) {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL2}/user-reviews/${userId}`,
       withCredentials: true,
     });
     const { data } = res.data;

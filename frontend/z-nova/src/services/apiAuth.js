@@ -93,6 +93,19 @@ export async function verifyAccount(token) {
   }
 }
 
+export async function activateAccount(token) {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${BASE_URL}/activate-account/${token}`,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
 export async function deleteAccount(password) {
   try {
     const res = await axios({

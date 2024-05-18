@@ -71,7 +71,18 @@ exports.updateAccount = catchAsync(async (req, res, next) => {
     'country',
     'biodata',
     'role',
+    'skills',
+    'languages',
   );
+
+  if (typeof req.body.skills === 'string') {
+    filteredBody.skills = JSON.parse(req.body.skills);
+  }
+
+  if (typeof req.body.languages === 'string') {
+    filteredBody.languages = JSON.parse(req.body.languages);
+  }
+
   if (req.file) filteredBody.photo = req.file.filename;
   const user = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,

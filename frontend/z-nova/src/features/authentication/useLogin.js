@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 export function useLogin() {
   const navigate = useNavigate();
 
-  const { mutate: login, isLoading } = useMutation({
+  const { mutate: login, status } = useMutation({
     mutationFn: async ({ email_username, password }) => {
       await loginApi(email_username, password);
     },
@@ -21,5 +21,5 @@ export function useLogin() {
       toast.error(err.message, { duration: 5000 });
     },
   });
-  return { login, isLoading };
+  return { login, status };
 }

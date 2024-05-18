@@ -19,8 +19,8 @@ function PostCategoryEditForm({
 }) {
   const { register, handleSubmit, reset } = useForm();
 
-  function onSubmit({ comment }) {
-    formSubmitHandler(comment);
+  function onSubmit({ name }) {
+    formSubmitHandler(name);
     reset();
   }
 
@@ -28,9 +28,9 @@ function PostCategoryEditForm({
     <form onSubmit={handleSubmit(onSubmit)}>
       <div style={{ position: 'relative', textAlign: 'center' }}>
         <TextArea
-          id="comment"
+          id="name"
           //   disabled={isLoading}
-          {...register('comment', { required: 'This field is required' })}
+          {...register('name', { required: 'This field is required' })}
           rows="5"
           style={{
             padding: '2rem',

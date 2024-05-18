@@ -188,6 +188,6 @@ function UserRow({ user }) {
       )}
     </>
   );
-}
+} 
 
 export default UserRow;

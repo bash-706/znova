@@ -6,7 +6,7 @@ import { useUser } from '../features/authentication/useUser';
 
 const StyledAdminPanel = styled.div`
   display: flex;
-  height: 100vh;
+  height: fit-content;
 `;
 
 const StyledMain = styled.main`

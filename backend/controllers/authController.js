@@ -114,25 +114,25 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   if (!user.active) {
-    const verificationToken = user.createAccountVerificationToken();
-    const verificationURL = `http://localhost:5173/verify-account/${verificationToken}`;
-    await new Email(user, verificationURL).verifyEmail();
+    const activationToken = user.createAccountActivationToken();
+    const activationURL = `http://localhost:5173/activate-account/${activationToken}`;
+    await new Email(user, activationURL).activateAccount();
 
     return next(
       new AppError(
-        'Your account is no longer active. In order to activate your account, please click on the link we just sent to your email address.',
+        'Your account is no longer active. In order to activate your account, please click on the account activation link we just sent to your email address.',
       ),
     );
   }
 
   if (!user.isVerified) {
-    const verificationToken = user.createAccountVerificationToken();
+    const verificationToken = user.createAccountVerificationToken(true);
     const verificationURL = `http://localhost:5173/verify-account/${verificationToken}`;
     await new Email(user, verificationURL).verifyEmail();
 
     return next(
       new AppError(
-        'Your account has not been verified yet. Please check your email for a verification link.',
+        'Your account has not been verified yet. In order to verify your account, please click on the account verification link we just sent to your email address.',
         403,
       ),
     );
@@ -267,6 +267,27 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetExpires = undefined;
   user.passwordResetToken = undefined;
+  await user.save({ validateBeforeSave: false });
+  // 3. Update the passwordChangedAt property from the user document
+  // 4. Log the user in, send JWT
+  createSendToken(user, 200, res);
+});
+
+exports.activateAccount = catchAsync(async (req, res, next) => {
+  // 1. Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.activationToken)
+    .digest('hex');
+  const user = await User.findOne({
+    accountActivationToken: hashedToken,
+    accountActivationExpires: { $gt: Date.now() },
+  });
+  // 2. If token has not been expired and there's user, set the new password
+  if (!user) return next(new AppError('Token is invalid or has expired', 400));
+  user.active = true;
+  user.accountActivationExpires = undefined;
+  user.accountActivationToken = undefined;
   await user.save({ validateBeforeSave: false });
   // 3. Update the passwordChangedAt property from the user document
   // 4. Log the user in, send JWT

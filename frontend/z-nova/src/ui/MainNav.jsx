@@ -145,14 +145,14 @@ const dropdownServiceItems = [
     label: 'Cyber Security',
   },
   {
-    to: 'services?category=graphic-designing',
+    to: 'services?category=graphic-design',
     icon: <HiPhoto />,
-    label: 'Graphic Designing',
+    label: 'Graphic Design',
   },
 ];
 
 function MainNav() {
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(true);
+  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -216,7 +216,7 @@ function MainNav() {
           <li
             onMouseEnter={toggleServicesDropdown}
             onMouseLeave={() =>
-              setTimeout(() => setIsServicesDropdownOpen(false), 200)
+              setTimeout(() => setIsServicesDropdownOpen(false), 400)
             }
             className={isServicesDropdownOpen ? 'services-dropdown' : ''}
           >

@@ -18,6 +18,8 @@ const messageRouter = require('./routes/messageRoutes');
 const postRouter = require('./routes/postRoutes');
 const commentRouter = require('./routes/commentRoutes');
 const postCategoryRouter = require('./routes/postCategoryRoutes');
+const serviceCategoryRouter = require('./routes/serviceCategoryRoutes');
+
 const Email = require('./utils/email');
 
 const app = express();
@@ -81,6 +83,7 @@ app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/posts', postRouter);
 app.use('/api/v1/comments', commentRouter);
 app.use('/api/v1/post-categories', postCategoryRouter);
+app.use('/api/v1/service-categories', serviceCategoryRouter);
 
 app.post('/contact', async (req, res) => {
   const { name, email, subject, message } = req.body;

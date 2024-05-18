@@ -21,8 +21,9 @@ io.on("connection", (socket) => {
 
   // add message
   socket.on("sendMessage", (message) => {
+    console.log(onlineUsers);
     const user = onlineUsers.find((user) => {
-      user?.userId === message?.recipientId;
+      return user?.userId === message?.recipientId;
     });
     if (user) {
       io.to(user.socketId).emit("getMessage", message);

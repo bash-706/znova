@@ -61,6 +61,21 @@ export async function getOrder(orderId) {
   }
 }
 
+export async function getUserOrders(orderId) {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `http://127.0.0.1:8000/api/v1/users/${orderId}/orders`,
+      withCredentials: true,
+    });
+    const { data } = res.data.data;
+    return { data };
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+}
+
 export async function updateOrder(data, orderId) {
   try {
     const res = await axios({

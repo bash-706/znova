@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import Breadcrumbs from '../ui/Breadcrumbs';
 import { Link, useParams } from 'react-router-dom';
 import SuggestedPosts from '../ui/suggestedPosts';
-import parseJsonToHtml from '../utils/parseJsonToHtml';
 import CommentsContainer from '../features/comments/CommentsContainer';
 import { usePost } from '../features/posts/usePost';
 import Spinner from '../ui/Spinner';
@@ -38,7 +37,6 @@ function Article() {
   const { post, isLoading, error, isSuccess } = usePost(slug);
   const { posts } = usePosts('latest');
   const [breadcrumbsData, setBreadcrumbsData] = useState([]);
-  const [body, setBody] = useState(null);
 
   useEffect(() => {
     if (isSuccess) {
@@ -56,9 +54,12 @@ function Article() {
           link: `/blog/${post?.post?.slug}`,
         },
       ]);
-      setBody(parseJsonToHtml(post?.post?.body));
     }
   }, [isSuccess, post]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   if (isLoading)
     return (

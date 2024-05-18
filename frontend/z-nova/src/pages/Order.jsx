@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 
 import Heading from '../ui/Heading';
-// import ButtonGroup from '../ui/ButtonGroup';
 import Spinner from '../ui/Spinner';
-
-import { useMoveBack } from '../hooks/useMoveBack';
+import { useUser } from '../features/authentication/useUser';
 import { useOrder } from '../features/orders/useOrder';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import OrderDataBox from '../features/orders/OrderDataBox';
+import { useEffect } from 'react';
 // import Checkbox from '../ui/Checkbox';
 // import { formatCurrency } from '../utils/helpers';
 
@@ -26,50 +25,37 @@ const StyledOrder = styled.section`
 `;
 
 function Order() {
+  const navigate = useNavigate();
+  const { user } = useUser();
   const { orderId } = useParams();
   const { order, isLoading } = useOrder(orderId);
 
+  useEffect(() => {
+    if (
+      !isLoading &&
+      order &&
+      user?.role === 'user' &&
+      order?.data?.customer?._id !== user?._id
+    ) {
+      navigate('/home', { replace: true });
+    }
+  }, [isLoading, order, user, navigate]);
+
   if (isLoading) return <Spinner />;
 
-  const { _id, price, status, paid, createdAt, customer, service } =
-    order?.data;
-
-  return (
-    <StyledOrder>
-      <Heading as="h1" style={{ textAlign: 'center' }}>
-        Order Status
-      </Heading>
-      <OrderDataBox order={order} />
-
-      {/*
-      <Box>
-        <Checkbox
-          checked={confirmPaid}
-          onChange={() => setConfirmPaid((confirm) => !confirm)}
-          disabled={confirmPaid || isCheckingIn}
-          id="confirm"
-        >
-          I confirm that {guests.fullName} has paid the total amount of{' '}
-          {!addBreakfast
-            ? formatCurrency(totalPrice)
-            : `${formatCurrency(
-                totalPrice + optionalBreakfastPrice,
-              )} (${formatCurrency(totalPrice)} + ${formatCurrency(
-                optionalBreakfastPrice,
-              )})`}
-        </Checkbox>
-      </Box>
-
-      <ButtonGroup>
-        <Button onClick={handleCheckin} disabled={!confirmPaid || isCheckingIn}>
-          Check in booking #{bookingId}
-        </Button>
-        <Button variation="secondary" onClick={moveBack}>
-          Back
-        </Button>
-      </ButtonGroup> */}
-    </StyledOrder>
-  );
+  if (user?.role !== 'user' || order?.data?.customer?._id === user?._id) {
+    return (
+      <StyledOrder>
+        <Heading as="h1" style={{ textAlign: 'center' }}>
+          Order Status
+        </Heading>
+        <OrderDataBox order={order} />
+      </StyledOrder>
+    );
+  } else {
+    navigate('/home', { replace: true });
+    return null;
+  }
 }
 
 export default Order;

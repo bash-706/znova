@@ -32,9 +32,7 @@ export async function createPostCategory(data) {
 }
 
 export async function updatePostCategory(data, categoryId) {
-  console.log(data, categoryId);
   try {
-    console.log(data, categoryId);
     const res = await axios({
       method: 'PATCH',
       url: `${BASE_URL}/${categoryId}`,

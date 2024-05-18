@@ -1,19 +1,16 @@
 import Operations from '../../ui/Operations';
 import Filter from '../../ui/Filter';
 import SortBy from '../../ui/SortBy';
+import { useServiceCategories } from '../serviceCategories/useServiceCategories';
+import { categoriesToOptions } from '../../utils/multiSelectTagUtils';
 
 function ServiceOperations() {
+  const { serviceCategories } = useServiceCategories();
   return (
     <Operations>
       <Filter
         filterField="category"
-        options={[
-          { value: 'all', label: 'All' },
-          { value: 'web-development', label: 'Web Development' },
-          { value: 'app-development', label: 'App Development' },
-          { value: 'cyber-security', label: 'Cyber Security' },
-          { value: 'graphic-designing', label: 'Graphic Designing' },
-        ]}
+        options={categoriesToOptions(serviceCategories)}
       />
 
       <SortBy

@@ -4,9 +4,9 @@ const AppError = require('../utils/appError');
 
 exports.getAll = (Model, ...popOptions) =>
   catchAsync(async (req, res, next) => {
-    const filter = req.params.serviceId
-      ? { service: req.params.serviceId }
-      : {};
+    let filter = {};
+    if (req.params.serviceId) filter = { service: req.params.serviceId };
+    if (req.params.userId) filter = { customer: req.params.userId };
 
     // Executing Query
     const features = new APIFeatures(Model.find(filter), req.query)

@@ -65,13 +65,14 @@ const StyledSelect = styled.select`
 function SignupForm() {
   const [passwordShown, setPasswordShown] = useState(false);
   const [passwordConfirmShown, setPasswordConfirmShown] = useState(false);
-  const { signup, isLoading } = useSignup();
+  const { signup, status } = useSignup();
   const { register, formState, getValues, handleSubmit, reset } = useForm();
   const { errors } = formState;
   const [photo, setPhoto] = useState(null);
   const [avatarSrc, setAvatarSrc] = useState(
     'http://127.0.0.1:8000/users/default.jpg',
   );
+  const isLoading = status === 'pending';
 
   const togglePassword = () => {
     setPasswordShown((prevShown) => !prevShown);
@@ -241,7 +242,7 @@ function SignupForm() {
               value === getValues().password || 'Passwords need to match',
           })}
         />
-        {passwordShown ? (
+        {passwordConfirmShown ? (
           <HiEyeSlash
             onClick={togglePasswordConfirm}
             style={{

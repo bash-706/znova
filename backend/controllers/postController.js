@@ -94,10 +94,17 @@ exports.getPostBySlug = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllPosts = handleFactory.getAll(Post, {
-  path: 'user',
-  select: 'name username photo',
-});
+exports.getAllPosts = handleFactory.getAll(
+  Post,
+  {
+    path: 'user',
+    select: 'name username photo',
+  },
+  {
+    path: 'postCategory',
+    select: 'name',
+  },
+);
 
 exports.getPost = handleFactory.getOne(
   Post,
@@ -105,6 +112,7 @@ exports.getPost = handleFactory.getOne(
     path: 'user',
     select: 'name username photo',
   },
+  { path: 'postCategory' },
   {
     path: 'comments',
     match: {

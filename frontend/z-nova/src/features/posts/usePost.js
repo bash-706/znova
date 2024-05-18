@@ -10,7 +10,7 @@ export function usePost(slug) {
   } = useQuery({
     queryKey: ['post', slug],
     queryFn: async () => await getPost(slug),
-    retry: false,
+    retry: true,
   });
   return { post, isLoading, isSuccess, error };
 }

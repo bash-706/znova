@@ -1,46 +1,62 @@
 import { styled } from 'styled-components';
-import { useNavigate, useParams } from 'react-router-dom';
-import { verifyAccount } from '../services/apiAuth';
-import { useEffect } from 'react';
-import { useState } from 'react';
-// import { useVerify } from '../features/authentication/useVerify';
-// import Spinner from '../ui/Spinner';
+import { useParams } from 'react-router-dom';
+import { useVerify } from '../features/authentication/useVerify';
+import { useEffect, useState } from 'react';
+import Spinner from '../ui/Spinner';
 
 const StyledVerifyAccount = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
+  background-color: #f0f4f8;
+`;
+
+const MessageCard = styled.div`
+  padding: 20px 30px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  p {
+    margin: 0;
+  }
 `;
 
 function VerifyAccount() {
-  const navigate = useNavigate();
   const { token } = useParams();
-  //   const { verifyAccount, isLoading } = useVerify();
-  //   verifyAccount(token);
-  //   if (isLoading) return <Spinner />;
   const [message, setMessage] = useState('');
-  useEffect(
-    function () {
-      async function verify() {
-        const res = await verifyAccount(token);
-        if (res.status === 'success') {
-          setMessage(
-            'Account Verified Successfully. Now you can feel free to use our services.',
-          );
-          setTimeout(() => {
-            navigate('/home');
-          }, 2000);
-        } else {
-          setMessage('Account Verification Failed!');
-        }
-      }
-      verify();
-    },
-    [token, navigate],
-  );
+  const { verifyAccount, isLoading } = useVerify({
+    onSuccess: () => setMessage('Account Verified Successfully!'),
+    onError: () =>
+      setMessage(
+        'Account Verification Failed. Link is Invalid or has Expired.',
+      ),
+  });
 
-  return <StyledVerifyAccount>{message}</StyledVerifyAccount>;
+  useEffect(() => {
+    if (token) {
+      verifyAccount(token);
+    }
+  }, [verifyAccount, token]);
+
+  if (isLoading) return <Spinner />;
+
+  return (
+    <StyledVerifyAccount>
+      <MessageCard>
+        <h1>{message}</h1>
+      </MessageCard>
+    </StyledVerifyAccount>
+  );
 }
 
 export default VerifyAccount;

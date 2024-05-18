@@ -22,6 +22,22 @@ exports.hasplacedOrder = catchAsync(async (req, res, next) => {
   );
 });
 
+exports.getUserReviews = catchAsync(async (req, res, next) => {
+  const filter = { user: req.params.userId };
+
+  const docs = await Review.find(filter).populate({
+    path: 'service',
+    select: 'name imageCover',
+  });
+  res.status(200).json({
+    status: 'success',
+    totalDocs: docs.length,
+    data: {
+      data: docs,
+    },
+  });
+});
+
 exports.getAllReviews = handleFactory.getAll(
   Review,
   {

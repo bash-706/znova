@@ -10,9 +10,10 @@ const StyledDropdown = styled.ul`
   background: var(--color-grey-0);
   padding: 1rem;
   width: auto;
-  top: 5.5rem;
+  top: 5rem;
   padding-right: 1rem;
   border-radius: 0 0 1rem 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
   & li {
     padding: 1rem;
@@ -29,14 +30,15 @@ const StyledDropdown = styled.ul`
     height: 2rem;
     transition: all 0.3s;
   }
+
+  a:hover,
+  a:hover svg {
+    color: var(--color-brand-600);
+  }
 `;
 
 const Dropdown = forwardRef(({ items }, ref) => {
   const { logout } = useLogout();
-
-  // if (!isOpen) {
-  //   return null;
-  // }
 
   return (
     <StyledDropdown ref={ref}>

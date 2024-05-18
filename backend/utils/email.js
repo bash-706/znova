@@ -57,6 +57,10 @@ module.exports = class Email {
     await this.send('reset', 'Reset Your Password');
   }
 
+  async activateAccount() {
+    await this.send('activate', 'Activate Your Account');
+  }
+
   async sendContactEmail(name, email, subject, message) {
     const html = pug.renderFile(`${__dirname}/../views/emails/contact.pug`, {
       name,

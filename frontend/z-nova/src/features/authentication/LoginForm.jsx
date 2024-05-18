@@ -19,7 +19,7 @@ const StyledLink = styled(Link)`
 
 function LoginForm() {
   const [passwordShown, setPasswordShown] = useState(false);
-  const { login, isLoading } = useLogin();
+  const { login, status } = useLogin();
 
   const togglePassword = () => {
     setPasswordShown((prevShown) => !prevShown);
@@ -54,7 +54,7 @@ function LoginForm() {
           {...register('email_username', {
             required: 'This field is required',
           })}
-          disabled={isLoading}
+          disabled={status === 'pending'}
         />
       </FormRow>
       <FormRow
@@ -68,7 +68,7 @@ function LoginForm() {
           id="password"
           autoComplete="current-password"
           {...register('password', { required: 'This field is required' })}
-          disabled={isLoading}
+          disabled={status === 'pending'}
         />
         {passwordShown ? (
           <HiEyeSlash
@@ -103,8 +103,12 @@ function LoginForm() {
         Forgot Password?
       </StyledLink>
       <FormRow orientation="vertical">
-        <Button size="large" style={{ width: '100%' }} disabled={isLoading}>
-          {!isLoading ? 'Login' : <SpinnerMini />}
+        <Button
+          size="large"
+          style={{ width: '100%' }}
+          disabled={status === 'pending'}
+        >
+          {status === 'pending' ? <SpinnerMini /> : 'Login'}
         </Button>
       </FormRow>
       <Paragraph size="small">

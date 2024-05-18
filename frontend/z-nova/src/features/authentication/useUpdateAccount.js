@@ -14,6 +14,7 @@ export function useUpdateAccount() {
       country,
       photo,
       skills,
+      languages,
       biodata,
     }) => {
       const formData = new FormData();
@@ -23,6 +24,7 @@ export function useUpdateAccount() {
       formData.append('country', country);
       formData.append('photo', photo);
       formData.append('skills', skills);
+      formData.append('languages', languages);
       formData.append('biodata', biodata);
       await updateAccountApi(formData, 'data');
     },

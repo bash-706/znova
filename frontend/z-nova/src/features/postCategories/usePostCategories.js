@@ -8,7 +8,7 @@ export function usePostCategories() {
     error,
   } = useQuery({
     queryKey: ['postCategories'],
-    queryFn: async () => await postCategoriesApi(''),
+    queryFn: async () => await postCategoriesApi(),
     retry: false,
   });
 

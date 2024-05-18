@@ -1,8 +1,11 @@
 const express = require('express');
 const userController = require('../controllers/userController');
 const authController = require('../controllers/authController');
+const orderRouter = require('./orderRoutes');
 
 const router = express.Router();
+
+router.use('/:userId/orders', orderRouter);
 
 router.post(
   '/auth/signup',
@@ -15,6 +18,10 @@ router.get('/get-user', authController.isLoggedIn);
 router.get('/logout', authController.logout);
 
 router.post('/verify-account/:verificationToken', authController.verifyAccount);
+router.post(
+  '/activate-account/:activationToken',
+  authController.activateAccount,
+);
 router.post('/auth/login', authController.login);
 router.post('/forgot-password', authController.forgotPassword);
 router.patch('/reset-password/:resetToken', authController.resetPassword);
@@ -31,21 +38,22 @@ router.patch(
 );
 router.delete('/delete-account', userController.deleteAccount);
 
-router.use(authController.restrictTo('admin'));
+// router.use(authController.restrictTo('admin'));
 
 router
   .route('/')
-  .get(userController.getAllUsers)
-  .post(userController.createUser);
+  .get(authController.restrictTo('admin'), userController.getAllUsers)
+  .post(authController.restrictTo('admin'), userController.createUser);
 router
   .route('/:id')
   .get(userController.getUser)
   .patch(
+    authController.restrictTo('admin'),
     userController.uploadUserPhoto,
     userController.resizeUserPhoto,
     userController.setPhoto,
     userController.updateUser,
   )
-  .delete(userController.deleteUser);
+  .delete(authController.restrictTo('admin'), userController.deleteUser);
 
 module.exports = router;

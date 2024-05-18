@@ -37,11 +37,13 @@ import AdminNewPost from './ui/AdminNewPost';
 import AdminOrders from './ui/AdminOrders';
 import AdminUsers from './ui/AdminUsers';
 import AdminPostCategories from './ui/AdminPostCategories';
+import AdminServiceCategories from './ui/AdminServiceCategories';
 import AdminNewService from './ui/AdminNewService';
 import AdminManageServices from './ui/AdminManageServices';
 import AdminEditPost from './ui/AdminEditPost';
 import AdminReviews from './ui/AdminReviews';
 import Dashboard from './pages/Dashboard';
+import ActivateAccount from './pages/ActivateAccount';
 
 const StyledApp = styled.div`
   height: 100vh;
@@ -99,6 +101,10 @@ function App() {
                 path="/verify-account/:token"
                 element={<VerifyAccount />}
               />
+              <Route
+                path="/activate-account/:token"
+                element={<ActivateAccount />}
+              />
               <Route path="forgot-password" element={<ForgotPassword />} />
               <Route
                 path="reset-password/:resetToken"
@@ -115,7 +121,14 @@ function App() {
                 <Route path="posts/edit/:slug" element={<AdminEditPost />} />
                 <Route path="services/new" element={<AdminNewService />} />
                 <Route path="services" element={<AdminManageServices />} />
-                <Route path="categories" element={<AdminPostCategories />} />
+                <Route
+                  path="post-categories"
+                  element={<AdminPostCategories />}
+                />
+                <Route
+                  path="service-categories"
+                  element={<AdminServiceCategories />}
+                />
               </Route>
               <Route path="*" element={<PageNotFound />} />
             </Routes>

@@ -4,12 +4,13 @@ import FileInput from '../../ui/FileInput';
 import Form from '../../ui/Form';
 import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
-
+import { fieldsToOption } from '../../utils/multiSelectTagUtils';
 import { useUser } from './useUser';
 import styled from 'styled-components';
 import { useUpdateAccount } from './useUpdateAccount';
 import TextArea from '../../ui/TextArea';
 import countryOptions from '../../utils/countryOptions';
+import CreatableSelectInput from '../../ui/CreatableSelect';
 
 const FormUserPhotoContainer = styled.div`
   width: 12rem;
@@ -63,6 +64,7 @@ function UpdateUserDataForm() {
     biodata: currentBio,
     country: currentCountry,
     skills: currentSkills,
+    languages: currentLanguages,
     role,
   } = user;
 
@@ -72,6 +74,7 @@ function UpdateUserDataForm() {
   const [biodata, setBiodata] = useState(currentBio);
   const [photo, setPhoto] = useState(currentPhoto);
   const [skills, setSkills] = useState(currentSkills || []);
+  const [languages, setLanguages] = useState(currentLanguages || []);
   const [country, setCountry] = useState(currentCountry);
   const [avatarSrc, setAvatarSrc] = useState(
     `http://127.0.0.1:8000/users/${currentPhoto}`,
@@ -80,9 +83,42 @@ function UpdateUserDataForm() {
   function handleSubmit(e) {
     e.preventDefault();
 
+    console.log(skills, languages);
+    console.log(typeof skills, typeof languages);
+
+    let skillsJSON;
+    if (typeof skills === 'string') {
+      const skillsArray = skills.split(',').map((skill) => skill.trim());
+      const filteredSkillsArray = skillsArray.filter((skill) => skill);
+      skillsJSON = JSON.stringify(filteredSkillsArray);
+    } else {
+      skillsJSON = JSON.stringify(skills);
+    }
+
+    let languagesJSON;
+    if (typeof languages === 'string') {
+      const languagesArray = languages.split(',').map((lang) => lang.trim());
+      const filteredlanguagesArray = languagesArray.filter((lang) => lang);
+      languagesJSON = JSON.stringify(filteredlanguagesArray);
+    } else {
+      languagesJSON = JSON.stringify(languages);
+    }
+
+    console.log(skillsJSON, languagesJSON);
+    console.log(typeof skillsJSON, typeof languagesJSON);
+
     // if (!name || !email || !username || !country || !photo || !biodata) return;
     updateAccount(
-      { name, email, username, country, photo, biodata, skills },
+      {
+        name,
+        email,
+        username,
+        country,
+        photo,
+        biodata,
+        skills: skillsJSON,
+        languages: languagesJSON,
+      },
       {
         onSuccess: () => {
           setPhoto(null);
@@ -112,6 +148,8 @@ function UpdateUserDataForm() {
     setPhoto(currentPhoto);
     setAvatarSrc(`http://127.0.0.1:8000/users/${currentPhoto}`);
     setCountry(currentCountry);
+    setSkills(fieldsToOption(currentSkills));
+    setLanguages(fieldsToOption(currentLanguages));
   }
 
   return (
@@ -184,30 +222,60 @@ function UpdateUserDataForm() {
       </FormRow>
 
       {!(role === 'user') && (
-        <FormRow label="Bio">
-          <TextArea
-            type="text"
-            value={biodata}
-            onChange={(e) => setBiodata(e.target.value)}
-            id="biodata"
-            disabled={isUpdating}
-            style={{ resize: 'none' }}
-            rows="4"
-          />
-        </FormRow>
+        <>
+          <FormRow label="Bio">
+            <TextArea
+              type="text"
+              value={biodata}
+              onChange={(e) => setBiodata(e.target.value)}
+              id="biodata"
+              disabled={isUpdating}
+              style={{ resize: 'none' }}
+              rows="4"
+            />
+          </FormRow>
+
+          <FormRow label="Skills">
+            {/* <Input
+              type="text"
+              value={skills}
+              onChange={(e) => setSkills(e.target.value)}
+              id="skills"
+              disabled={isUpdating}
+              placeholder="Enter your skills"
+            /> */}
+            <CreatableSelectInput
+              defaultValue={fieldsToOption(currentSkills)}
+              isMulti
+              value={skills.map((skill) => ({ label: skill, value: skill }))}
+              onChange={(newValue) =>
+                setSkills(newValue.map((skill) => skill.value))
+              }
+              disabled={isUpdating}
+            />
+          </FormRow>
+
+          <FormRow label="Languages">
+            {/* <Input
+              type="text"
+              value={languages}
+              onChange={(e) => setLanguages(e.target.value)}
+              id="languages"
+              disabled={isUpdating}
+              placeholder="Enter your languages"
+            /> */}
+            <CreatableSelectInput
+              defaultValue={fieldsToOption(currentLanguages)}
+              isMulti
+              value={languages.map((lang) => ({ label: lang, value: lang }))}
+              onChange={(newValue) =>
+                setLanguages(newValue.map((lang) => lang.value))
+              }
+              disabled={isUpdating}
+            />
+          </FormRow>
+        </>
       )}
-
-      <FormRow label="Skills">
-        <Input
-          type="text"
-          value={skills}
-          onChange={(e) => setSkills(e.target.value)}
-          id="skills"
-          disabled={isUpdating}
-          placeholder="Enter your skills"
-        />
-      </FormRow>
-
       <FormRow>
         <Button
           type="button"

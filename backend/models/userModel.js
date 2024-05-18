@@ -50,6 +50,7 @@ const userSchema = new mongoose.Schema({
   },
   languages: {
     type: [String],
+    maxlength: [5, 'User can only add upto 5 languages'],
   },
   country: {
     type: String,
@@ -59,6 +60,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true,
     maxlength: [250, 'A bio must not exceed 250 chracters'],
+    default: '',
   },
   skills: {
     type: [String],
@@ -94,6 +96,8 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   accountVerificationToken: String,
   accountVerificationExpires: Date,
+  accountActivationToken: String,
+  accountActivationExpires: Date,
   createdAt: Date,
 });
 
@@ -138,13 +142,19 @@ userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   return false;
 };
 
-userSchema.methods.createAccountVerificationToken = function () {
+userSchema.methods.createAccountVerificationToken = function (
+  saveToDatabase = false,
+) {
   const verificationToken = crypto.randomBytes(32).toString('hex');
   this.accountVerificationToken = crypto
     .createHash('sha256')
     .update(verificationToken)
     .digest('hex');
   this.accountVerificationExpires = Date.now() + 24 * 60 * 60 * 1000;
+  if (saveToDatabase) {
+    this.save({ validateBeforeSave: false });
+  }
+
   return verificationToken;
 };
 
@@ -156,6 +166,17 @@ userSchema.methods.createPasswordResetToken = function () {
     .digest('hex');
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   return resetToken;
+};
+
+userSchema.methods.createAccountActivationToken = function () {
+  const activationToken = crypto.randomBytes(32).toString('hex');
+  this.accountActivationToken = crypto
+    .createHash('sha256')
+    .update(activationToken)
+    .digest('hex');
+  this.accountActivationExpires = Date.now() + 24 * 60 * 60 * 1000;
+  this.save({ validateBeforeSave: false });
+  return activationToken;
 };
 
 const User = mongoose.model('User', userSchema);

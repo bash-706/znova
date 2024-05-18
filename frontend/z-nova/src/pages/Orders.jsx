@@ -2,7 +2,9 @@ import Row from '../ui/Row';
 import OrderTable from '../features/orders/AccountOrderTable';
 import styled from 'styled-components';
 import Heading from '../ui/Heading';
-import { useOrders } from '../features/orders/useOrders';
+import { useUserOrders } from '../features/orders/useUserOrders';
+import { useUser } from '../features/authentication/useUser';
+import Spinner from '../ui/Spinner';
 
 const StyledOrders = styled.main`
   display: grid;
@@ -25,7 +27,11 @@ const StyledImage = styled.img`
 `;
 
 function Orders() {
-  const { isLoading, orders } = useOrders();
+  const { user } = useUser();
+  const { isLoading, orders } = useUserOrders(user?._id);
+
+  if (isLoading) return <Spinner />;
+
   return (
     <>
       {orders?.data?.length > 0 ? (
