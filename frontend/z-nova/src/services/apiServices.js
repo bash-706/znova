@@ -57,6 +57,34 @@ export async function getService(slug) {
   }
 }
 
+export async function createService(data) {
+  try {
+    const res = await axios({
+      method: 'POST',
+      url: `${BASE_URL}`,
+      data,
+      withCredentials: true,
+    });
+    return res.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function updateService(data, serviceId) {
+  try {
+    const res = await axios({
+      method: 'PATCH',
+      url: `${BASE_URL}/${serviceId}`,
+      data,
+      withCredentials: true,
+    });
+    return res?.data;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
 export async function deleteService(serviceId) {
   try {
     const res = await axios({

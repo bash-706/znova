@@ -6,10 +6,11 @@ export function useService(slug) {
     isLoading,
     data: service,
     error,
+    isSuccess,
   } = useQuery({
     queryKey: ['service'],
     queryFn: async () => await getService(slug),
     retry: false,
   });
-  return { service, isLoading, error };
+  return { service, isLoading, error, isSuccess };
 }

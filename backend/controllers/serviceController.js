@@ -92,10 +92,17 @@ exports.getServiceBySlug = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllServices = handleFactory.getAll(Service, {
-  path: 'user',
-  select: 'name username photo',
-});
+exports.getAllServices = handleFactory.getAll(
+  Service,
+  {
+    path: 'user',
+    select: 'name username photo',
+  },
+  {
+    path: 'serviceCategory',
+    select: 'name',
+  },
+);
 exports.getService = handleFactory.getOne(
   Service,
   { path: 'reviews' },

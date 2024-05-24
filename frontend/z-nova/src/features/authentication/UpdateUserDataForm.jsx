@@ -236,14 +236,6 @@ function UpdateUserDataForm() {
           </FormRow>
 
           <FormRow label="Skills">
-            {/* <Input
-              type="text"
-              value={skills}
-              onChange={(e) => setSkills(e.target.value)}
-              id="skills"
-              disabled={isUpdating}
-              placeholder="Enter your skills"
-            /> */}
             <CreatableSelectInput
               defaultValue={fieldsToOption(currentSkills)}
               isMulti
@@ -256,14 +248,6 @@ function UpdateUserDataForm() {
           </FormRow>
 
           <FormRow label="Languages">
-            {/* <Input
-              type="text"
-              value={languages}
-              onChange={(e) => setLanguages(e.target.value)}
-              id="languages"
-              disabled={isUpdating}
-              placeholder="Enter your languages"
-            /> */}
             <CreatableSelectInput
               defaultValue={fieldsToOption(currentLanguages)}
               isMulti

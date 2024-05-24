@@ -5,6 +5,7 @@ function AsyncSelectInput({
   loadOptions,
   isMulti,
   onChange,
+  placeholder,
   value,
   styles,
 }) {
@@ -13,6 +14,7 @@ function AsyncSelectInput({
       defaultValue={defaultValue}
       defaultOptions={true}
       isMulti={isMulti}
+      placeholder={placeholder}
       loadOptions={loadOptions}
       onChange={onChange}
       value={value}

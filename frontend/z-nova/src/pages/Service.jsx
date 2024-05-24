@@ -5,28 +5,27 @@ import Spinner from '../ui/Spinner';
 import Heading from '../ui/Heading';
 import styled from 'styled-components';
 import Row from '../ui/Row';
-import { useMoveBack } from '../hooks/useMoveBack';
 import { useCreateChat } from '../features/chats/useCreateChat';
 import { useUser } from '../features/authentication/useUser';
 import {
   HiChatBubbleOvalLeft,
   HiMapPin,
-  HiMiniArrowLeft,
   HiOutlineArrowPath,
   HiOutlineClock,
   HiOutlineSparkles,
 } from 'react-icons/hi2';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 import ReviewForm from '../features/reviews/ReviewForm';
 import ReviewList from '../features/reviews/ReviewList';
 import Carousel from '../ui/Carousel';
+import Breadcrumbs from '../ui/Breadcrumbs';
 
 const StyledLayout = styled.div`
   display: grid;
   grid-template-columns: 1fr 40rem;
   padding: 6.4rem 4.8rem 6.4rem;
-  gap: 8rem;
+  gap: 5rem;
 `;
 
 const StyledService = styled.section`
@@ -108,14 +107,12 @@ const StyledPackages = styled.div`
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   background: var(--color-grey-0);
   height: fit-content;
   border-radius: 1rem;
   box-shadow: var(--shadow-md);
   border: 1px solid var(--color-grey-200);
-  position: sticky;
-  top: 0;
 `;
 
 const StyledTabItem = styled.div`
@@ -123,12 +120,11 @@ const StyledTabItem = styled.div`
   border: none;
 
   &.tab {
-    /* border: 1px solid var(--color-grey-900); */
     border-radius: 1rem;
     background-color: var(--color-grey-0);
     padding: 1rem 2rem;
-    font-size: 1.6rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 500;
     color: var(--color-grey-500);
     transition: all 0.3s;
   }
@@ -136,7 +132,7 @@ const StyledTabItem = styled.div`
   &.tab.active,
   &.tab:hover {
     background-color: var(--color-brand-500);
-    color: var(--color-grey-0);
+    color: #fff;
   }
 `;
 
@@ -157,95 +153,78 @@ const Review = styled.div`
   padding: 4rem;
 `;
 
+const Center = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+`;
+
 function Service() {
+  const [breadcrumbsData, setBreadcrumbsData] = useState([]);
   const { user } = useUser();
   const { createChat } = useCreateChat();
-  const moveBack = useMoveBack();
   const { slug } = useParams();
-  const { service, isLoading, error } = useService(slug);
-  if (isLoading) return <Spinner />;
-  if (error) return <Row type="center">{error.message}</Row>;
+  const { service, isLoading, error, isSuccess } = useService(slug);
   const slides = [];
   service?.images?.map((image) => {
     slides.push({ src: `http://127.0.0.1:8000/services/${image}` });
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      setBreadcrumbsData([
+        {
+          name: 'Home',
+          link: '/',
+        },
+        {
+          name: 'Services',
+          link: '/services',
+        },
+        {
+          name: `${service?.name}`,
+          link: `/services/${service?.slug}`,
+        },
+      ]);
+    }
+  }, [isSuccess, service]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  if (isLoading)
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
+
+  if (error)
+    return (
+      <Center>
+        <p>{error?.message}</p>
+      </Center>
+    );
   return (
     <StyledLayout>
       <StyledService>
         <StyledOverview>
-          <div>
-            <Button
-              size="small"
-              variation="primary"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                marginBottom: '2rem',
-              }}
-              onClick={moveBack}
-            >
-              <HiMiniArrowLeft style={{ fontSize: '2rem' }} />
-              Go Back
-            </Button>
-
-            <Heading as="h1" style={{ textAlign: 'justify' }}>
-              {service?.name}
-            </Heading>
-          </div>
+          <Breadcrumbs data={breadcrumbsData} padding={'0rem'} />
           <Carousel slides={slides} />
+          <Heading as="h1" style={{ textAlign: 'justify' }}>
+            {service?.name}
+          </Heading>
           {/* <img */}
         </StyledOverview>
         <StyledDescription>
           <Heading as="h2">Description</Heading>
-          {/* {service?.description} */}
-          <p dangerouslySetInnerHTML={{ __html: service?.description }} />
           <p>
-            I am a passionate MERN stack web developer who can help you design
-            and develop stunning, responsive and extremely fast web applications
-            using the modern technologies.
-          </p>
-          <p>I will:</p>
-          <ul>
-            <li>
-              Develop the API using the MVC architecture and Restful API
-              structure.
-            </li>
-            <li>
-              Carefully model the data and connect all the data sets according
-              to all the good practices.
-            </li>{' '}
-            <li>
-              Implement error handling, authentication, authorization, security,
-              performance and much more in your API.
-            </li>{' '}
-            <li>
-              Carefully choose the personality of your website and implement all
-              the design ingredients accordingly.
-            </li>{' '}
-            <li>
-              Consciously determine the layout components and structure them in
-              a well mannered way according to the UI/UX.
-            </li>{' '}
-            <li>
-              Deliberately manage state and build the UI using API according to
-              the web design.
-            </li>{' '}
-            <li>
-              Make the web app responsive and Search Engine Optimization ( SEO )
-              based.
-            </li>
-          </ul>
-          <p>
-            So what are you waiting for, place the order and get your MERN stack
-            web application developed now.
-          </p>{' '}
-          <p>
-            Kindly discuss your project before placing the order.
-            <p>Regards</p>
-            <br />
-            <span style={{ fontWeight: '500' }}>Adnan Chaudhary</span>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+            Consequuntur vel earum tempore distinctio eos quos culpa in porro
+            nulla quisquam, inventore at perspiciatis deleniti incidunt
+            reprehenderit? Nihil doloribus assumenda molestias.
           </p>
         </StyledDescription>
         <StyledCardUser>
@@ -267,8 +246,8 @@ function Service() {
                   <HiChatBubbleOvalLeft />
                   <span>
                     I speak{' '}
-                    {service.user?.languages.map(
-                      (lang) => lang[0].toUpperCase() + lang.slice(1) + ', ',
+                    {service?.user?.languages?.map(
+                      (lang) => lang[0]?.toUpperCase() + lang?.slice(1) + ', ',
                     )}
                   </span>
                 </StyledItem>
@@ -301,24 +280,26 @@ function Service() {
           gap: '1rem',
         }}
       >
-        <StyledPackages>
-          <Tab contents={service?.packages} serviceId={service._id} />
-        </StyledPackages>
-        <Button
-          style={{
-            boxShadow: 'var(--shadow-md)',
-            border: '1px solid var(--color-grey-200)',
-            position: 'sticky',
-            top: '36rem',
-          }}
-          size="medium"
-          variation="secondary"
-          onClick={() =>
-            createChat({ user1: user?._id, user2: service?.user?._id })
-          }
-        >
-          Contact {service?.user?.name.split(' ')[0]}
-        </Button>{' '}
+        <div style={{ position: 'sticky', width: '100%', top: 0 }}>
+          <StyledPackages>
+            <Tab contents={service?.packages} serviceId={service._id} />
+          </StyledPackages>
+          <Button
+            style={{
+              boxShadow: 'var(--shadow-md)',
+              border: '1px solid var(--color-grey-200)',
+              width: '100%',
+              marginTop: '1rem',
+            }}
+            size="medium"
+            variation="secondary"
+            onClick={() =>
+              createChat({ user1: user?._id, user2: service?.user?._id })
+            }
+          >
+            Contact {service?.user?.name.split(' ')[0]}
+          </Button>
+        </div>
       </div>
     </StyledLayout>
   );
@@ -369,10 +350,10 @@ function TabContent({ item, serviceId }) {
         padding: '0 1.6rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '2rem',
+        gap: '1.8rem',
       }}
     >
-      <h2 style={{ fontSize: '3.2rem', fontWeight: '600' }}>${item.price}</h2>
+      <h2 style={{ fontSize: '3rem', fontWeight: '600' }}>${item.price}</h2>
       <p style={{ color: 'var(--color-grey-700)' }}>
         <span
           style={{
@@ -422,7 +403,13 @@ function TabContent({ item, serviceId }) {
         </div>
       </div>
       <Button
-        style={{ display: 'block', textAlign: 'center', fontWeight: '600' }}
+        style={{
+          display: 'block',
+          textAlign: 'center',
+          fontWeight: '500',
+          cursor: 'pointer',
+          marginTop: '1rem',
+        }}
         as="primary"
         onClick={handleSession}
       >

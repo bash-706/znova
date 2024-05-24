@@ -5,9 +5,10 @@ import { HiChevronDoubleRight } from 'react-icons/hi2';
 const StyledBreadCrumbs = styled.div`
   display: flex;
   align-items: center;
-  padding: 3rem 0;
+  padding: ${(props) => props.padding};
   overflow-x: auto;
   white-space: nowrap;
+  overflow-y: hidden;
 `;
 
 const StyledContainer = styled.div`
@@ -15,9 +16,9 @@ const StyledContainer = styled.div`
   opacity: 50%;
 `;
 
-function Breadcrumbs({ data }) {
+function Breadcrumbs({ data, padding = '3rem 0rem' }) {
   return (
-    <StyledBreadCrumbs>
+    <StyledBreadCrumbs padding={padding}>
       {data.map((item, index) => (
         <StyledContainer key={index}>
           <Link to={item.link}>{item.name}</Link>

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const Comment = require('./commentModel');
 
 const postSchema = new mongoose.Schema(
   {
@@ -43,7 +44,7 @@ const postSchema = new mongoose.Schema(
   },
 );
 
-// postSchema.index({ slug: 1 }, { unique: true });
+postSchema.index({ slug: 1 }, { unique: true });
 
 postSchema.virtual('comments', {
   ref: 'Comment',
@@ -52,10 +53,6 @@ postSchema.virtual('comments', {
 });
 
 postSchema.pre('save', async function (next) {
-  if (this.isNew) {
-    this.createdAt = Date.now();
-  }
-
   this.slug = slugify(this.title, {
     lower: true,
   });
@@ -83,7 +80,11 @@ postSchema.pre('findOneAndUpdate', async function (next) {
       update.category = postCategory.slug;
     }
   }
+  next();
+});
 
+postSchema.pre('remove', async function (next) {
+  await Comment.deleteMany({ post: this._id });
   next();
 });
 

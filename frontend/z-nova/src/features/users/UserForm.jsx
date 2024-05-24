@@ -30,6 +30,7 @@ const StyledSelect = styled.select`
   border-radius: var(--border-radius-sm);
   box-shadow: var(--shadow-sm);
   padding: 0.8rem 1.2rem;
+  width: 100%;
 `;
 
 function UserForm({
@@ -57,7 +58,9 @@ function UserForm({
 
   return (
     <Form onSubmit={handleSubmit(submit)}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+      <div
+        style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}
+      >
         <FormRow
           label="Name"
           error={errors?.name?.message}
@@ -66,7 +69,7 @@ function UserForm({
           <Input
             type="text"
             id="name"
-            style={{ padding: '0.8rem 1.2rem' }}
+            style={{ padding: '0.8rem 1.2rem', width: '100%' }}
             {...register('name', {
               required: 'This field is required',
             })}
@@ -84,7 +87,7 @@ function UserForm({
             type="text"
             id="username"
             {...register('username', { required: 'This field is required' })}
-            style={{ padding: '0.8rem 1.2rem' }}
+            style={{ padding: '0.8rem 1.2rem', width: '100%' }}
             disabled={isLoading}
             defaultValue={user?.username}
           />
@@ -99,7 +102,7 @@ function UserForm({
             type="email"
             id="email"
             {...register('email', { required: 'This field is required' })}
-            style={{ padding: '0.8rem 1.2rem' }}
+            style={{ padding: '0.8rem 1.2rem', width: '100%' }}
             disabled={isLoading}
             defaultValue={user?.email}
           />

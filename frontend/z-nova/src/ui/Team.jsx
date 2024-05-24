@@ -86,7 +86,7 @@ const teamMembers = [
   {
     name: 'Ahsan Nadeem',
     position: 'Web Engineer',
-    image: './1694950956441 - 2.jpg',
+    image: './member-2.jpg',
     socialLinks: [
       { icon: FaFacebook, link: '' },
       { icon: FaInstagram, link: '' },

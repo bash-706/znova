@@ -89,6 +89,8 @@ const StyledCategory = styled.span`
   font-weight: 500;
   font-size: 1.5rem;
   color: var(--color-grey-600);
+  display: inline-block;
+  margin: 0.4rem 0 1rem;
 `;
 
 const StyledCardInfo = styled.div`
@@ -158,16 +160,6 @@ function ServiceCard({ service }) {
               Starting From ${service?.packages[0]?.price}
             </StyledCardPrice>
           </StyledCardInfo>
-          {/* <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0.6rem 0',
-            }}
-          > */}
-
-          {/* </div> */}
         </StyledCardBody>
       </Link>
     </StyledCard>

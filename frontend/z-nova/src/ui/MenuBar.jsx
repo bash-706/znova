@@ -9,12 +9,14 @@ import {
   AiOutlineUndo,
   AiOutlineUnorderedList,
 } from 'react-icons/ai';
+import { BsImage } from 'react-icons/bs';
 import { BiParagraph } from 'react-icons/bi';
 import { FiCode } from 'react-icons/fi';
 import { MdOutlineLayersClear } from 'react-icons/md';
 import { PiCodeBlock, PiQuotes } from 'react-icons/pi';
 import { TbSpacingVertical } from 'react-icons/tb';
 import styled from 'styled-components';
+import { useRef } from 'react';
 
 const StyledContainer = styled.div`
   border: 1px solid #000;
@@ -38,9 +40,23 @@ const StyledContainer = styled.div`
 `;
 
 const MenuBar = ({ editor }) => {
+  const fileInputRef = useRef(null);
+
   if (!editor) {
     return null;
   }
+
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const url = e.target.result;
+        editor.chain().focus().setImage({ src: url }).run();
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <StyledContainer>
@@ -207,6 +223,19 @@ const MenuBar = ({ editor }) => {
       >
         <AiOutlineRedo />
       </button>
+      <button
+        onClick={() => fileInputRef.current.click()}
+        className="editor-btn"
+      >
+        <BsImage />
+      </button>
+      <input
+        type="file"
+        accept="image/*"
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+        onChange={handleImageUpload}
+      />
     </StyledContainer>
   );
 };

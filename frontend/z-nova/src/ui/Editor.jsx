@@ -2,13 +2,15 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import 'highlight.js/styles/atom-one-dark.css';
 import MenuBar from './MenuBar';
 import { extensions } from '../utils/tiptapExtensions';
-// import '../styles/GlobalStyles';
 
 const Editor = ({ onDataChange, content, editable }) => {
   const editor = useEditor({
     editable,
     extensions: extensions,
     editorProps: {
+      attributes: {
+        style: 'width: 100%; min-height: 22rem; border: none; outline: none;',
+      },
       style: {
         width: '100%',
         position: 'relative',
@@ -42,7 +44,18 @@ const Editor = ({ onDataChange, content, editable }) => {
       }}
     >
       {editable && <MenuBar editor={editor} />}
-      <EditorContent editor={editor} />
+      <EditorContent
+        editor={editor}
+        style={
+          editable
+            ? {
+                border: '1px solid var(--color-grey-300)',
+                borderRadius: 'var(--border-radius-sm)',
+                padding: '0.8rem 1.2rem',
+              }
+            : {}
+        }
+      />
     </div>
   );
 };

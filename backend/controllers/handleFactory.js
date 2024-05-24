@@ -65,6 +65,10 @@ exports.getOne = (Model, ...popOptions) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (req.body.body) {
+      req.body.body = JSON.parse(req.body.body);
+    }
+
     const doc = await Model.create(req.body);
     res.status(200).json({
       status: 'success',

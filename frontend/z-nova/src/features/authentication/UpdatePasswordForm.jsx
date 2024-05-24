@@ -5,12 +5,28 @@ import FormRow from '../../ui/FormRow';
 import Input from '../../ui/Input';
 
 import { useUpdatePassword } from './useUpdatePassword';
+import { useState } from 'react';
+import { HiEye, HiEyeSlash } from 'react-icons/hi2';
 
 function UpdatePasswordForm() {
+  const [passwordShown, setPasswordShown] = useState(false);
+  const [confirmPasswordShown, setConfirmPasswordShown] = useState(false);
+  const [newPasswordShown, setNewPasswordShown] = useState(false);
   const { register, handleSubmit, formState, getValues, reset } = useForm();
+  const { updatePassword, isUpdating } = useUpdatePassword();
   const { errors } = formState;
 
-  const { updatePassword, isUpdating } = useUpdatePassword();
+  const togglePassword = () => {
+    setPasswordShown((prevShown) => !prevShown);
+  };
+
+  const toggleConfirmPassword = () => {
+    setConfirmPasswordShown((prevShown) => !prevShown);
+  };
+
+  const toggleNewPassword = () => {
+    setNewPasswordShown((prevShown) => !prevShown);
+  };
 
   function onSubmit({ currentPassword, password, passwordConfirm }) {
     if (!currentPassword || !password || !passwordConfirm) return;
@@ -26,7 +42,7 @@ function UpdatePasswordForm() {
         error={errors?.currentPassword?.message}
       >
         <Input
-          type="password"
+          type={passwordShown ? 'text' : 'password'}
           id="currentPassword"
           autoComplete="current-password"
           disabled={isUpdating}
@@ -38,6 +54,31 @@ function UpdatePasswordForm() {
             // },
           })}
         />
+        {passwordShown ? (
+          <HiEyeSlash
+            onClick={togglePassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '0rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <HiEye
+            onClick={togglePassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '5rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </FormRow>
 
       <FormRow
@@ -45,7 +86,7 @@ function UpdatePasswordForm() {
         error={errors?.password?.message}
       >
         <Input
-          type="password"
+          type={newPasswordShown ? 'text' : 'password'}
           id="password"
           autoComplete="password"
           disabled={isUpdating}
@@ -57,6 +98,31 @@ function UpdatePasswordForm() {
             },
           })}
         />
+        {newPasswordShown ? (
+          <HiEyeSlash
+            onClick={toggleNewPassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <HiEye
+            onClick={toggleNewPassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </FormRow>
 
       <FormRow
@@ -64,7 +130,7 @@ function UpdatePasswordForm() {
         error={errors?.passwordConfirm?.message}
       >
         <Input
-          type="password"
+          type={confirmPasswordShown ? 'text' : 'password'}
           autoComplete="confirm-password"
           id="passwordConfirm"
           disabled={isUpdating}
@@ -74,6 +140,31 @@ function UpdatePasswordForm() {
               getValues().password === value || 'Passwords need to match',
           })}
         />
+        {confirmPasswordShown ? (
+          <HiEyeSlash
+            onClick={toggleConfirmPassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        ) : (
+          <HiEye
+            onClick={toggleConfirmPassword}
+            style={{
+              width: '18px',
+              height: '18px',
+              position: 'absolute',
+              top: '6rem',
+              right: '1rem',
+              cursor: 'pointer',
+            }}
+          />
+        )}
       </FormRow>
       <FormRow>
         <Button onClick={reset} type="reset" variation="secondary">

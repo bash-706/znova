@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { useDeleteService } from './useDeleteService';
-
+import { useUpdateService } from './useUpdateService';
+import { useUser } from '../authentication/useUser';
 import {
   HiEye,
   HiPencil,
@@ -9,11 +10,12 @@ import {
   HiSquare2Stack,
   HiTrash,
 } from 'react-icons/hi2';
-// import { useCreatePost } from './useCreatePost';
+import { useCreateService } from './useCreateService';
 import Modal from '../../ui/Modal';
 import ConfirmDelete from '../../ui/ConfirmDelete';
 import Menus from '../../ui/Menus';
 import { useNavigate } from 'react-router-dom';
+import ServiceForm from './ServiceForm';
 
 const TableRow = styled.div`
   display: grid;
@@ -41,7 +43,9 @@ const Img = styled.img`
 function ServiceRow({ service }) {
   const [showForm, setShowForm] = useState(false);
   const { deleteService, isDeleting } = useDeleteService();
-  // const { isCreating, createPost } = useCreatePost();
+  const { createService, isCreating } = useCreateService();
+  const { updateService, isUpdating } = useUpdateService();
+  const loggedInUser = useUser();
   const navigate = useNavigate();
   const {
     _id: serviceId,
@@ -55,21 +59,28 @@ function ServiceRow({ service }) {
     ratingsQuantity,
     user,
     slug,
+    serviceCategory,
+    duration,
+    images,
+    packages,
   } = service;
 
-  // function handleDuplicate() {
-  //   createPost({
-  //     title: title.startsWith('Copy') ? title : `Copy of ${title}`,
-  //     categories,
-  //     tags,
-  //     image,
-  //     body,
-  //     caption,
-  //     user,
-  //     slug,
-  //     createdAt,
-  //   });
-  // }
+  function handleDuplicate() {
+    createService({
+      name: name.startsWith('Copy') ? name : `Copy of ${name}`,
+      description,
+      imageCover,
+      serviceCategory,
+      price,
+      duration,
+      category,
+      packages,
+      images,
+      user: loggedInUser?.user?._id,
+      slug,
+      createdAt,
+    });
+  }
 
   return (
     <>
@@ -117,8 +128,8 @@ function ServiceRow({ service }) {
                 </Menus.Button>
                 <Menus.Button
                   icon={<HiSquare2Stack />}
-                  // onClick={() => handleDuplicate()}
-                  // disabled={isCreating}
+                  onClick={() => handleDuplicate()}
+                  disabled={isCreating}
                 >
                   Duplicate
                 </Menus.Button>
@@ -137,20 +148,18 @@ function ServiceRow({ service }) {
             </Modal.Window>
           </Modal>
         </div>
-        {/* <div> */}
-        {/* <button disabled={isCreating} onClick={handleDuplicate}> */}
-        {/* <HiSquare2Stack /> */}
-        {/* </button> */}
-        {/* <button onClick={() => setShowForm((show) => !show)}> */}
-        {/* <HiPencil /> */}
-        {/* </button> */}
-        {/* <button onClick={() => deleteCabin(cabinId)} disabled={isDeleting}> */}
-        {/* <HiTrash /> */}
-        {/* </button> */}
-        {/* </div> */}
       </TableRow>
-      {/* {showForm && <CreateCabinForm cabinToEdit={cabin} />} */}
-      {showForm && <p>Form</p>}
+      {showForm && (
+        <ServiceForm
+          service={service}
+          formSubmitHandler={(data) => {
+            updateService({ data, serviceId });
+            setShowForm(false);
+          }}
+          formCancelHandler={() => setShowForm(false)}
+          isLoading={isUpdating}
+        />
+      )}
     </>
   );
 }

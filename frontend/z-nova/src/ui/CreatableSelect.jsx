@@ -6,6 +6,7 @@ function CreatableSelectInput({
   loadOptions,
   onChange,
   disabled,
+  placeholder,
   styles,
 }) {
   return (
@@ -14,6 +15,7 @@ function CreatableSelectInput({
       defaultOptions={true}
       loadOptions={loadOptions}
       isMulti={isMulti}
+      placeholder={placeholder}
       onChange={onChange}
       isDisabled={disabled}
       styles={{
