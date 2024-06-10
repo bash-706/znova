@@ -56,6 +56,7 @@ postSchema.pre('save', async function (next) {
   this.slug = slugify(this.title, {
     lower: true,
   });
+  this.createdAt = Date.now();
 
   if (this.isModified('postCategory') || this.isNew) {
     const postCategory = await mongoose

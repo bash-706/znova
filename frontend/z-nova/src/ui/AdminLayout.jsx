@@ -32,7 +32,7 @@ function AdminLayout() {
   const navigate = useNavigate();
   const { user, isLoading } = useUser();
 
-  if (user?.role !== 'admin') {
+  if (user?.role === 'user') {
     navigate('/');
     return null;
   }

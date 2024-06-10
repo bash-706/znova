@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Heading from '../ui/Heading';
 import Row from '../ui/Row';
+import { useEffect } from 'react';
 
 const StyledPrivacy = styled.section`
   display: grid;

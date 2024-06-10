@@ -159,7 +159,7 @@ function MainNav() {
   const { user } = useUser();
 
   const dropdownAccountItems = [
-    user?.role === 'admin' && {
+    (user?.role === 'admin' || user?.role === 'digitalist') && {
       to: '/admin',
       icon: <AiOutlineDashboard />,
       label: 'Admin Panel',

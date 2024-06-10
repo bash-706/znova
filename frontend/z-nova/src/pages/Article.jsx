@@ -57,10 +57,6 @@ function Article() {
     }
   }, [isSuccess, post]);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   if (isLoading)
     return (
       <Center>

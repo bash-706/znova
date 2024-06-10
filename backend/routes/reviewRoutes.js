@@ -5,14 +5,15 @@ const Review = require('../models/reviewModel');
 
 const router = express.Router({ mergeParams: true });
 
-router.use(authController.protect);
-
-router.route('/user-reviews/:userId').get(reviewController.getUserReviews);
+router
+  .route('/user-reviews/:userId')
+  .get(authController.protect, reviewController.getUserReviews);
 
 router
   .route('/')
   .get(reviewController.getAllReviews)
   .post(
+    authController.protect,
     authController.restrictTo('user'),
     reviewController.hasplacedOrder,
     reviewController.setServiceUserIds,
@@ -23,11 +24,13 @@ router
   .route('/:id')
   .get(reviewController.getReview)
   .patch(
+    authController.protect,
     authController.restrictTo('admin', 'user'),
     authController.checkAuthorization(Review),
     reviewController.updateReview,
   )
   .delete(
+    authController.protect,
     authController.restrictTo('admin', 'user'),
     authController.checkAuthorization(Review),
     reviewController.deleteReview,

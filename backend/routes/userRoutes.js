@@ -5,7 +5,7 @@ const orderRouter = require('./orderRoutes');
 
 const router = express.Router();
 
-router.use('/:userId/orders', orderRouter);
+router.use('/:userId/orders', authController.protect, orderRouter);
 
 router.post(
   '/auth/signup',
@@ -15,7 +15,6 @@ router.post(
 );
 
 router.get('/get-user', authController.isLoggedIn);
-router.get('/logout', authController.logout);
 
 router.post('/verify-account/:verificationToken', authController.verifyAccount);
 router.post(
@@ -28,6 +27,7 @@ router.patch('/reset-password/:resetToken', authController.resetPassword);
 
 router.use(authController.protect);
 
+router.get('/logout', authController.logout);
 router.get('/my-account', userController.getAccount, userController.getUser);
 router.patch('/update-password', authController.updatePassword);
 router.patch(
@@ -37,8 +37,6 @@ router.patch(
   userController.updateAccount,
 );
 router.delete('/delete-account', userController.deleteAccount);
-
-// router.use(authController.restrictTo('admin'));
 
 router
   .route('/')

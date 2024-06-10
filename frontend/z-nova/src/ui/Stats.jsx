@@ -71,7 +71,7 @@ function Stats({
         title="Users"
         color="green"
         icon={<HiUserGroup />}
-        value={numUsers}
+        value={numUsers || '?'}
       />
       <Stat
         title="Categories"
