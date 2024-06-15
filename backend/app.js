@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const serviceRouter = require('./routes/serviceRoutes');
+const faqRoutes = require('./routes/faqRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const orderRouter = require('./routes/orderRoutes');
@@ -75,6 +76,7 @@ app.use(
 
 // Mounting routes
 app.use('/api/v1/services', serviceRouter);
+app.use('/api/v1/faqs', faqRoutes);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/orders', orderRouter);

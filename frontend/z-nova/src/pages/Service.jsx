@@ -4,7 +4,7 @@ import { useCreateSession } from '../features/orders/useCreateSession';
 import Spinner from '../ui/Spinner';
 import Heading from '../ui/Heading';
 import styled from 'styled-components';
-import Row from '../ui/Row';
+import FAQ from '../ui/Faqs';
 import { useCreateChat } from '../features/chats/useCreateChat';
 import { useUser } from '../features/authentication/useUser';
 import {
@@ -16,10 +16,11 @@ import {
 } from 'react-icons/hi2';
 import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
-import ReviewForm from '../features/reviews/ReviewForm';
-import ReviewList from '../features/reviews/ReviewList';
 import Carousel from '../ui/Carousel';
 import Breadcrumbs from '../ui/Breadcrumbs';
+import useServiceFaqs from '../features/faqs/useServiceFaqs';
+import ReviewsContainer from '../features/reviews/ReviewsContainer';
+import Editor from '../ui/Editor';
 
 const StyledLayout = styled.div`
   display: grid;
@@ -31,7 +32,7 @@ const StyledLayout = styled.div`
 const StyledService = styled.section`
   display: grid;
   grid-template-columns: 1fr;
-  gap: 6.4rem;
+  gap: 4rem;
 `;
 
 const StyledOverview = styled.div`
@@ -104,7 +105,7 @@ const StyledItem = styled.div`
 `;
 
 const StyledPackages = styled.div`
-  padding: 2rem;
+  padding: 1.6rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -123,8 +124,8 @@ const StyledTabItem = styled.div`
     border-radius: 1rem;
     background-color: var(--color-grey-0);
     padding: 1rem 2rem;
-    font-size: 1.5rem;
-    font-weight: 500;
+    font-size: 1.4rem;
+    font-weight: 600;
     color: var(--color-grey-500);
     transition: all 0.3s;
   }
@@ -144,15 +145,6 @@ const StyledTabItems = styled.div`
   padding-bottom: 1rem;
 `;
 
-const Review = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  background: var(--color-grey-0);
-  box-shadow: var(--shadow-md);
-  padding: 4rem;
-`;
-
 const Center = styled.div`
   display: flex;
   align-items: center;
@@ -170,6 +162,9 @@ function Service() {
   service?.images?.map((image) => {
     slides.push({ src: `http://127.0.0.1:8000/services/${image}` });
   });
+  const { faqs } = useServiceFaqs(service?._id);
+
+  console.log(service?.description);
 
   useEffect(() => {
     if (isSuccess) {
@@ -213,19 +208,24 @@ function Service() {
         <StyledOverview>
           <Breadcrumbs data={breadcrumbsData} padding={'0rem'} />
           <Carousel slides={slides} />
-          <Heading as="h1" style={{ textAlign: 'justify' }}>
+          <Heading as="h1" style={{ textAlign: 'justify', fontSize: '2.6rem' }}>
             {service?.name}
           </Heading>
           {/* <img */}
         </StyledOverview>
         <StyledDescription>
           <Heading as="h2">Description</Heading>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Consequuntur vel earum tempore distinctio eos quos culpa in porro
-            nulla quisquam, inventore at perspiciatis deleniti incidunt
-            reprehenderit? Nihil doloribus assumenda molestias.
-          </p>
+          <div
+            style={{
+              width: '100%',
+              marginTop: '2rem',
+              color: 'var(--color-grey-700)',
+            }}
+          >
+            {!isLoading && !error && (
+              <Editor content={service?.description} editable={false} />
+            )}
+          </div>
         </StyledDescription>
         <StyledCardUser>
           <StyledUserMain>
@@ -236,7 +236,7 @@ function Service() {
               />
             </StyledCardUserImage>
             <StyledUserInfo>
-              <Heading as="h2">{service.user?.name}</Heading>
+              <Heading as="h2">{service?.user?.name}</Heading>
               <StyledItems>
                 <StyledItem>
                   <HiMapPin />
@@ -265,13 +265,8 @@ function Service() {
             <div>{service.user?.biodata}</div>
           </div>
         </StyledCardUser>
-        <Review>
-          <Heading as="h3">
-            Did you like our service? Rate us and let us know
-          </Heading>
-          <ReviewForm serviceId={service?.id} />
-          <ReviewList serviceId={service?.id} />
-        </Review>
+        {faqs?.length > 0 && <FAQ faqs={faqs} />}
+        <ReviewsContainer serviceId={service?.id} reviews={service?.reviews} />
       </StyledService>
       <div
         style={{
@@ -350,16 +345,16 @@ function TabContent({ item, serviceId }) {
         padding: '0 1.6rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1.8rem',
+        gap: '1.6rem',
       }}
     >
-      <h2 style={{ fontSize: '3rem', fontWeight: '600' }}>${item.price}</h2>
+      <h2 style={{ fontSize: '2.6rem', fontWeight: '600' }}>${item.price}</h2>
       <p style={{ color: 'var(--color-grey-700)' }}>
         <span
           style={{
             color: 'var(--color-grey-800)',
             fontWeight: '500',
-            fontSize: '1.8rem',
+            fontSize: '1.6rem',
             textShadow: '0 0 1px rgba(0,0,0,.6)',
           }}
         >
@@ -373,7 +368,7 @@ function TabContent({ item, serviceId }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          gap: '2rem',
+          gap: '1.4rem',
         }}
       >
         <div

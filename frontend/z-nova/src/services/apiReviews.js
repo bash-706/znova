@@ -48,14 +48,30 @@ export async function getUserReviews(userId) {
   }
 }
 
-export async function createReview(serviceId, rating, review) {
+export async function getUnreviewedOrders(serviceId) {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL2}/services/${serviceId}`,
+      withCredentials: true,
+    });
+    const { data } = res.data;
+    return { data };
+  } catch (err) {
+    console.error(err);
+    throw new Error(err.response.data.message);
+  }
+}
+
+export async function createReview(serviceId, rating, review, order) {
   try {
     const res = await axios({
       method: 'POST',
       url: `${BASE_URL}/${serviceId}/reviews`,
       data: {
-        review: review.review,
-        rating: rating.rating,
+        review,
+        rating,
+        order,
       },
       withCredentials: true,
     });

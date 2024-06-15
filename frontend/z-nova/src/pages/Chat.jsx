@@ -1,19 +1,21 @@
+import { useState, useEffect, useCallback } from 'react';
+import styled from 'styled-components';
+import moment from 'moment-timezone';
+import { HiMiniPaperAirplane } from 'react-icons/hi2';
+import InputEmoji from 'react-input-emoji';
+
 import { useChats } from '../features/chats/useChats';
 import { useMessages } from '../features/messages/useMessages';
 import { useRecipient } from '../features/users/useRecipient';
 import { useUser } from '../features/authentication/useUser';
-import styled from 'styled-components';
+import { useCreateMessage } from '../features/messages/useCreateMessage';
+
 import Spinner from '../ui/Spinner';
 import UserChat from '../features/chats/UserChat';
 import Heading from '../ui/Heading';
-import { useCallback, useEffect, useState } from 'react';
-import moment from 'moment-timezone';
-import InputEmoji from 'react-input-emoji';
-import { HiMiniPaperAirplane } from 'react-icons/hi2';
-import { useCreateMessage } from '../features/messages/useCreateMessage';
 import NoChats from '../ui/NoChats';
-import { io } from 'socket.io-client';
 import Messages from '../features/chats/Messages';
+import { useSocket } from '../context/SocketContext';
 
 const StyledChat = styled.div`
   display: grid;
@@ -74,95 +76,42 @@ const getLocalTime = () => {
 
 function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
-  const [newMessage, setNewMessage] = useState('');
   const [messages, setMessages] = useState([]);
-  const [socket, setSocket] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const { user } = useUser();
+  const { socket, onlineUsers, notifications, sendMessage } = useSocket();
   const { chats, isLoading, error } = useChats(user?._id);
-  let {
+  const {
     messagesData,
     isLoading: isLoadingMessages,
     error: messagesError,
   } = useMessages(currentChat?._id);
-
   const { recipient } = useRecipient(user, currentChat);
-  console.log(notifications);
+
+  console.log('notifications', notifications);
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
   }, []);
+
   const localTime = getLocalTime();
-
   const [text, setText] = useState('');
-
   const { createMessage } = useCreateMessage();
+
   useEffect(() => {
     if (messagesData) {
       setMessages(messagesData);
     }
   }, [messagesData]);
 
-  // establishing socket connection
-  useEffect(() => {
-    const newSocket = io('http://localhost:3000');
-    setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
-  }, [user]);
-
-  // add and remove online users
-  useEffect(() => {
-    if (socket === null) return;
-    if (user) {
-      socket.emit('addNewUser', user?._id);
-      socket.on('getOnlineUsers', (res) => {
-        setOnlineUsers(res);
-      });
-      return () => {
-        socket.off('getOnlineUsers');
-      };
-    }
-  }, [socket, user]);
-
-  // send realtime messages
-  useEffect(() => {
-    if (socket === null) return;
-    socket.emit('sendMessage', {
-      text: newMessage,
-      recipientId: recipient?._id,
-      chatId: currentChat?._id,
-      senderId: user?._id,
-    });
-  }, [newMessage]);
-
-  // recieve realtime message and notification
   useEffect(() => {
     if (socket === null) return;
     socket.on('getMessage', (res) => {
       if (currentChat?._id !== res?.chatId) return;
-      setMessages((prev) => {
-        return [...prev, res];
-      });
-    });
-
-    socket.on('getNotification', (res) => {
-      const isChatOpen = currentChat?.members?.some(
-        (id) => id === res.senderId,
-      );
-      if (isChatOpen) {
-        setNotifications((prev) => [{ ...res, isRead: true }, ...prev]);
-      } else {
-        setNotifications((prev) => [res, ...prev]);
-      }
+      setMessages((prev) => [...prev, res]);
     });
 
     return () => {
       socket.off('getMessage');
-      socket.off('getNotification');
     };
   }, [socket, currentChat]);
 
@@ -174,7 +123,12 @@ function Chat() {
       text,
     });
     setText('');
-    setNewMessage(text);
+    sendMessage({
+      text,
+      recipientId: recipient?._id,
+      chatId: currentChat?._id,
+      senderId: user?._id,
+    });
   };
 
   if (error) return <div>Chats not found!</div>;

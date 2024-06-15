@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   HiHomeModern,
   HiComputerDesktop,
@@ -27,6 +27,8 @@ import Logout from '../features/authentication/Logout';
 import User from './User';
 import Dropdown from './Dropdown';
 import useClickOutside from '../hooks/useClickOutside';
+import { useSocket } from '../context/SocketContext';
+import { unreadNotifications } from '../utils/unreadNotifications';
 
 const StyledMobileNav = styled.nav`
   display: none;
@@ -128,6 +130,23 @@ const DropdownSpan = styled.span`
   gap: 1rem;
 `;
 
+const NotificationBadge = styled.span`
+  position: absolute;
+  top: 0;
+  right: -2px;
+  background-color: var(--color-brand-600);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  border-radius: 50%;
+  width: 1.6rem;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translate(50%, -50%);
+`;
+
 const dropdownServiceItems = [
   {
     to: 'services?category=web-development',
@@ -155,6 +174,8 @@ function MainNav() {
   const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false);
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const { notifications } = useSocket();
+  const allUnreadNotifications = unreadNotifications(notifications);
   const dropdownRef = useRef(null);
   const { user } = useUser();
 
@@ -248,10 +269,26 @@ function MainNav() {
               <span>Contact</span>
             </StyledNavLink>
           </li>
+
           {user && (
             <li>
               <StyledNavLink to="/inbox">
-                <HiOutlineEnvelope />
+                <div
+                  style={{
+                    position: 'relative',
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  <HiOutlineEnvelope />
+                  {allUnreadNotifications?.length > 0 && (
+                    <NotificationBadge>
+                      <span style={{ color: '#fff' }}>
+                        {allUnreadNotifications?.length}
+                      </span>
+                    </NotificationBadge>
+                  )}
+                </div>
                 <span>Inbox</span>
               </StyledNavLink>
             </li>

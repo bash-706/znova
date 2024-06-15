@@ -30,7 +30,7 @@ const Editor = ({ onDataChange, content, editable }) => {
       const json = editor.getJSON();
       onDataChange(json);
     },
-    content: content,
+    content,
   });
 
   return (

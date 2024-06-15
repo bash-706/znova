@@ -6,6 +6,10 @@ const Review = require('../models/reviewModel');
 const router = express.Router({ mergeParams: true });
 
 router
+  .route('/services/:serviceId')
+  .get(authController.protect, reviewController.getUnreviewedOrders);
+
+router
   .route('/user-reviews/:userId')
   .get(authController.protect, reviewController.getUserReviews);
 

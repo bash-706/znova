@@ -11,15 +11,67 @@ exports.setServiceUserIds = (req, res, next) => {
   next();
 };
 
+exports.getUnreviewedOrders = catchAsync(async (req, res, next) => {
+  const orders = await Order.find({
+    service: req.params.serviceId,
+    customer: req.user.id,
+  }).sort('createdAt');
+
+  const unreviewedOrders = await Promise.all(
+    orders.map(async (order) => {
+      const review = await Review.findOne({
+        service: req.params.serviceId,
+        user: req.user.id,
+        order: order._id,
+      });
+
+      return review ? null : order;
+    }),
+  );
+
+  const availableOrders = unreviewedOrders.filter((order) => order !== null);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      orders: availableOrders,
+    },
+  });
+});
+
 exports.hasplacedOrder = catchAsync(async (req, res, next) => {
-  const hasOrder = await Order.findOne({
+  const orders = await Order.find({
     service: req.params.serviceId,
     customer: req.user.id,
   });
-  if (hasOrder) return next();
-  return next(
-    new AppError('You can only review services you have purchased', 403),
-  );
+
+  if (!orders || orders.length === 0) {
+    return next(
+      new AppError('You can only review services you have purchased', 403),
+    );
+  }
+
+  const unreviewedOrder = await Promise.all(
+    orders.map(async (order) => {
+      const hasReview = await Review.findOne({
+        service: req.params.serviceId,
+        customer: req.user.id,
+        order: order.id,
+      });
+      return hasReview ? null : order;
+    }),
+  ).catch(() => null);
+
+  if (!unreviewedOrder) {
+    return next(
+      new AppError(
+        'You have already reviewed all your purchases of this service',
+        403,
+      ),
+    );
+  }
+
+  return next();
 });
 
 exports.getUserReviews = catchAsync(async (req, res, next) => {

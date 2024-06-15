@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Heading from '../ui/Heading';
+import Heading from './Heading';
 
 const StyledFeatures = styled.section`
   display: grid;

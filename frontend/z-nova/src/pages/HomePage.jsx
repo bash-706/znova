@@ -8,13 +8,16 @@ import Heading from '../ui/Heading';
 import Button from '../ui/Button';
 import styled from 'styled-components';
 import ChooseUs from '../ui/ChooseUs';
-import Features from './Features';
+import Features from '../ui/Features';
 import Banner from '../ui/Banner';
 import Articles from '../ui/Articles';
 import BusinessPlansSection from '../ui/BusinessPlans';
 import HowItWorks from '../ui/HowItWorks';
 import { useCookies } from 'react-cookie';
 import CookieConsent from '../ui/CookieConsent';
+import { fadeIn, slideInLeft } from '../styles/animations';
+import useIntersection from '../hooks/useIntersection';
+import { useRef } from 'react';
 
 const StyledHome = styled.section`
   display: grid;
@@ -45,7 +48,12 @@ function HomePage() {
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <Heading as="h1" style={{ paddingBottom: '1rem' }}>
+            <Heading
+              as="h1"
+              style={{
+                paddingBottom: '1rem',
+              }}
+            >
               ZNOVA
             </Heading>
             <p>Solutions</p>

@@ -3,7 +3,7 @@ import { contact as contactApi } from '../../services/apiContact';
 import { toast } from 'react-hot-toast';
 
 export default function useContact() {
-  const { mutate: contact, isLoading } = useMutation({
+  const { mutate: contact, status } = useMutation({
     mutationFn: async ({ name, email, subject, message }) => {
       await contactApi(name, email, subject, message);
     },
@@ -18,5 +18,5 @@ export default function useContact() {
       toast.error(err.message, { duration: 5000 });
     },
   });
-  return { contact, isLoading };
+  return { contact, status };
 }

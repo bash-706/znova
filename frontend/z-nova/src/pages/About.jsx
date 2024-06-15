@@ -3,12 +3,18 @@ import Heading from '../ui/Heading';
 import Hero from '../ui/Hero';
 import Team from '../ui/Team';
 import styled from 'styled-components';
+import { fadeIn } from '../styles/animations';
+import useIntersection from '../hooks/useIntersection';
+import { useRef } from 'react';
 
 const StyledTeam = styled.section`
   display: grid;
   grid-template-columns: 1fr;
   gap: 10rem;
   padding: 6.4rem 4.8rem 6.4rem;
+  &.visible {
+    animation: ${fadeIn} 1.2s linear forwards;
+  }
 `;
 
 const StyledInfo = styled.section`
@@ -19,9 +25,17 @@ const StyledInfo = styled.section`
   padding: 4rem;
   margin-top: 6.4rem;
   background: var(--color-grey-0);
+  &.visible {
+    animation: ${fadeIn} 1.2s linear forwards;
+  }
 `;
 
 function About() {
+  const infoRef = useRef();
+  const isInfoVisible = useIntersection(infoRef, '0px');
+  const teamRef = useRef();
+  const isTeamVisible = useIntersection(teamRef, '0px');
+
   return (
     <>
       <Hero
@@ -41,7 +55,7 @@ function About() {
         </Heading>
         <p style={{ zIndex: '1' }}>Come and explore about us</p>
       </Hero>
-      <StyledInfo>
+      <StyledInfo ref={infoRef} className={isInfoVisible ? 'visible' : ''}>
         <img src="ds-15.jpg" />
         <div>
           <Heading
@@ -64,7 +78,7 @@ function About() {
           </p>
         </div>
       </StyledInfo>
-      <StyledTeam>
+      <StyledTeam ref={teamRef} className={isTeamVisible ? 'visible' : ''}>
         <Row>
           <Heading as="h5">Meet Our Team</Heading>
           <Team />

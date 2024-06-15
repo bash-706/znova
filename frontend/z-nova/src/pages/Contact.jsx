@@ -8,13 +8,20 @@ import TextArea from '../ui/TextArea';
 import Button from '../ui/Button';
 import Hero from '../ui/Hero';
 import useContact from '../features/contact/useContact';
+import { fadeIn, slideInLeft, slideInRight } from '../styles/animations';
+import useIntersection from '../hooks/useIntersection';
+import { useRef } from 'react';
+import SpinnerMini from '../ui/SpinnerMini';
 
 const StyledSection = styled.section`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  box-shadow: var(--shadow-lg);
   grid-template-rows: 1fr;
+  padding: 6.4rem 4.8rem 6.4rem;
   gap: 2rem;
+  &.visible {
+    animation: ${fadeIn} 1.2s linear forwards;
+  }
 `;
 
 const StyledForm = styled(Form)`
@@ -25,6 +32,9 @@ const StyledForm = styled(Form)`
   border-radius: 1rem;
   padding: 5rem;
   font-size: 1.56rem;
+  &.visible {
+    animation: ${slideInLeft} 1s linear forwards;
+  }
 `;
 
 const StyledHeading = styled.h3`
@@ -49,10 +59,20 @@ const StyledContactRight = styled.div`
   flex-direction: column;
   border-radius: 1rem;
   padding: 0 4rem;
+  &.visible {
+    animation: ${slideInRight} 1s linear forwards;
+  }
 `;
 
 function Contact() {
-  const { contact, isLoading } = useContact();
+  const sectionRef = useRef();
+  const isSectionVisible = useIntersection(sectionRef, '0px');
+  const leftSectionRef = useRef();
+  const isLeftSectionVisible = useIntersection(leftSectionRef, '0px');
+  const rightSectionRef = useRef();
+  const isRightSectionVisible = useIntersection(rightSectionRef, '0px');
+
+  const { contact, status } = useContact();
   const { register, formState, handleSubmit, reset } = useForm();
   const { errors } = formState;
 
@@ -83,14 +103,22 @@ function Contact() {
         </Heading>
         <p style={{ zIndex: 1 }}>We love to hear from you</p>
       </Hero>
-      <StyledSection style={{ padding: '6.4rem 4.8rem 6.4rem' }}>
-        <StyledForm onSubmit={handleSubmit(onSubmit)}>
+      <StyledSection
+        ref={sectionRef}
+        className={isSectionVisible ? 'visible' : ''}
+      >
+        <StyledForm
+          onSubmit={handleSubmit(onSubmit)}
+          ref={leftSectionRef}
+          className={isLeftSectionVisible ? 'visible' : ''}
+        >
           <StyledHeading>Say Hello!</StyledHeading>
           <StyledParagraph>We Are Always Ready To Serve Ya!</StyledParagraph>
           <FormRow label="Your Name" star="*" error={errors?.fullName?.message}>
             <Input
               type="text"
               id="fullName"
+              disabled={status === 'pending'}
               placeholder="Enter Your Name"
               {...register('fullName', { required: 'This field is required' })}
             />
@@ -99,6 +127,7 @@ function Contact() {
             <Input
               type="email"
               id="email"
+              disabled={status === 'pending'}
               placeholder="Enter Your Email"
               {...register('email', {
                 required: 'This field is required',
@@ -113,6 +142,7 @@ function Contact() {
             <Input
               type="text"
               id="subject"
+              disabled={status === 'pending'}
               placeholder="Query Related To"
               {...register('subject', { required: 'This field is required' })}
             />
@@ -121,6 +151,7 @@ function Contact() {
             <TextArea
               rows="5"
               id="message"
+              disabled={status === 'pending'}
               style={{ resize: 'none' }}
               placeholder="Enter Your Message"
               {...register('message')}
@@ -128,8 +159,8 @@ function Contact() {
           </FormRow>
           <FormRow orientation="vertical">
             <Button
-              disabled={isLoading}
               size="large"
+              disabled={status === 'pending'}
               style={{
                 width: '100%',
                 borderRadius: '0.6rem',
@@ -138,11 +169,14 @@ function Contact() {
                 fontWeight: '700',
               }}
             >
-              Send Message
+              {status === 'pending' ? <SpinnerMini /> : 'Send Message'}
             </Button>
           </FormRow>
         </StyledForm>
-        <StyledContactRight>
+        <StyledContactRight
+          ref={rightSectionRef}
+          className={isRightSectionVisible ? 'visible' : ''}
+        >
           <img src="/5124556.png" />
           <StyledParagraph style={{ marginTop: '4rem' }}>
             Feel free to contact us! Our team is available 24/7 to help you. We

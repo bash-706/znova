@@ -24,6 +24,11 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Review must belong to a user'],
     },
+    order: {
+      type: mongoose.Schema.ObjectId,
+      ref: 'Order',
+      required: [true, 'Please place an order to review a service'],
+    },
   },
   {
     toJSON: { virtuals: true },

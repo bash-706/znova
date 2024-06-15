@@ -28,6 +28,7 @@ import Order from './pages/Order';
 import Reviews from './pages/Reviews';
 import styled from 'styled-components';
 import { DarkModeProvider } from './context/DarkModeContext';
+import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './ui/ProtectedRoute';
 import VerifyAccount from './pages/VerifyAccount';
 import AccountLayout from './ui/AccountLayout';
@@ -87,7 +88,9 @@ function App() {
               <Route
                 element={
                   <ProtectedRoute>
-                    <AppLayout />
+                    <SocketProvider>
+                      <AppLayout />
+                    </SocketProvider>
                   </ProtectedRoute>
                 }
               >

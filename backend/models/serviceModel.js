@@ -23,11 +23,8 @@ const serviceSchema = new mongoose.Schema(
       default: 0,
     },
     description: {
-      type: String,
-      trim: true,
-      required: [true, 'A service must have a description'],
-      minlength: [100, 'A service description must have atleast 100 chracters'],
-      maxlength: [800, 'A service description must not exceed 800 chracter'],
+      type: Object,
+      required: [true, 'A post must have a body.'],
     },
     imageCover: {
       type: String,
