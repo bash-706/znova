@@ -26,7 +26,6 @@ exports.uploadPostImage = upload.single('image');
 
 exports.resizePostImage = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-
   req.file.filename = req.params.id
     ? `post-${req.params.id}-${Date.now()}-cover.jpeg`
     : `post-${uuidv4()}-cover.jpeg`;
@@ -56,6 +55,10 @@ exports.getPostBySlug = catchAsync(async (req, res, next) => {
     {
       path: 'user',
       select: 'name username photo',
+    },
+    {
+      path: 'postCategory',
+      select: 'name',
     },
     {
       path: 'comments',
@@ -112,7 +115,10 @@ exports.getPost = handleFactory.getOne(
     path: 'user',
     select: 'name username photo',
   },
-  { path: 'postCategory' },
+  {
+    path: 'postCategory',
+    select: 'name',
+  },
   {
     path: 'comments',
     match: {

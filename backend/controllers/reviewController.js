@@ -15,6 +15,7 @@ exports.getUnreviewedOrders = catchAsync(async (req, res, next) => {
   const orders = await Order.find({
     service: req.params.serviceId,
     customer: req.user.id,
+    status: 'Delivered',
   }).sort('createdAt');
 
   const unreviewedOrders = await Promise.all(
@@ -43,11 +44,15 @@ exports.hasplacedOrder = catchAsync(async (req, res, next) => {
   const orders = await Order.find({
     service: req.params.serviceId,
     customer: req.user.id,
+    status: 'Delivered',
   });
 
   if (!orders || orders.length === 0) {
     return next(
-      new AppError('You can only review services you have purchased', 403),
+      new AppError(
+        'You can only review services you have purchased and have been completed',
+        403,
+      ),
     );
   }
 

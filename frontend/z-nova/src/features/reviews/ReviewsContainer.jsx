@@ -1,7 +1,4 @@
 import styled from 'styled-components';
-import ReviewForm from './ReviewForm';
-import { useCreateReview } from './useCreateReview';
-import { useUnreviewedOrders } from './useUnreviewedOrders';
 import Review from './Review';
 import Heading from '../../ui/Heading';
 
@@ -16,34 +13,13 @@ const StyledMainReviews = styled.section`
   gap: 2rem;
 `;
 
-function ReviewsContainer({ serviceId, reviews }) {
-  const { createReview, isLoading: isCreating } = useCreateReview();
-  const unreviewedOrders = useUnreviewedOrders(serviceId);
-  const orders = unreviewedOrders?.unreviewedOrders?.data?.orders;
-
-  const addReviewHandler = (value) => {
-    createReview({
-      serviceId,
-      review: value.review,
-      rating: value.rating,
-      order: value.order,
-    });
-  };
-
+function ReviewsContainer({ reviews }) {
   return (
     <StyledReviewContainer>
-      <Heading as="h3" style={{ marginBottom: '2rem', fontWeight: 600 }}>
-        User Reviews
-      </Heading>
-      {orders && orders.length > 0 && (
-        <ReviewForm
-          formSubmitHandler={(value) => addReviewHandler(value)}
-          isLoading={isCreating}
-          styles={{ width: '100%', margin: 0 }}
-          orderId={orders?.at(0)?._id}
-        />
-      )}
       <StyledMainReviews>
+        <Heading as="h3" style={{ marginBottom: '2rem', fontWeight: 600 }}>
+          User Reviews
+        </Heading>
         {reviews?.map((review) => (
           <Review key={review?._id} review={review} />
         ))}

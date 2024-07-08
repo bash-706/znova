@@ -23,7 +23,7 @@ const upload = multer({
 
 exports.uploadServiceImages = upload.fields([
   { name: 'imageCover', maxCount: 1 },
-  { name: 'images', maxCount: 5 },
+  { name: 'images', maxCount: 3 },
 ]);
 
 // upload.array('images', 5);

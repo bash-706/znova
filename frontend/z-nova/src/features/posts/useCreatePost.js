@@ -4,7 +4,11 @@ import { toast } from 'react-hot-toast';
 
 export function useCreatePost() {
   const queryClient = useQueryClient();
-  const { mutate: createPost, isLoading: isCreating } = useMutation({
+  const {
+    mutate: createPost,
+    isLoading: isCreating,
+    status,
+  } = useMutation({
     mutationFn: async (data) => {
       return await postApi(data);
     },
@@ -18,5 +22,5 @@ export function useCreatePost() {
       toast.error(err.message, { duration: 5000 });
     },
   });
-  return { createPost, isCreating };
+  return { createPost, isCreating, status };
 }

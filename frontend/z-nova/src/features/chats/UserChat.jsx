@@ -40,13 +40,23 @@ const StyledDot = styled.div`
 
 const TimeAgo = ({ createdAt, style }) => {
   const timeAgo = moment(createdAt).fromNow();
-
   return <span style={style}>{timeAgo}</span>;
 };
 
-function UserChat({ chat, user, setActiveChat, activeChat, onlineUsers }) {
+function UserChat({
+  chat,
+  user,
+  setActiveChat,
+  activeChat,
+  onlineUsers,
+  allUnreadNotifications,
+}) {
   const { recipient } = useRecipient(user, chat);
   const { messagesData: messages } = useMessages(chat?._id);
+
+  const thisUserUnreadNotifications = allUnreadNotifications?.filter(
+    (n) => n.senderId == recipient?._id,
+  );
 
   const getLastMessageTime = () => {
     if (messages?.length > 0) {
@@ -108,7 +118,11 @@ function UserChat({ chat, user, setActiveChat, activeChat, onlineUsers }) {
           flexDirection: 'column',
         }}
       >
-        <StyledMessagesCount>2</StyledMessagesCount>
+        {thisUserUnreadNotifications?.length > 0 && (
+          <StyledMessagesCount>
+            {thisUserUnreadNotifications?.length}
+          </StyledMessagesCount>
+        )}
         <span>
           <TimeAgo
             style={{ fontSize: '1.2rem' }}

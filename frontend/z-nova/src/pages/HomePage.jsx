@@ -15,9 +15,6 @@ import BusinessPlansSection from '../ui/BusinessPlans';
 import HowItWorks from '../ui/HowItWorks';
 import { useCookies } from 'react-cookie';
 import CookieConsent from '../ui/CookieConsent';
-import { fadeIn, slideInLeft } from '../styles/animations';
-import useIntersection from '../hooks/useIntersection';
-import { useRef } from 'react';
 
 const StyledHome = styled.section`
   display: grid;

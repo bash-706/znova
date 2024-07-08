@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 export function useUpdatePost() {
   const queryClient = useQueryClient();
 
-  const { mutate: updatePost, isLoading: isUpdating } = useMutation({
+  const { mutate: updatePost, status } = useMutation({
     mutationFn: async ({ formData: data, postId }) => {
       return await updatePostApi(data, postId);
     },
@@ -21,5 +21,5 @@ export function useUpdatePost() {
       console.log(err);
     },
   });
-  return { updatePost, isUpdating };
+  return { updatePost, status };
 }

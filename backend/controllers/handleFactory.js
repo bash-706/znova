@@ -65,8 +65,20 @@ exports.getOne = (Model, ...popOptions) =>
 
 exports.createOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (req.body.tags && !Array.isArray(req.body.tags)) {
+      req.body.tags = req.body.tags.split(',');
+    }
+
+    if (req.body.packages) {
+      req.body.packages = JSON.parse(req.body.packages);
+    }
+
     if (req.body.body) {
       req.body.body = JSON.parse(req.body.body);
+    }
+
+    if (req.body.description) {
+      req.body.description = JSON.parse(req.body.description);
     }
 
     const doc = await Model.create(req.body);
@@ -80,8 +92,20 @@ exports.createOne = (Model) =>
 
 exports.updateOne = (Model) =>
   catchAsync(async (req, res, next) => {
+    if (req.body.tags && !Array.isArray(req.body.tags)) {
+      req.body.tags = req.body.tags.split(',');
+    }
+
+    if (req.body.packages) {
+      req.body.packages = JSON.parse(req.body.packages);
+    }
+
     if (req.body.body) {
       req.body.body = JSON.parse(req.body.body);
+    }
+
+    if (req.body.description) {
+      req.body.description = JSON.parse(req.body.description);
     }
 
     const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {

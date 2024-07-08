@@ -2,6 +2,7 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import 'highlight.js/styles/atom-one-dark.css';
 import MenuBar from './MenuBar';
 import { extensions } from '../utils/tiptapExtensions';
+import { useEffect } from 'react';
 
 const Editor = ({ onDataChange, content, editable }) => {
   const editor = useEditor({
@@ -32,6 +33,15 @@ const Editor = ({ onDataChange, content, editable }) => {
     },
     content,
   });
+
+  useEffect(() => {
+    if (
+      editor &&
+      JSON.stringify(content) !== JSON.stringify(editor.getJSON())
+    ) {
+      editor.commands.setContent(content);
+    }
+  }, [content, editor]);
 
   return (
     <div

@@ -16,7 +16,7 @@ const categoriesToOptions = (categories) => {
 };
 
 const fieldsToOption = (tags) => {
-  return tags.map((tag) => ({ value: tag, label: tag }));
+  return tags?.map((tag) => ({ value: tag, label: tag }));
 };
 
 const filterCategories = (inputValues, categoriesData) => {

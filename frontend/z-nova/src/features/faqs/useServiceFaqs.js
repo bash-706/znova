@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { getServiceFaqs as serviceFaqsApi } from '../../services/apiFaqs';
 
 export default function useServiceFaqs(serviceId) {
-  console.log(serviceId);
   const {
     isLoading,
     data: faqs,

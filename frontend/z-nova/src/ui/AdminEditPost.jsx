@@ -1,12 +1,27 @@
+import { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useForm, Controller } from 'react-hook-form';
+import Row from './Row';
+import Heading from './Heading';
+import Form from './Form';
+import FormRow from './FormRow';
+import Input from './Input';
+import Editor from './Editor';
+import Button from './Button';
+import AsyncSelectInput from './AsyncSelect';
+import CreatableSelectInput from './CreatableSelect';
 import { useParams } from 'react-router-dom';
+import { usePostCategories } from '../features/postCategories/usePostCategories';
 import { usePost } from '../features/posts/usePost';
 import { useUpdatePost } from '../features/posts/useUpdatePost';
-import styled from 'styled-components';
+import SpinnerMini from './SpinnerMini';
 import Spinner from './Spinner';
-import { HiOutlineCamera } from 'react-icons/hi2';
-import Button from './Button';
-import Editor from './Editor';
-import { useEffect, useState } from 'react';
+import {
+  convertTagsArray,
+  fieldsToOption,
+  categoryToOption,
+  filterCategories,
+} from '../utils/multiSelectTagUtils';
 
 const Center = styled.div`
   display: flex;
@@ -15,14 +30,16 @@ const Center = styled.div`
   height: 100%;
 `;
 
-const StyledArticle = styled.section`
-  margin: 0 auto;
-  width: 100%;
+const StyledEditPost = styled.section`
+  display: grid;
+  grid-template-columns: 2.6fr 1fr;
+  gap: 2rem;
 `;
 
 const StyledImage = styled.img`
-  border-radius: 2rem;
+  border-radius: 1rem;
   width: 100%;
+  height: 140px;
 `;
 
 const StyledInput = styled.input`
@@ -37,48 +54,50 @@ const StyledInput = styled.input`
   border-width: 0;
 `;
 
+const StyledButton = styled.button`
+  border-radius: 1rem;
+  border: none;
+  outline: none;
+  font-weight: 400;
+  padding: 1rem 2rem;
+  background: var(--color-brand-600);
+  color: #fff;
+`;
+
 function AdminEditPost() {
   const { slug } = useParams();
+  const { post, isLoading, error } = usePost(slug);
+  const { postCategories: categoriesData } = usePostCategories();
+  const { updatePost, status } = useUpdatePost();
+
+  const {
+    register,
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm();
+
+  const [body, setBody] = useState('');
   const [image, setImage] = useState(null);
   const [initialImage, setInitialImage] = useState(null);
-  const [body, setBody] = useState('');
-  const [title, setTitle] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [tags, setTags] = useState(null);
-  const { updatePost, isUpdating } = useUpdatePost();
-  const { post, isLoading, error } = usePost(slug);
-
-  let mainPost;
-  if (post) {
-    mainPost = post?.post;
-  }
 
   useEffect(() => {
-    if (!isLoading && !error) {
+    if (post) {
+      const mainPost = post?.post;
       setInitialImage(mainPost?.image);
-      setCategory(mainPost?.category);
-      setTitle(mainPost?.title);
-      setTags(mainPost?.tags);
+      setValue('title', mainPost?.title);
+      setValue('slug', mainPost?.slug);
+      setValue('category', mainPost?.category);
+      setValue('tags', mainPost?.tags);
+      setValue('caption', mainPost?.caption);
       setBody(mainPost?.body);
     }
-  }, [isLoading, error, mainPost]);
+  }, [post, setValue]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     setImage(file);
-  };
-
-  const handleUpdatePost = async () => {
-    const postId = mainPost?.id;
-    const formData = new FormData();
-    if (image) {
-      formData.append('image', image);
-    } else {
-      formData.append('image', initialImage);
-    }
-
-    formData.append('body', JSON.stringify(body));
-    await updatePost({ formData, postId });
   };
 
   const handleDeleteImage = () => {
@@ -88,109 +107,191 @@ function AdminEditPost() {
     }
   };
 
-  if (isLoading)
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    if (image) {
+      formData.append('image', image);
+    } else {
+      formData.append('image', initialImage);
+    }
+    formData.append('body', JSON.stringify(body));
+    formData.append('title', data.title);
+    formData.append('slug', data.slug);
+    formData.append('postCategory', data.category?.value);
+    formData.append('tags', convertTagsArray(data.tags));
+    formData.append('caption', data.caption);
+
+    await updatePost({ formData, postId: post?.post?.id });
+  };
+
+  if (isLoading) {
     return (
       <Center>
         <Spinner />
       </Center>
     );
+  }
 
-  if (error)
+  if (error) {
     return (
       <Center>
-        <p>{error?.message}</p>
+        <p>{error.message}</p>
       </Center>
     );
+  }
+
+  const displayImage = () => {
+    if (image) {
+      return URL.createObjectURL(image);
+    } else if (initialImage) {
+      return `http://127.0.0.1:8000/posts/${initialImage}`;
+    } else {
+      return '/default.png';
+    }
+  };
+
+  const promiseOptions = async (inputValue) => {
+    return filterCategories(inputValue, categoriesData);
+  };
 
   return (
-    <StyledArticle>
-      <article>
-        <label
-          style={{
-            width: '100%',
-            cursor: 'pointer',
-            display: 'block',
-          }}
-          htmlFor="postImage"
-        >
-          {image ? (
-            <StyledImage
-              src={URL.createObjectURL(image)}
-              alt={mainPost?.title}
-            />
-          ) : initialImage ? (
-            <StyledImage
-              src={`http://127.0.0.1:8000/posts/${mainPost?.image}`}
-              alt={mainPost?.title}
-            />
-          ) : (
-            <div
-              style={{
-                width: '100%',
-                minHeight: '10rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                background: 'var(--color-grey-100)',
-                borderRadius: '2rem',
-              }}
-            >
-              <HiOutlineCamera
-                style={{
-                  color: 'var(--color-brand-600)',
-                  width: '2rem',
-                  height: 'auto',
-                }}
+    <>
+      <Row type="horizontal" style={{ alignItems: 'flex-start' }}>
+        <Heading as="h1" style={{ fontWeight: '500', fontSize: '2rem' }}>
+          Edit Post
+        </Heading>
+      </Row>
+      <Form onSubmit={handleSubmit(onSubmit)}>
+        <StyledEditPost>
+          <section>
+            <FormRow label="Title" error={errors?.title?.message}>
+              <Input
+                style={{ fontWeight: 500, fontSize: '1.5rem' }}
+                placeholder="Enter post title"
+                type="text"
+                {...register('title', { required: 'This field is required' })}
+                disabled={status === 'pending'}
               />
-            </div>
-          )}
-        </label>
-        <StyledInput type="file" id="postImage" onChange={handleImageChange} />
-        <Button onClick={handleDeleteImage} style={{ margin: '1rem 0' }}>
-          Delete Image
-        </Button>
-
-        {/* <div style={{ marginTop: '2rem' }}>
-          {mainPost?.categories?.map((category, index) => (
-            <Link
-              key={index}
-              style={{
-                color: 'var(--color-grey-500)',
-                fontSize: '1.8rem',
-                fontWeight: '500',
-              }}
-              to={`/blog?category=${category?.name}`}
+            </FormRow>
+            <FormRow
+              label="Description"
+              style={{ flexDirection: 'column', alignItems: 'flex-start' }}
             >
-              {category?.name}
-            </Link>
-          ))}
-        </div> */}
-        <h1
-          style={{
-            fontSize: '3rem',
-            fontWeight: '600',
-            color: 'var(--color-grey-800)',
-            marginTop: '2rem',
-          }}
-        >
-          {mainPost?.title}
-        </h1>
-        <div style={{ width: '100%' }}>
-          {!isLoading && !error && (
-            <Editor
-              content={mainPost?.body}
-              editable={true}
-              onDataChange={(data) => {
-                setBody(data);
-              }}
-            />
-          )}
-        </div>
-        <Button onClick={handleUpdatePost} disabled={isUpdating}>
-          Update Post
-        </Button>
-      </article>
-    </StyledArticle>
+              <Editor
+                content={body}
+                editable={true}
+                onDataChange={(data) => setBody(data)}
+              />
+            </FormRow>
+            <StyledButton>
+              {status === 'pending' ? <SpinnerMini /> : 'Update Post'}
+            </StyledButton>
+          </section>
+          <section>
+            <FormRow
+              label="Update Post Image"
+              style={{ flexDirection: 'column', alignItems: 'flex-start' }}
+            >
+              <label
+                style={{
+                  width: '100%',
+                  cursor: 'pointer',
+                  display: 'block',
+                }}
+                htmlFor="postImage"
+              >
+                <StyledImage
+                  src={displayImage()}
+                  alt={post?.post?.title || 'default image'}
+                />
+              </label>
+              <StyledInput
+                type="file"
+                id="postImage"
+                onChange={handleImageChange}
+              />
+              <Button
+                variation="danger"
+                size="small"
+                onClick={handleDeleteImage}
+                style={{
+                  margin: '1rem 0',
+                  textTransform: 'capitalize',
+                  fontWeight: '500',
+                  padding: '0.6rem 1rem',
+                }}
+              >
+                Delete Image
+              </Button>
+            </FormRow>
+            <FormRow label="Slug" error={errors?.slug?.message}>
+              <Input
+                placeholder="Enter URL-friendly slug"
+                type="text"
+                {...register('slug')}
+                style={{ padding: '0.8rem 1.2rem', width: '100%' }}
+              />
+            </FormRow>
+            <FormRow label="Category" error={errors?.category?.message}>
+              {!isLoading && (
+                <Controller
+                  name="category"
+                  control={control}
+                  defaultValue={categoryToOption(post?.post?.postCategory)}
+                  rules={{ required: 'This field is required' }}
+                  render={({ field }) => (
+                    <AsyncSelectInput
+                      loadOptions={promiseOptions}
+                      defaultValue={categoryToOption(post?.post?.postCategory)}
+                      isMulti={false}
+                      {...field}
+                      disabled={isLoading}
+                      styles={{
+                        width: '100%',
+                        position: 'relative',
+                        zIndex: 30,
+                        cursor: 'pointer',
+                      }}
+                    />
+                  )}
+                />
+              )}
+            </FormRow>
+            <FormRow label="Tags" error={errors?.tags?.message}>
+              <Controller
+                name="tags"
+                control={control}
+                render={({ field }) => (
+                  <CreatableSelectInput
+                    id="tags"
+                    placeholder="Add post tags..."
+                    onChange={(newValue) => field.onChange(newValue)}
+                    {...field}
+                    defaultValue={fieldsToOption(post?.post?.tags)}
+                    isMulti={true}
+                    style={{ padding: '0.8rem 1.2rem' }}
+                    styles={{
+                      width: '100%',
+                      position: 'relative',
+                      zIndex: 20,
+                      cursor: 'pointer',
+                    }}
+                  />
+                )}
+              />
+            </FormRow>
+            <FormRow label="Caption" error={errors?.caption?.message}>
+              <Input
+                placeholder="Enter post caption"
+                type="text"
+                {...register('caption', { required: 'This field is required' })}
+                style={{ padding: '0.8rem 1.2rem', width: '100%' }}
+              />
+            </FormRow>
+          </section>
+        </StyledEditPost>
+      </Form>
+    </>
   );
 }
 

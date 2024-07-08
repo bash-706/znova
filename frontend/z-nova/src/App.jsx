@@ -45,7 +45,9 @@ import AdminOrders from './ui/AdminOrders';
 import AdminUsers from './ui/AdminUsers';
 import AdminPostCategories from './ui/AdminPostCategories';
 import AdminServiceCategories from './ui/AdminServiceCategories';
+import AdminServiceFaqs from './ui/AdminServiceFaqs';
 import AdminNewService from './ui/AdminNewService';
+import AdminEditService from './ui/AdminEditService';
 import AdminManageServices from './ui/AdminManageServices';
 import AdminEditPost from './ui/AdminEditPost';
 import AdminReviews from './ui/AdminReviews';
@@ -142,6 +144,14 @@ function App() {
                 <Route path="posts/edit/:slug" element={<AdminEditPost />} />
                 <Route path="services/new" element={<AdminNewService />} />
                 <Route path="services" element={<AdminManageServices />} />
+                <Route
+                  path="services/edit/:slug"
+                  element={<AdminEditService />}
+                />
+                <Route
+                  path="services/:serviceId/faqs"
+                  element={<AdminServiceFaqs />}
+                />
                 <Route
                   path="post-categories"
                   element={<AdminPostCategories />}

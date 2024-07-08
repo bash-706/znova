@@ -20,6 +20,9 @@ import Carousel from '../ui/Carousel';
 import Breadcrumbs from '../ui/Breadcrumbs';
 import useServiceFaqs from '../features/faqs/useServiceFaqs';
 import ReviewsContainer from '../features/reviews/ReviewsContainer';
+import { useUnreviewedOrders } from '../features/reviews/useUnreviewedOrders';
+import { useCreateReview } from '../features/reviews/useCreateReview';
+import ReviewForm from '../features/reviews/ReviewForm';
 import Editor from '../ui/Editor';
 
 const StyledLayout = styled.div`
@@ -158,13 +161,24 @@ function Service() {
   const { createChat } = useCreateChat();
   const { slug } = useParams();
   const { service, isLoading, error, isSuccess } = useService(slug);
+  const { createReview, isLoading: isCreating } = useCreateReview();
+  const unreviewedOrders = useUnreviewedOrders(service?.id);
+  const orders = unreviewedOrders?.unreviewedOrders?.data?.orders;
   const slides = [];
   service?.images?.map((image) => {
     slides.push({ src: `http://127.0.0.1:8000/services/${image}` });
   });
   const { faqs } = useServiceFaqs(service?._id);
+  console.log(faqs);
 
-  console.log(service?.description);
+  const addReviewHandler = (value) => {
+    createReview({
+      serviceId: service?.id,
+      review: value.review,
+      rating: value.rating,
+      order: value.order,
+    });
+  };
 
   useEffect(() => {
     if (isSuccess) {
@@ -266,7 +280,25 @@ function Service() {
           </div>
         </StyledCardUser>
         {faqs?.length > 0 && <FAQ faqs={faqs} />}
-        <ReviewsContainer serviceId={service?.id} reviews={service?.reviews} />
+        {orders && orders.length > 0 && (
+          <>
+            <Heading as="h3" style={{ marginBottom: '2rem', fontWeight: 600 }}>
+              Write a Review
+            </Heading>
+            <ReviewForm
+              formSubmitHandler={(value) => addReviewHandler(value)}
+              isLoading={isCreating}
+              styles={{ width: '100%', margin: 0 }}
+              orderId={orders?.at(0)?._id}
+            />
+          </>
+        )}
+        {service?.reviews?.length > 0 && (
+          <ReviewsContainer
+            serviceId={service?.id}
+            reviews={service?.reviews}
+          />
+        )}
       </StyledService>
       <div
         style={{

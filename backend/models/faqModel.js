@@ -19,6 +19,12 @@ const faqSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
   },
+  createdAt: Date,
+});
+
+faqSchema.pre('save', function (next) {
+  this.createdAt = Date.now();
+  next();
 });
 
 const FAQ = mongoose.model('FAQ', faqSchema);

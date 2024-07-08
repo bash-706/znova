@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import Rating from 'react-rating';
+import { FaStar, FaRegStar } from 'react-icons/fa';
 
 const StyledReview = styled.div`
   display: flex;
@@ -41,6 +43,7 @@ function Review({ review }) {
             minute: '2-digit',
           })}
         </span>
+
         <p
           style={{
             margin: '1.8rem 0 0.8rem',
@@ -49,6 +52,32 @@ function Review({ review }) {
         >
           {review?.review}
         </p>
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginTop: '1rem',
+        }}
+      >
+        <p
+          style={{
+            marginRight: '2rem',
+            alignSelf: 'self-start',
+          }}
+        >
+          {Number.isInteger(review?.rating)
+            ? review?.rating.toFixed(1)
+            : review?.rating}
+        </p>
+        <Rating
+          initialRating={review?.rating}
+          readonly
+          emptySymbol={
+            <FaRegStar style={{ color: '#ffb400', fontSize: '2rem' }} />
+          }
+          fullSymbol={<FaStar style={{ color: '#ffb400', fontSize: '2rem' }} />}
+        />
       </div>
     </StyledReview>
   );

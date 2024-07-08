@@ -16,6 +16,8 @@ import Heading from '../ui/Heading';
 import NoChats from '../ui/NoChats';
 import Messages from '../features/chats/Messages';
 import { useSocket } from '../context/SocketContext';
+import { unreadNotifications } from '../utils/unreadNotifications';
+import countryToTimezone from '../utils/countryToTimezone';
 
 const StyledChat = styled.div`
   display: grid;
@@ -56,21 +58,23 @@ const Divider = styled.div`
   margin: 1rem 0;
 `;
 
-const getLocalTime = () => {
-  // Get the timezone for the specified country
-  const userTimezone = moment.tz.guess();
-
-  if (!userTimezone) {
-    console.error('Unable to determine timezone for the country.');
+const getLocalTime = (country) => {
+  console.log(country);
+  if (!country) {
+    console.error('Country name is not provided');
     return null;
   }
 
-  // Get the current date and time in the specified time zone
-  const localTime = moment.tz(userTimezone);
+  console.log('Country:', country);
+  const timezone = countryToTimezone[country];
 
-  // Format the date and time
+  if (!timezone) {
+    console.error('Unable to determine timezone for the country:', country);
+    return null;
+  }
+
+  const localTime = moment.tz(timezone);
   const formattedTime = localTime.format('MMM D, YYYY, h:mm A');
-
   return formattedTime;
 };
 
@@ -86,14 +90,13 @@ function Chat() {
     error: messagesError,
   } = useMessages(currentChat?._id);
   const { recipient } = useRecipient(user, currentChat);
-
-  console.log('notifications', notifications);
+  const allUnreadNotifications = unreadNotifications(notifications);
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
   }, []);
 
-  const localTime = getLocalTime();
+  const localTime = getLocalTime(recipient?.country);
   const [text, setText] = useState('');
   const { createMessage } = useCreateMessage();
 
@@ -163,6 +166,7 @@ function Chat() {
                 onlineUsers={onlineUsers}
                 setActiveChat={updateCurrentChat}
                 activeChat={currentChat}
+                allUnreadNotifications={allUnreadNotifications}
               />
             </div>
           );
@@ -219,7 +223,12 @@ function Chat() {
               </span>
             </div>
             <span style={{ fontSize: '1.4rem' }}>
-              Online | Local time: {localTime}
+              {onlineUsers?.some((onlineUser) => {
+                return onlineUser?.userId === recipient?._id;
+              })
+                ? 'Online'
+                : 'Offline'}{' '}
+              | Local time: {localTime}
             </span>
           </div>
 

@@ -44,6 +44,19 @@ export async function getAllServices(filter, sort, page) {
   }
 }
 
+export async function getServiceById(serviceId) {
+  try {
+    const res = await axios({
+      method: 'GET',
+      url: `${BASE_URL}/${serviceId}`,
+    });
+    const { data } = res.data;
+    return data.service;
+  } catch (err) {
+    throw new Error(err.response.data.message);
+  }
+}
+
 export async function getService(slug) {
   try {
     const res = await axios({

@@ -1,22 +1,23 @@
+import { useState } from 'react';
 import styled from 'styled-components';
+import { useForm, Controller } from 'react-hook-form';
 import Row from './Row';
 import Heading from './Heading';
-import { Controller, useForm } from 'react-hook-form';
 import Form from './Form';
-import { useCreatePost } from '../features/posts/useCreatePost';
 import FormRow from './FormRow';
 import Input from './Input';
 import Editor from './Editor';
-import { useState } from 'react';
 import Button from './Button';
 import AsyncSelectInput from './AsyncSelect';
+import CreatableSelectInput from './CreatableSelect';
+import { useCreatePost } from '../features/posts/useCreatePost';
+import { usePostCategories } from '../features/postCategories/usePostCategories';
+import { useUser } from '../features/authentication/useUser';
 import {
   convertTagsArray,
   filterCategories,
 } from '../utils/multiSelectTagUtils';
-import { usePostCategories } from '../features/postCategories/usePostCategories';
-import CreatableSelectInput from './CreatableSelect';
-import { useUser } from '../features/authentication/useUser';
+import SpinnerMini from './SpinnerMini';
 
 const StyledNewPost = styled.section`
   display: grid;
@@ -54,7 +55,7 @@ const StyledButton = styled.button`
 function AdminNewPost() {
   const [body, setBody] = useState('');
   const [image, setImage] = useState(null);
-  const { createPost, isCreating } = useCreatePost();
+  const { createPost, isCreating, status } = useCreatePost();
   const { postCategories: categoriesData } = usePostCategories();
   const user = useUser();
   const {
@@ -93,9 +94,8 @@ function AdminNewPost() {
     formData.append('body', JSON.stringify(body));
     formData.append('user', user?.user?._id);
     createPost(formData, {
-      onSettled: () => {
-        setBody('');
-        setImage(null);
+      onSettled: async () => {
+        await Promise.all([setBody(''), setImage(null)]);
         reset({
           title: '',
           caption: '',
@@ -105,7 +105,6 @@ function AdminNewPost() {
         });
       },
     });
-    reset();
   }
 
   return (
@@ -136,7 +135,7 @@ function AdminNewPost() {
             >
               <div style={{ width: '100%' }}>
                 <Editor
-                  content={''}
+                  content={body}
                   editable={true}
                   onDataChange={(data) => {
                     setBody(data);
@@ -147,7 +146,7 @@ function AdminNewPost() {
             <StyledButton
               style={{ background: 'var(--color-brand-600)', color: '#fff' }}
             >
-              Publish Post
+              {status === 'pending' ? <SpinnerMini /> : 'Publish Post'}
             </StyledButton>
           </section>
           <section>
@@ -229,6 +228,7 @@ function AdminNewPost() {
                   <CreatableSelectInput
                     id="tags"
                     placeholder="Add post tags..."
+                    onChange={(newValue) => field.onChange(newValue)}
                     {...field}
                     defaultValue={[]}
                     isMulti={true}

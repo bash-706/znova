@@ -68,7 +68,7 @@ function PostRow({ post }) {
       postCategory,
       tags,
       image,
-      body,
+      body: JSON.stringify(body),
       caption,
       user,
       slug,

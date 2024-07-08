@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom';
-import styled, { css } from 'styled-components';
 import {
   HiHomeModern,
   HiComputerDesktop,
@@ -29,6 +28,7 @@ import Dropdown from './Dropdown';
 import useClickOutside from '../hooks/useClickOutside';
 import { useSocket } from '../context/SocketContext';
 import { unreadNotifications } from '../utils/unreadNotifications';
+import styled from 'styled-components';
 
 const StyledMobileNav = styled.nav`
   display: none;
@@ -132,8 +132,8 @@ const DropdownSpan = styled.span`
 
 const NotificationBadge = styled.span`
   position: absolute;
-  top: 0;
-  right: -2px;
+  top: 2px;
+  right: 2px;
   background-color: var(--color-brand-600);
   font-size: 1rem;
   font-weight: 600;
