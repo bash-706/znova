@@ -65,21 +65,18 @@ function ServiceRow({ service }) {
     packages,
   } = service;
 
+  console.log(service);
+
   function handleDuplicate() {
-    createService({
-      name: name.startsWith('Copy') ? name : `Copy of ${name}`,
-      description,
-      imageCover,
-      serviceCategory,
-      price,
-      duration,
-      category,
-      packages,
-      images,
-      user: loggedInUser?.user?._id,
-      slug,
-      createdAt,
-    });
+    const formData = new FormData();
+    formData.append('images', JSON.stringify(images));
+    formData.append('name', name.startsWith('Copy') ? name : `Copy of ${name}`);
+    formData.append('description', JSON.stringify(description));
+    formData.append('user', loggedInUser?.user?._id);
+    formData.append('serviceCategory', serviceCategory?._id);
+    formData.append('packages', JSON.stringify(packages));
+
+    createService(formData);
   }
 
   return (

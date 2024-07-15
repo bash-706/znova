@@ -5,9 +5,13 @@ import { toast } from 'react-hot-toast';
 export function useUpdateService() {
   const queryClient = useQueryClient();
 
-  const { mutate: updateService, isLoading: isUpdating } = useMutation({
+  const {
+    mutate: updateService,
+    isLoading: isUpdating,
+    status,
+  } = useMutation({
     mutationFn: async ({ data, serviceId }) => {
-      return await updateServiceApi(data, serviceId);
+      return await updateServiceApi({ data, serviceId });
     },
     onSuccess: () => {
       toast.success('Service has been updated successfully!', {
@@ -21,5 +25,5 @@ export function useUpdateService() {
       console.log(err);
     },
   });
-  return { updateService, isUpdating };
+  return { updateService, isUpdating, status };
 }

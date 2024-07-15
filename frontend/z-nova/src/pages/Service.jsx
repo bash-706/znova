@@ -169,7 +169,6 @@ function Service() {
     slides.push({ src: `http://127.0.0.1:8000/services/${image}` });
   });
   const { faqs } = useServiceFaqs(service?._id);
-  console.log(faqs);
 
   const addReviewHandler = (value) => {
     createReview({

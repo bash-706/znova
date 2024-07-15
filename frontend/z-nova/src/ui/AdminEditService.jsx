@@ -14,10 +14,8 @@ import AsyncSelectInput from './AsyncSelect';
 import SpinnerMini from './SpinnerMini';
 import TextArea from './TextArea';
 import { useUser } from '../features/authentication/useUser';
-import {
-  useService,
-  //   updateService,
-} from '../features/services/useService';
+import { useService } from '../features/services/useService';
+import { useUpdateService } from '../features/services/useUpdateService';
 import { useParams } from 'react-router-dom';
 
 const StyledNewService = styled.section`
@@ -129,6 +127,7 @@ const ImageWrapper = styled.div`
 function AdminEditService() {
   const { slug } = useParams();
   const { service, status } = useService(slug);
+  const { updateService, status: updateStatus } = useUpdateService();
   const [body, setBody] = useState('');
   const [images, setImages] = useState(Array(3).fill('/default.png'));
   const { serviceCategories: categoriesData } = useServiceCategories();
@@ -150,7 +149,11 @@ function AdminEditService() {
         value: service.serviceCategory._id,
         label: service.serviceCategory.name,
       });
-      setValue('packages', service.packages);
+      const updatedPackages = service.packages.map((pkg) => ({
+        ...pkg,
+        duration: parseInt(pkg.duration.split(' ')[0], 10) || 0,
+      }));
+      setValue('packages', updatedPackages);
       setBody(service.description);
       const fetchedImages = service.images.map(
         (img) => `http://127.0.0.1:8000/services/${img}`,
@@ -191,22 +194,29 @@ function AdminEditService() {
 
   const onSubmit = async ({ name, slug, category, packages }) => {
     const formData = new FormData();
-    images.forEach((image, index) => {
-      if (image !== '/default.png') {
-        formData.append(`images[${index}]`, image);
+    images.forEach((image) => {
+      if (image instanceof File) {
+        formData.append('images', image, image.name);
       }
     });
+
     formData.append('name', name);
     formData.append('slug', slug);
     formData.append('serviceCategory', category?.value);
-    formData.append('packages', JSON.stringify(packages));
+    const updatedPackages = packages.map((pkg) => ({
+      ...pkg,
+      duration: `${pkg.duration} ${pkg.duration > 1 ? 'Days' : 'Day'}`,
+    }));
+
+    formData.append('packages', JSON.stringify(updatedPackages));
     formData.append('description', JSON.stringify(body));
     formData.append('user', user?.user?._id);
-    // await updateService(serviceId, formData);
+    updateService({ data: formData, serviceId: service?._id });
   };
 
   if (status === 'loading') return <SpinnerMini />;
 
+  console.log(service?._id);
   return (
     <>
       <Row type="horizontal" style={{ alignItems: 'flex-start' }}>
@@ -262,25 +272,49 @@ function AdminEditService() {
                 </tr>
               </thead>
               <tbody>
-                {['name', 'price', 'summary', 'duration', 'revisions'].map(
+                {['name', 'summary', 'price', 'duration', 'revisions'].map(
                   (field, rowIndex) => (
                     <tr key={rowIndex}>
                       {[0, 1, 2].map((index) => (
                         <TableData key={index}>
-                          <TextArea
-                            style={{ width: '100%', resize: 'none' }}
-                            placeholder={
-                              field.charAt(0).toUpperCase() + field.slice(1)
-                            }
-                            type={
-                              field === 'price' || field === 'revisions'
-                                ? 'number'
-                                : 'text'
-                            }
-                            {...register(`packages[${index}].${field}`, {
-                              required: 'Required',
-                            })}
-                          />
+                          {field === 'summary' ? (
+                            <TextArea
+                              style={{ width: '100%', resize: 'none' }}
+                              placeholder={
+                                field.charAt(0).toUpperCase() + field.slice(1)
+                              }
+                              {...register(`packages[${index}].${field}`, {
+                                required: 'Required',
+                              })}
+                            />
+                          ) : (
+                            <Input
+                              min={0}
+                              style={{ width: '100%' }}
+                              placeholder={
+                                field === 'duration'
+                                  ? field.charAt(0).toUpperCase() +
+                                    field.slice(1) +
+                                    ' In Days'
+                                  : field === 'price'
+                                  ? field.charAt(0).toUpperCase() +
+                                    field.slice(1) +
+                                    ' In Dollars'
+                                  : field.charAt(0).toUpperCase() +
+                                    field.slice(1)
+                              }
+                              type={
+                                field === 'price' ||
+                                field === 'revisions' ||
+                                field === 'duration'
+                                  ? 'number'
+                                  : 'text'
+                              }
+                              {...register(`packages[${index}].${field}`, {
+                                required: 'Required',
+                              })}
+                            />
+                          )}
                           {errors?.packages?.[index]?.[field] && (
                             <ErrorMessage>
                               {errors.packages[index][field].message}
@@ -322,7 +356,11 @@ function AdminEditService() {
                 </div>
               </FormRow>
               <StyledButton>
-                {status === 'pending' ? <SpinnerMini /> : 'Update Service'}
+                {updateStatus === 'pending' ? (
+                  <SpinnerMini />
+                ) : (
+                  'Update Service'
+                )}
               </StyledButton>
             </section>
             <section>

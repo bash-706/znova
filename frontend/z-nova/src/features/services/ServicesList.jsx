@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Spinner from '../../ui/Spinner';
+import ServiceCardSkeleton from '../../ui/ServiceCardSkeleton';
 import ServiceCard from './ServiceCard';
 import { useServices } from './useServices';
 import Pagination from '../../ui/Pagination';
@@ -20,14 +20,17 @@ const StyledFooter = styled.footer`
 function ServicesList() {
   const { services, isLoading, error, totalDocs } = useServices();
 
-  if (isLoading) return <Spinner />;
   if (error) return <p>{error.message}</p>;
   return (
     <>
       <StyledServiceList>
-        {services?.data?.map((service) => (
-          <ServiceCard key={service.id} service={service} />
-        ))}
+        {isLoading
+          ? [...Array(3)].map((item, index) => (
+              <ServiceCardSkeleton key={index} />
+            ))
+          : services?.data?.map((service) => (
+              <ServiceCard key={service?._id} service={service} />
+            ))}
       </StyledServiceList>
       <StyledFooter>
         <Pagination count={totalDocs} />

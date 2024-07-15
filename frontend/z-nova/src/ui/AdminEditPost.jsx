@@ -89,7 +89,7 @@ function AdminEditPost() {
       setValue('title', mainPost?.title);
       setValue('slug', mainPost?.slug);
       setValue('category', mainPost?.category);
-      setValue('tags', mainPost?.tags);
+      setValue('tags', fieldsToOption(mainPost?.tags));
       setValue('caption', mainPost?.caption);
       setBody(mainPost?.body);
     }
@@ -267,7 +267,6 @@ function AdminEditPost() {
                     placeholder="Add post tags..."
                     onChange={(newValue) => field.onChange(newValue)}
                     {...field}
-                    defaultValue={fieldsToOption(post?.post?.tags)}
                     isMulti={true}
                     style={{ padding: '0.8rem 1.2rem' }}
                     styles={{

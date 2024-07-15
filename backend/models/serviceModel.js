@@ -99,6 +99,9 @@ serviceSchema.pre('save', function (next) {
   });
   this.price = this.packages[0].price;
   this.duration = parseFloat(this.packages[0].duration);
+  if (this.images && this.images.length > 0) {
+    this.imageCover = this.images[0];
+  }
   next();
 });
 
@@ -118,6 +121,10 @@ serviceSchema.pre('save', async function (next) {
 serviceSchema.pre('findOneAndUpdate', async function (next) {
   const update = this.getUpdate();
 
+  if (update.images && update.images.length > 0) {
+    update.imageCover = update.images[0];
+  }
+
   if (update.serviceCategory) {
     const serviceCategory = await mongoose
       .model('ServiceCategory')
@@ -126,7 +133,6 @@ serviceSchema.pre('findOneAndUpdate', async function (next) {
       update.category = serviceCategory.slug;
     }
   }
-
   next();
 });
 

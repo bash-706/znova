@@ -8,9 +8,11 @@ function CreatableSelectInput({
   disabled,
   placeholder,
   styles,
+  value,
 }) {
   return (
     <CreatableSelect
+      value={value}
       defaultValue={defaultValue}
       defaultOptions={true}
       loadOptions={loadOptions}

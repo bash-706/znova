@@ -30,7 +30,11 @@ function Message({ message, user }) {
       <StyledMessage
         style={{
           background:
-            message?.senderId === user?._id ? 'var(--color-brand-600)' : 'red',
+            message?.senderId === user?._id
+              ? '#0095ff'
+              : 'var(--color-grey-400)',
+          // color: message?.senderId === user?._id ? '#fff' : '#000',
+          fontWeight: 500,
         }}
       >
         {message?.text}

@@ -47,20 +47,19 @@ exports.resizeServiceImages = catchAsync(async (req, res, next) => {
   // Images
   if (req?.files?.images) {
     req.body.images = [];
-    await Promise.all(
-      req.files.images.map(async (file, i) => {
-        const filename = req.params.id
-          ? `service-${req.params.id}-${Date.now()}-image-${i + 1}.jpeg`
-          : `service-${uuidv4()}-image-${i + 1}.jpeg`;
+    for (let i = 0; i < req.files.images.length; i++) {
+      const file = req.files.images[i];
+      const filename = req.params.id
+        ? `service-${req.params.id}-${Date.now()}-image-${i + 1}.jpeg`
+        : `service-${uuidv4()}-image-${i + 1}.jpeg`;
 
-        await sharp(file.buffer)
-          .resize(2560, 1550)
-          .toFormat('jpeg')
-          .jpeg({ quality: 90 })
-          .toFile(`uploads/services/${filename}`);
-        req.body.images.push(filename);
-      }),
-    );
+      await sharp(file.buffer)
+        .resize(2560, 1550)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`uploads/services/${filename}`);
+      req.body.images.push(filename);
+    }
   }
   next();
 });

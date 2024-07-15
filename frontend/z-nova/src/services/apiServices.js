@@ -84,7 +84,7 @@ export async function createService(data) {
   }
 }
 
-export async function updateService(data, serviceId) {
+export async function updateService({ data, serviceId }) {
   try {
     const res = await axios({
       method: 'PATCH',

@@ -10,9 +10,10 @@ export function useCreateChat() {
     mutationFn: async (data) => {
       return await chatApi(data);
     },
-    onSuccess: () => {
+    onSuccess: (newChat) => {
+      console.log(newChat);
       queryClient.invalidateQueries({ queryKey: ['chats'] });
-      navigate('/inbox');
+      navigate('/inbox', { state: { newChatId: newChat?.chat?._id } });
     },
     onError: (err) => {
       console.log(err);

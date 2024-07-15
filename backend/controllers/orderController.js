@@ -1,4 +1,4 @@
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const axios = require('axios');
 const Order = require('../models/orderModel');
 const Service = require('../models/serviceModel');
 const catchAsync = require('../utils/catchAsync');
@@ -8,37 +8,44 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // 1. Get the currently ordered service
   const service = await Service.findById(req.params.serviceId);
   const { name, price, summary, duration, revisions } = req.body.item;
-  // 2.Create checkout session
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    // success_url: `${req.protocol}://${req.get('host')}/`,
-    success_url: `http://localhost:5173/home?service=${req.params.serviceId}&user=${req.user.id}&price=${price}`,
-    cancel_url: `${req.protocol}://${req.get('host')}/services/${service.slug}`,
-    customer_email: req.user.email,
-    client_reference_id: req.params.serviceId,
-    mode: 'payment',
 
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `${service.name} - ${name}`,
-            images: [`https://www.natours.dev/img/tours/tour-2-cover.jpg`],
-            description: `${summary} \n (${duration} delivery) \n (${revisions} revision${
-              revisions > 1 ? 's' : ''
-            })`,
-          },
-          unit_amount: price * 100,
-        },
-        quantity: 1,
+  // 2. Create checkout session
+  const options = {
+    method: 'POST',
+    url: 'https://service-sandbox.tazapay.com/v3/checkout',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      Authorization: `Basic ${Buffer.from(
+        `${process.env.TAZAPAY_API_KEY}:${process.env.TAZAPAY_API_SECRET}`,
+      ).toString('base64')}`,
+    },
+    data: {
+      invoice_currency: 'USD',
+      amount: price * 100,
+      customer_details: {
+        name: req.user.name,
+        country: 'US',
+        email: req.user.email,
       },
-    ],
-  });
-  // 3. Send the session as response
+      success_url: `http://localhost:5173/home?service=${req.params.serviceId}&user=${req.user.id}&price=${price}`,
+      cancel_url: `http://localhost:5173/services/${service.slug}`,
+      webhook_url: `${req.protocol}://${req.get('host')}/api/v1/orders`,
+      payment_methods: ['card'],
+      transaction_description: `${
+        service.name
+      } - ${name} \n (${summary}) \n (${duration} delivery) \n (${revisions} revision${
+        revisions > 1 ? 's' : ''
+      }))`,
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      reference_id: `order_${req.params.serviceId}_${req.user._id}`,
+    },
+  };
+  const response = await axios.request(options);
+
   res.status(200).json({
     status: 'success',
-    session,
+    session: response.data.data,
   });
 });
 
@@ -49,16 +56,16 @@ exports.getBusinessPlansCheckoutSession = catchAsync(async (req, res, next) => {
 
   switch (plan) {
     case 'basic':
-      price = 5000;
-      planName = 'Basic Plan';
+      price = 100;
+      planName = 'Basic';
       break;
     case 'standard':
-      price = 10000;
-      planName = 'Standard Plan';
+      price = 200;
+      planName = 'Standard';
       break;
     case 'premium':
-      price = 20000;
-      planName = 'Premium Plan';
+      price = 500;
+      planName = 'Premium';
       break;
     default:
       return res.status(400).json({
@@ -67,28 +74,37 @@ exports.getBusinessPlansCheckoutSession = catchAsync(async (req, res, next) => {
       });
   }
 
-  // Create checkout session
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    success_url: `http://localhost:5173/home?plan=${plan}&user=${req.user.id}&price=${price}`,
-    cancel_url: `http://localhost:5173/plans`,
-    customer_email: req.user.email,
-    mode: 'payment',
-
-    line_items: [
-      {
-        price_data: {
-          currency: 'usd',
-          product_data: {
-            name: `Z Nova - ${planName}`,
-            description: 'Business Plan Subscription',
-          },
-          unit_amount: price,
-        },
-        quantity: 1,
+  // 2. Create checkout session
+  const options = {
+    method: 'POST',
+    url: 'https://service-sandbox.tazapay.com/v3/checkout',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      Authorization: `Basic ${Buffer.from(
+        `${process.env.TAZAPAY_API_KEY}:${process.env.TAZAPAY_API_SECRET}`,
+      ).toString('base64')}`,
+    },
+    data: {
+      invoice_currency: 'USD',
+      amount: price * 100,
+      customer_details: {
+        name: req.user.name,
+        country: 'US',
+        email: req.user.email,
       },
-    ],
-  });
+      success_url: `http://localhost:5173/home?plan=${plan}&user=${req.user.id}&price=${price}`,
+      cancel_url: `http://localhost:5173/plans`,
+      webhook_url: `${req.protocol}://${req.get('host')}/api/v1/orders`,
+      payment_methods: ['card'],
+      transaction_description: `Z Nova - ${planName} Business Plan Subscription`,
+      expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+      reference_id: `order_${plan}_${req.user._id}`,
+    },
+  };
+
+  const response = await axios.request(options);
+  const session = response.data.data;
 
   // Send the session as response
   res.status(200).json({

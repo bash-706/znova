@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
 import { HiMiniPaperAirplane } from 'react-icons/hi2';
@@ -65,7 +66,6 @@ const getLocalTime = (country) => {
     return null;
   }
 
-  console.log('Country:', country);
   const timezone = countryToTimezone[country];
 
   if (!timezone) {
@@ -80,6 +80,7 @@ const getLocalTime = (country) => {
 
 function Chat() {
   const [currentChat, setCurrentChat] = useState(null);
+  const { state } = useLocation();
   const [messages, setMessages] = useState([]);
   const { user } = useUser();
   const { socket, onlineUsers, notifications, sendMessage } = useSocket();
@@ -99,6 +100,17 @@ function Chat() {
   const localTime = getLocalTime(recipient?.country);
   const [text, setText] = useState('');
   const { createMessage } = useCreateMessage();
+
+  useEffect(() => {
+    if (chats && state?.newChatId) {
+      const newChat = chats.find((chat) => chat._id === state.newChatId);
+      if (newChat) {
+        setCurrentChat(newChat);
+      }
+    } else {
+      setCurrentChat(chats?.at(0));
+    }
+  }, [chats, state?.newChatId]);
 
   useEffect(() => {
     if (messagesData) {
@@ -281,11 +293,6 @@ function Chat() {
             </button>
           </div>
         </div>
-      )}
-      {!currentChat && (
-        <CenteredBox>
-          <p>No Chats Available</p>
-        </CenteredBox>
       )}
     </StyledChat>
   );

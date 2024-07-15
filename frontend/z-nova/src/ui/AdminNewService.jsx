@@ -165,11 +165,12 @@ function AdminNewService() {
 
   const onSubmit = ({ name, slug, category, packages }) => {
     const formData = new FormData();
-    // images.forEach((image, index) => {
-    //   if (image !== '/default.png') {
-    //     formData.append(`images[${index}]`, image);
-    //   }
-    // });
+    images.forEach((image) => {
+      if (image instanceof File) {
+        formData.append('images', image, image.name);
+      }
+    });
+
     formData.append('name', name);
     formData.append('slug', slug);
     formData.append('serviceCategory', category?.value);

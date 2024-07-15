@@ -81,6 +81,10 @@ exports.createOne = (Model) =>
       req.body.description = JSON.parse(req.body.description);
     }
 
+    if (req.body.images && typeof req.body.images === 'string') {
+      req.body.images = JSON.parse(req.body.images);
+    }
+
     const doc = await Model.create(req.body);
     res.status(200).json({
       status: 'success',

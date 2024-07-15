@@ -14,6 +14,7 @@ export function useUpdateComment() {
         'Comment has been edited successfully! You can see the comment once it is approved by the admin.',
       );
       queryClient.invalidateQueries({ queryKey: ['comments'] });
+      queryClient.invalidateQueries({ queryKey: ['post'] });
       // queryClient.setQueryData(['post']);
     },
     onError: (err) => {

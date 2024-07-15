@@ -1,7 +1,5 @@
 import { Link } from 'react-router-dom';
-// import { useUser } from '../features/authentication/useUser';
 import Row from '../ui/Row';
-// import Spinner from '../ui/Spinner';
 import { HiArrowRight } from 'react-icons/hi2';
 import Hero from '../ui/Hero';
 import Heading from '../ui/Heading';
@@ -28,7 +26,6 @@ const StyledHome = styled.section`
 
 function HomePage() {
   const [cookies] = useCookies(['cookieConsent']);
-  // const { user, isLoading } = useUser();
 
   return (
     <>
@@ -72,8 +69,6 @@ function HomePage() {
       </Hero>
 
       <StyledHome>
-        {/* <h4>{isLoading ? 'Loading...' : user?.name}</h4> */}
-        {/* <Spinner /> */}
         <Row className="box">
           <Heading as="h5" style={{ textAlign: 'center' }}>
             Features
