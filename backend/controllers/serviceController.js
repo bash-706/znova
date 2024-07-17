@@ -1,7 +1,11 @@
+const fs = require('fs').promises;
 const multer = require('multer');
 const sharp = require('sharp');
 const { v4: uuidv4 } = require('uuid');
 const Service = require('../models/serviceModel');
+const Review = require('../models/reviewModel');
+const FAQ = require('../models/faqModel');
+const Order = require('../models/orderModel');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const handleFactory = require('./handleFactory');
@@ -78,7 +82,7 @@ exports.setUserId = (req, res, next) => {
 
 exports.getServiceBySlug = catchAsync(async (req, res, next) => {
   const service = await Service.findOne({ slug: req.params.slug }).populate({
-    path: 'reviews user',
+    path: 'reviews user serviceCategory',
   });
   if (!service)
     return next(new AppError('Service you requested could not be found!'), 404);
@@ -112,4 +116,24 @@ exports.getService = handleFactory.getOne(
 );
 exports.createService = handleFactory.createOne(Service);
 exports.updateService = handleFactory.updateOne(Service);
-exports.deleteService = handleFactory.deleteOne(Service);
+
+exports.deleteService = catchAsync(async (req, res, next) => {
+  const service = await Service.findByIdAndDelete(req.params.id);
+  if (!service)
+    return next(new AppError('No document found with that id', 404));
+
+  await Review.deleteMany({ service: service._id });
+  await Order.deleteMany({ service: service._id });
+  await FAQ.deleteMany({ serviceId: service._id });
+
+  if (service.images.length) {
+    for (const image of service.images) {
+      await fs.unlink(`uploads/services/${image}`).catch(() => null);
+    }
+  }
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});

@@ -1,3 +1,4 @@
+const fs = require('fs').promises;
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const sharp = require('sharp');
@@ -149,6 +150,10 @@ exports.deletePost = catchAsync(async (req, res, next) => {
   }
 
   await Comment.deleteMany({ post: post._id });
+
+  if (post.image) {
+    await fs.unlink(`uploads/posts/${post.image}`);
+  }
 
   res.status(204).json({
     status: 'success',

@@ -46,12 +46,13 @@ export async function getAllServices(filter, sort, page) {
 
 export async function getServiceById(serviceId) {
   try {
+    console.log(serviceId);
     const res = await axios({
       method: 'GET',
       url: `${BASE_URL}/${serviceId}`,
     });
     const { data } = res.data;
-    return data.service;
+    return data.data;
   } catch (err) {
     throw new Error(err.response.data.message);
   }

@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 
 import Header from './Header';
 import Footer from './Footer';
@@ -17,13 +17,14 @@ const Main = styled.main`
 `;
 
 function AppLayout() {
+  const { pathname } = useLocation();
   return (
     <StyledAppLayout>
       <Header style={{ boxShadow: '2px 2px 50px yellow' }} />
       <Main>
         <Outlet />
       </Main>
-      <Footer />
+      {pathname !== '/inbox' && <Footer />}
     </StyledAppLayout>
   );
 }

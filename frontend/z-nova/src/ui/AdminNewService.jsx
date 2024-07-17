@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useServiceCategories } from '../features/serviceCategories/useServiceCategories';
 import { useCreateService } from '../features/services/useCreateService';
 import { filterCategories } from '../utils/multiSelectTagUtils';
@@ -129,6 +130,7 @@ function AdminNewService() {
   const { serviceCategories: categoriesData } = useServiceCategories();
   const user = useUser();
   const methods = useForm();
+  const navigate = useNavigate();
   const {
     register,
     formState: { errors },
@@ -181,7 +183,11 @@ function AdminNewService() {
     formData.append('packages', JSON.stringify(updatedPackages));
     formData.append('description', JSON.stringify(body));
     formData.append('user', user?.user?._id);
-    createService(formData);
+    createService(formData, {
+      onSuccess: (data) => {
+        navigate(`/admin/services/${data.data.data._id}/faqs`);
+      },
+    });
   };
 
   return (

@@ -43,7 +43,7 @@ export async function createFaq(data) {
   }
 }
 
-export async function updateFaq(data, faqId) {
+export async function updateFaq({ data, faqId }) {
   try {
     const res = await axios({
       method: 'PATCH',

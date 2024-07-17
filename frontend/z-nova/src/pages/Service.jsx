@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import Button from '../ui/Button';
 import Carousel from '../ui/Carousel';
 import Breadcrumbs from '../ui/Breadcrumbs';
-import useServiceFaqs from '../features/faqs/useServiceFaqs';
+import { useServiceFaqs } from '../features/faqs/useServiceFaqs';
 import ReviewsContainer from '../features/reviews/ReviewsContainer';
 import { useUnreviewedOrders } from '../features/reviews/useUnreviewedOrders';
 import { useCreateReview } from '../features/reviews/useCreateReview';

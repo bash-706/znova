@@ -18,8 +18,8 @@ const StyledMessagesCount = styled.div`
   display: flex;
   background: var(--color-brand-500);
   color: var(--color-grey-50);
-  height: 1.8rem;
-  width: 1.8rem;
+  height: 2rem;
+  width: 2rem;
   font-size: 1.2rem;
   font-weight: 600;
   border-radius: 50%;

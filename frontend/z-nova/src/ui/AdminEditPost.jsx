@@ -68,6 +68,7 @@ function AdminEditPost() {
   const { slug } = useParams();
   const { post, isLoading, error } = usePost(slug);
   const { postCategories: categoriesData } = usePostCategories();
+  const [deletedImage, setDeletedImage] = useState(false);
   const { updatePost, status } = useUpdatePost();
 
   const {
@@ -87,8 +88,8 @@ function AdminEditPost() {
       const mainPost = post?.post;
       setInitialImage(mainPost?.image);
       setValue('title', mainPost?.title);
+      setValue('category', categoryToOption(mainPost?.postCategory));
       setValue('slug', mainPost?.slug);
-      setValue('category', mainPost?.category);
       setValue('tags', fieldsToOption(mainPost?.tags));
       setValue('caption', mainPost?.caption);
       setBody(mainPost?.body);
@@ -96,20 +97,26 @@ function AdminEditPost() {
   }, [post, setValue]);
 
   const handleImageChange = (e) => {
+    e.preventDefault();
     const file = e.target.files[0];
     setImage(file);
+    setDeletedImage(false);
   };
 
-  const handleDeleteImage = () => {
+  const handleDeleteImage = (e) => {
+    e.preventDefault();
     if (window.confirm('Do you want to delete your Post picture?')) {
       setInitialImage(null);
       setImage(null);
+      setDeletedImage(true);
     }
   };
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    if (image) {
+    if (deletedImage) {
+      formData.append('image', 'default.png');
+    } else if (image) {
       formData.append('image', image);
     } else {
       formData.append('image', initialImage);
@@ -237,12 +244,10 @@ function AdminEditPost() {
                 <Controller
                   name="category"
                   control={control}
-                  defaultValue={categoryToOption(post?.post?.postCategory)}
                   rules={{ required: 'This field is required' }}
                   render={({ field }) => (
                     <AsyncSelectInput
                       loadOptions={promiseOptions}
-                      defaultValue={categoryToOption(post?.post?.postCategory)}
                       isMulti={false}
                       {...field}
                       disabled={isLoading}

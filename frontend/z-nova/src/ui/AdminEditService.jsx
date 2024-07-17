@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useServiceCategories } from '../features/serviceCategories/useServiceCategories';
-import { filterCategories } from '../utils/multiSelectTagUtils';
+import {
+  categoryToOption,
+  filterCategories,
+} from '../utils/multiSelectTagUtils';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
@@ -17,6 +20,7 @@ import { useUser } from '../features/authentication/useUser';
 import { useService } from '../features/services/useService';
 import { useUpdateService } from '../features/services/useUpdateService';
 import { useParams } from 'react-router-dom';
+import AdminBreadCrumbs from './adminBreadCrumbs';
 
 const StyledNewService = styled.section`
   display: grid;
@@ -141,18 +145,24 @@ function AdminEditService() {
     setValue,
   } = methods;
 
+  const breadcrumbItems = [
+    { label: 'Services', to: '/admin/services' },
+    { label: 'Edit Service', to: `/admin/services/edit/${slug}`, active: true },
+    {
+      label: 'FAQs',
+      to: `/admin/services/${service?._id}/faqs`,
+    },
+  ];
+
   useEffect(() => {
     if (service) {
       setValue('name', service.name);
       setValue('slug', service.slug);
-      setValue('category', {
-        value: service.serviceCategory._id,
-        label: service.serviceCategory.name,
-      });
       const updatedPackages = service.packages.map((pkg) => ({
         ...pkg,
         duration: parseInt(pkg.duration.split(' ')[0], 10) || 0,
       }));
+      setValue('category', categoryToOption(service?.serviceCategory));
       setValue('packages', updatedPackages);
       setBody(service.description);
       const fetchedImages = service.images.map(
@@ -216,9 +226,9 @@ function AdminEditService() {
 
   if (status === 'loading') return <SpinnerMini />;
 
-  console.log(service?._id);
   return (
     <>
+      <AdminBreadCrumbs items={breadcrumbItems} />
       <Row type="horizontal" style={{ alignItems: 'flex-start' }}>
         <Heading as="h1" style={{ fontWeight: '500', fontSize: '2rem' }}>
           Edit Service
@@ -377,15 +387,14 @@ function AdminEditService() {
                 <Controller
                   name="category"
                   control={control}
-                  defaultValue={[]}
                   rules={{ required: 'This field is required' }}
                   render={({ field }) => (
                     <AsyncSelectInput
                       loadOptions={promiseOptions}
-                      defaultValue={[]}
                       isMulti={false}
                       placeholder="Select a category"
                       {...field}
+                      disabled={updateStatus === 'pending'}
                       styles={{
                         width: '100%',
                         position: 'relative',

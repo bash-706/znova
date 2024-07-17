@@ -104,14 +104,18 @@ const Carousel = ({
 
   return (
     <StyledCarousel onMouseEnter={handleHover} onMouseLeave={handleHover}>
-      <ArrowIcon as={HiArrowLeftCircle} left onClick={prevSlide} />
+      {slides?.length > 1 && (
+        <ArrowIcon as={HiArrowLeftCircle} left onClick={prevSlide} />
+      )}
       <SlideContainer ref={containerRef} style={{ transform: transformValue }}>
         {slides.map((slide, index) => (
           <Slide key={index} src={slide.src} alt={`slide-${index}`} />
         ))}
       </SlideContainer>
-      <ArrowIcon as={HiArrowRightCircle} right onClick={nextSlide} />
-      {showDots && (
+      {slides?.length > 1 && (
+        <ArrowIcon as={HiArrowRightCircle} right onClick={nextSlide} />
+      )}
+      {showDots && slides.length > 1 && (
         <Indicators>
           {slides.map((_, index) => (
             <Dot
