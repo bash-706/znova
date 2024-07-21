@@ -37,6 +37,22 @@ const StyledContainer = styled.div`
     border: none;
     font-weight: bold;
   }
+
+  .editor-btn {
+    display: flex;
+    justify-content: center;
+    margin-right: 0.2rem;
+    align-items: center;
+    color: #64748b;
+    border-radius: 0.5rem;
+    width: 2rem;
+    aspect-ratio: 1 / 1;
+  }
+
+  .active-editor-btn {
+    color: #fff;
+    background-color: var(--color-brand-600);
+  }
 `;
 
 const MenuBar = ({ editor }) => {
@@ -61,6 +77,7 @@ const MenuBar = ({ editor }) => {
   return (
     <StyledContainer>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
         className={`editor-btn font-black ${
           editor.isActive('heading', { level: 1 }) && 'active-editor-btn'
@@ -69,6 +86,7 @@ const MenuBar = ({ editor }) => {
         H1
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`editor-btn font-extrabold ${
           editor.isActive('heading', { level: 2 }) && 'active-editor-btn'
@@ -77,6 +95,7 @@ const MenuBar = ({ editor }) => {
         H2
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`editor-btn font-semibold ${
           editor.isActive('heading', { level: 3 }) && 'active-editor-btn'
@@ -85,6 +104,7 @@ const MenuBar = ({ editor }) => {
         H3
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
         className={`editor-btn font-medium ${
           editor.isActive('heading', { level: 4 }) && 'active-editor-btn'
@@ -93,6 +113,7 @@ const MenuBar = ({ editor }) => {
         H4
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
         className={`editor-btn font-normal ${
           editor.isActive('heading', { level: 5 }) && 'active-editor-btn'
@@ -101,6 +122,7 @@ const MenuBar = ({ editor }) => {
         H5
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
         className={`editor-btn font-normal ${
           editor.isActive('heading', { level: 6 }) && 'active-editor-btn'
@@ -109,6 +131,7 @@ const MenuBar = ({ editor }) => {
         H6
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBold().run()}
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={`editor-btn ${
@@ -118,6 +141,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineBold />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleItalic().run()}
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={`editor-btn ${
@@ -127,6 +151,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineItalic />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleStrike().run()}
         disabled={!editor.can().chain().focus().toggleStrike().run()}
         className={`editor-btn ${
@@ -136,6 +161,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineStrikethrough />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleCode().run()}
         disabled={!editor.can().chain().focus().toggleCode().run()}
         className={`editor-btn ${
@@ -145,18 +171,21 @@ const MenuBar = ({ editor }) => {
         <FiCode />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
         className={`editor-btn`}
       >
         <MdOutlineLayersClear />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().clearNodes().run()}
         className={`editor-btn`}
       >
         <AiOutlineClose />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().setParagraph().run()}
         className={`editor-btn ${
           editor.isActive('paragraph') && 'active-editor-btn'
@@ -166,6 +195,7 @@ const MenuBar = ({ editor }) => {
       </button>
 
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`editor-btn ${
           editor.isActive('bulletList') && 'active-editor-btn'
@@ -174,6 +204,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineUnorderedList />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={`editor-btn ${
           editor.isActive('orderedList') && 'active-editor-btn'
@@ -182,6 +213,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineOrderedList />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
         className={`editor-btn ${
           editor.isActive('codeBlock') && 'active-editor-btn'
@@ -190,6 +222,7 @@ const MenuBar = ({ editor }) => {
         <PiCodeBlock />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={`editor-btn ${
           editor.isActive('blockquote') && 'active-editor-btn'
@@ -198,18 +231,21 @@ const MenuBar = ({ editor }) => {
         <PiQuotes />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
         className={`editor-btn`}
       >
         <TbSpacingVertical />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().setHardBreak().run()}
         className={`editor-btn`}
       >
         <AiOutlineEnter />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().chain().focus().undo().run()}
         className={`editor-btn`}
@@ -217,6 +253,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineUndo />
       </button>
       <button
+        type="button"
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().chain().focus().redo().run()}
         className={`editor-btn`}
@@ -224,6 +261,7 @@ const MenuBar = ({ editor }) => {
         <AiOutlineRedo />
       </button>
       <button
+        type="button"
         onClick={() => fileInputRef.current.click()}
         className="editor-btn"
       >

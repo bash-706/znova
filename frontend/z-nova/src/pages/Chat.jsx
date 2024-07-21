@@ -2,10 +2,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
-import { HiMiniPaperAirplane } from 'react-icons/hi2';
-import InputEmoji from 'react-input-emoji';
+import {
+  HiPaperAirplane,
+  HiXCircle,
+  HiOutlineDocumentText,
+  HiPaperClip,
+} from 'react-icons/hi';
 
-import { useChats } from '../features/chats/useChats';
 import { useMessages } from '../features/messages/useMessages';
 import { useRecipient } from '../features/users/useRecipient';
 import { useUser } from '../features/authentication/useUser';
@@ -17,7 +20,6 @@ import Heading from '../ui/Heading';
 import NoChats from '../ui/NoChats';
 import Messages from '../features/chats/Messages';
 import { useSocket } from '../context/SocketContext';
-import { unreadNotifications } from '../utils/unreadNotifications';
 import countryToTimezone from '../utils/countryToTimezone';
 
 const StyledChat = styled.div`
@@ -59,8 +61,67 @@ const Divider = styled.div`
   margin: 1rem 0;
 `;
 
+const FilePreviewContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.4rem;
+  margin: 0.5rem 0;
+`;
+
+const FilePreview = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  width: 184px;
+  padding: 0.8rem;
+  border: 1px solid var(--color-grey-200);
+  border-radius: 0.8rem;
+  background-color: #f0f8ff;
+  box-shadow: var(--shadow-sm);
+
+  .file-icon {
+    font-size: 5rem;
+    color: var(--color-brand-500);
+  }
+
+  .file-name {
+    font-size: 1.5rem;
+    text-align: center;
+    overflow: hidden;
+    overflow-wrap: break-word;
+    white-space: nowrap;
+    margin: 0 1rem;
+  }
+`;
+
+const RemoveButton = styled.button`
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: transparent;
+  border: none;
+  color: red;
+  cursor: pointer;
+`;
+
+const FileInput = styled.input`
+  display: none;
+`;
+
+const FileLabel = styled.label`
+  cursor: pointer;
+  margin-right: 1rem;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-brand-500);
+`;
+
 const getLocalTime = (country) => {
-  console.log(country);
   if (!country) {
     console.error('Country name is not provided');
     return null;
@@ -83,15 +144,21 @@ function Chat() {
   const { state } = useLocation();
   const [messages, setMessages] = useState([]);
   const { user } = useUser();
-  const { socket, onlineUsers, notifications, sendMessage } = useSocket();
-  const { chats, isLoading, error } = useChats(user?._id);
+  const {
+    socket,
+    onlineUsers,
+    notifications,
+    sendMessage,
+    chats,
+    isLoading,
+    error,
+  } = useSocket();
   const {
     messagesData,
     isLoading: isLoadingMessages,
     error: messagesError,
   } = useMessages(currentChat?._id);
   const { recipient } = useRecipient(user, currentChat);
-  const allUnreadNotifications = unreadNotifications(notifications);
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -99,7 +166,8 @@ function Chat() {
 
   const localTime = getLocalTime(recipient?.country);
   const [text, setText] = useState('');
-  const { createMessage } = useCreateMessage();
+  const { createMessage } = useCreateMessage(user?._id);
+  const [files, setFiles] = useState([]);
 
   useEffect(() => {
     if (chats && state?.newChatId) {
@@ -107,8 +175,11 @@ function Chat() {
       if (newChat) {
         setCurrentChat(newChat);
       }
-    } else {
-      setCurrentChat(chats?.at(0));
+    } else if (chats) {
+      const sortedChats = [...chats].sort(
+        (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt),
+      );
+      setCurrentChat(sortedChats.at(0));
     }
   }, [chats, state?.newChatId]);
 
@@ -131,19 +202,32 @@ function Chat() {
   }, [socket, currentChat]);
 
   const handleSendMessage = () => {
-    if (!text) return;
-    createMessage({
-      chatId: currentChat?._id,
-      senderId: user?._id,
-      text,
-    });
+    if (!text && files.length === 0) return;
+    const formData = new FormData();
+    formData.append('chatId', currentChat?._id);
+    formData.append('senderId', user?._id);
+    formData.append('text', text);
+    files.forEach((file) => formData.append('files', file));
+    createMessage(formData);
     setText('');
+    setFiles([]);
     sendMessage({
       text,
       recipientId: recipient?._id,
       chatId: currentChat?._id,
       senderId: user?._id,
+      files,
     });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    const updatedFiles = [...files, ...selectedFiles].slice(0, 3);
+    setFiles(updatedFiles);
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   if (error) return <div>Chats not found!</div>;
@@ -169,20 +253,22 @@ function Chat() {
           All Conversations
           <Divider />
         </Heading>
-        {chats?.map((chat, index) => {
-          return (
-            <div key={index}>
-              <UserChat
-                chat={chat}
-                user={user}
-                onlineUsers={onlineUsers}
-                setActiveChat={updateCurrentChat}
-                activeChat={currentChat}
-                allUnreadNotifications={allUnreadNotifications}
-              />
-            </div>
-          );
-        })}
+        {chats
+          ?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+          .map((chat, index) => {
+            return (
+              <div key={index}>
+                <UserChat
+                  chat={chat}
+                  user={user}
+                  onlineUsers={onlineUsers}
+                  setActiveChat={updateCurrentChat}
+                  activeChat={currentChat}
+                  notifications={notifications}
+                />
+              </div>
+            );
+          })}
       </div>
       {currentChat && (
         <div
@@ -223,18 +309,15 @@ function Chat() {
                 <div style={{ position: 'relative', display: 'inline-block' }}>
                   <StyledUser
                     src={`http://127.0.0.1:8000/users/${recipient?.photo}`}
-                  ></StyledUser>
-                  {onlineUsers?.some((onlineUser) => {
-                    return onlineUser?.userId === recipient?._id;
-                  }) && <StyledDot />}
+                  />
+                  {onlineUsers?.some(
+                    (onlineUser) => onlineUser?.userId === recipient?._id,
+                  ) && <StyledDot />}
                 </div>
-                <span>{recipient?.name}</span>
-              </span>
-              <span style={{ color: 'var(--color-grey-500)' }}>
-                {recipient?.username}
+                <span>{recipient?.username}</span>
               </span>
             </div>
-            <span style={{ fontSize: '1.4rem' }}>
+            <span style={{ color: 'var(--color-grey-400)' }}>
               {onlineUsers?.some((onlineUser) => {
                 return onlineUser?.userId === recipient?._id;
               })
@@ -267,30 +350,81 @@ function Chat() {
           <div
             style={{
               display: 'flex',
-              flexDirection: 'row',
-              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '2rem',
+              flexDirection: 'column',
+              padding: '1rem 2rem',
             }}
           >
-            <InputEmoji
-              value={text}
-              onChange={setText}
-              fontSize={'1.6rem'}
-              placeholder="Send a message..."
-            />
-            <button
-              onClick={handleSendMessage}
+            {files.length > 0 && (
+              <FilePreviewContainer>
+                {files.map((file, index) => (
+                  <FilePreview key={index}>
+                    {file.type.startsWith('image/') ? (
+                      <>
+                        <img src={URL.createObjectURL(file)} alt={file.name} />
+                        <RemoveButton onClick={() => handleRemoveFile(index)}>
+                          <HiXCircle size={20} />
+                        </RemoveButton>
+                      </>
+                    ) : (
+                      <>
+                        <HiOutlineDocumentText className="file-icon" />
+                        <span className="file-name">{file.name}</span>
+                        <RemoveButton onClick={() => handleRemoveFile(index)}>
+                          <HiXCircle size={20} />
+                        </RemoveButton>
+                      </>
+                    )}
+                  </FilePreview>
+                ))}
+              </FilePreviewContainer>
+            )}
+            <div
               style={{
-                borderRadius: '50%',
-                marginRight: '1rem',
-                background: 'var(--color-brand-500)',
-                padding: '0.8rem',
-                border: 'none',
-                outline: 'none',
-                color: '#fff',
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
               }}
             >
-              <HiMiniPaperAirplane style={{ width: '2rem', height: '2rem' }} />
-            </button>
+              <input
+                type="text"
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="Send a message..."
+                style={{
+                  flex: 1,
+                  padding: '1rem',
+                  borderRadius: '2rem',
+                  border: '1px solid var(--color-grey-200)',
+                  marginRight: '1rem',
+                  fontSize: '1.6rem',
+                }}
+              />
+              <FileLabel htmlFor="file-upload">
+                <HiPaperClip style={{ width: '3rem', height: '3rem' }} />
+                <FileInput
+                  id="file-upload"
+                  type="file"
+                  accept="image/*,application/pdf"
+                  multiple
+                  onChange={handleFileChange}
+                />
+              </FileLabel>
+              <button
+                onClick={handleSendMessage}
+                style={{
+                  borderRadius: '50%',
+                  background: 'var(--color-brand-500)',
+                  padding: '0.8rem',
+                  border: 'none',
+                  outline: 'none',
+                  color: '#fff',
+                }}
+              >
+                <HiPaperAirplane style={{ width: '2rem', height: '2rem' }} />
+              </button>
+            </div>
           </div>
         </div>
       )}

@@ -63,7 +63,9 @@ function ReviewRow({ review }) {
       <TableRow role="row">
         <Img src={`http://127.0.0.1:8000/services/${service?.imageCover}`} />
         <div>{service?.name}</div>
-        <div>{user?.name} (bash706_)</div>
+        <div>
+          {user?.name} ({user?.username})
+        </div>
         <div>{reviewText}</div>
         <div>⭐ {rating}</div>
         <div>

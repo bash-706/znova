@@ -6,7 +6,12 @@ const router = express.Router();
 
 router.use(authController.protect);
 
-router.post('/', messageController.createMessage);
+router.post(
+  '/',
+  messageController.uploadMessageFiles,
+  messageController.processMessageFiles,
+  messageController.createMessage,
+);
 router.get('/:chatId', messageController.getMessages);
 
 module.exports = router;

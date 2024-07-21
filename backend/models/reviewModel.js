@@ -70,7 +70,7 @@ reviewSchema.pre('save', function (next) {
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'name photo',
+    select: 'name photo username',
   });
   next();
 });

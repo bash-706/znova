@@ -27,7 +27,6 @@ import User from './User';
 import Dropdown from './Dropdown';
 import useClickOutside from '../hooks/useClickOutside';
 import { useSocket } from '../context/SocketContext';
-import { unreadNotifications } from '../utils/unreadNotifications';
 import styled from 'styled-components';
 
 const StyledMobileNav = styled.nav`
@@ -175,7 +174,6 @@ function MainNav() {
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const { notifications } = useSocket();
-  const allUnreadNotifications = unreadNotifications(notifications);
   const dropdownRef = useRef(null);
   const { user } = useUser();
 
@@ -281,10 +279,10 @@ function MainNav() {
                   }}
                 >
                   <HiOutlineEnvelope />
-                  {allUnreadNotifications?.length > 0 && (
+                  {notifications?.length > 0 && (
                     <NotificationBadge>
                       <span style={{ color: '#fff' }}>
-                        {allUnreadNotifications?.length}
+                        {notifications?.length}
                       </span>
                     </NotificationBadge>
                   )}

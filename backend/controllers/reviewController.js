@@ -95,14 +95,10 @@ exports.getUserReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllReviews = handleFactory.getAll(
-  Review,
-  {
-    path: 'service',
-    select: 'name imageCover',
-  },
-  { path: 'user', select: 'name username' },
-);
+exports.getAllReviews = handleFactory.getAll(Review, {
+  path: 'service',
+  select: 'name imageCover',
+});
 exports.getReview = handleFactory.getOne(Review);
 exports.createReview = handleFactory.createOne(Review);
 exports.updateReview = handleFactory.updateOne(Review);

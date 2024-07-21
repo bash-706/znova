@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 const Editor = ({ onDataChange, content, editable }) => {
   const editor = useEditor({
     editable,
-    extensions: extensions,
+    extensions,
     editorProps: {
       attributes: {
         style: 'width: 100%; min-height: 22rem; border: none; outline: none;',

@@ -49,13 +49,13 @@ function UserChat({
   setActiveChat,
   activeChat,
   onlineUsers,
-  allUnreadNotifications,
+  notifications,
 }) {
   const { recipient } = useRecipient(user, chat);
   const { messagesData: messages } = useMessages(chat?._id);
 
-  const thisUserUnreadNotifications = allUnreadNotifications?.filter(
-    (n) => n.senderId == recipient?._id,
+  const recipientUnreadNotifications = notifications?.filter(
+    (n) => n.sender == recipient?._id,
   );
 
   const getLastMessageTime = () => {
@@ -118,9 +118,9 @@ function UserChat({
           flexDirection: 'column',
         }}
       >
-        {thisUserUnreadNotifications?.length > 0 && (
+        {recipientUnreadNotifications?.length > 0 && (
           <StyledMessagesCount>
-            {thisUserUnreadNotifications?.length}
+            {recipientUnreadNotifications?.length}
           </StyledMessagesCount>
         )}
         <span>

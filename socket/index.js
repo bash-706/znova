@@ -21,16 +21,17 @@ io.on("connection", (socket) => {
 
   // add message
   socket.on("sendMessage", (message) => {
-    console.log(onlineUsers);
     const user = onlineUsers.find((user) => {
       return user?.userId === message?.recipientId;
     });
     if (user) {
       io.to(user.socketId).emit("getMessage", message);
       io.to(user.socketId).emit("getNotification", {
-        senderId: message.senderId,
-        isRead: false,
-        date: new Date(),
+        recipient: message?.recipientId,
+        sender: message?.senderId,
+        message: "New Notification",
+        read: false,
+        createdAt: Date.now(),
       });
     }
   });

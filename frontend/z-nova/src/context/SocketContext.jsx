@@ -8,6 +8,8 @@ import {
 } from 'react';
 import { io } from 'socket.io-client';
 import { useUser } from '../features/authentication/useUser';
+import { useChats } from '../features/chats/useChats';
+import { useUserNotifications } from '../features/notifications/useUserNotifications';
 
 const SocketContext = createContext();
 
@@ -17,7 +19,9 @@ export const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
+  const { userNotifications } = useUserNotifications();
   const { user } = useUser();
+  const { chats, isLoading, error } = useChats(user?._id);
 
   useEffect(() => {
     const newSocket = io('http://localhost:3000');
@@ -42,13 +46,19 @@ export const SocketProvider = ({ children }) => {
   }, [socket, user]);
 
   useEffect(() => {
+    if (userNotifications) {
+      setNotifications(userNotifications?.notifications);
+    }
+  }, [userNotifications]);
+
+  useEffect(() => {
     if (socket === null) return;
     socket.on('getNotification', (res) => {
-      setNotifications((prev) => [res, ...prev]);
+      setNotifications((prev) => [...prev, res]);
     });
 
     return () => {
-      socket.off('getNotification');
+      socket.off('getMessage');
     };
   }, [socket]);
 
@@ -67,6 +77,9 @@ export const SocketProvider = ({ children }) => {
         onlineUsers,
         notifications,
         sendMessage,
+        chats,
+        isLoading,
+        error,
       }}
     >
       {children}

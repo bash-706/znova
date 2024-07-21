@@ -6,6 +6,7 @@ import Menus from '../../ui/Menus';
 
 function CommentTable() {
   const { isLoading, reviews } = useAllReviews();
+  console.log(reviews);
 
   if (isLoading) return <Spinner />;
 

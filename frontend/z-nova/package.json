@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^2.2.0",
     "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-query-devtools": "^5.0.1",
     "@tiptap/extension-code-block": "^2.4.0",
