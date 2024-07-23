@@ -30,7 +30,6 @@ io.on("connection", (socket) => {
         recipient: message?.recipientId,
         sender: message?.senderId,
         message: "New Notification",
-        read: false,
         createdAt: Date.now(),
       });
     }

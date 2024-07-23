@@ -6,7 +6,6 @@ export function useCreateMessage() {
   const queryClient = useQueryClient();
   const { mutate: createMessage, isLoading } = useMutation({
     mutationFn: async (data) => {
-      console.log(data);
       return await messageApi(data);
     },
     onSuccess: () => {

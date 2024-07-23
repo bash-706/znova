@@ -23,6 +23,7 @@ router
     serviceController.uploadServiceImages,
     serviceController.resizeServiceImages,
     serviceController.setUserId,
+    serviceController.handleServiceCreating,
     serviceController.createService,
   );
 
@@ -35,6 +36,7 @@ router
     authController.checkAuthorization(Service),
     serviceController.uploadServiceImages,
     serviceController.resizeServiceImages,
+    serviceController.handleServiceUpdating,
     serviceController.updateService,
   )
   .delete(

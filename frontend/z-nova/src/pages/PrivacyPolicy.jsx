@@ -80,7 +80,7 @@ function PrivacyPolicy() {
           <strong>a. Provide Services: </strong>We use your personal information
           to provide the services you request, including processing orders,
           communicating with digitalists, and facilitating payments through our
-          payment processor, Stripe.
+          payment processor, Tazapay.
         </p>
         <p>
           <strong>b. Personalization: </strong>We may use your information to

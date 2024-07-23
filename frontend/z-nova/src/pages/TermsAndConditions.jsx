@@ -105,15 +105,15 @@ function TermsAndConditions() {
         <Heading as="h2">Payment and Billing</Heading>
         <p>
           <strong>a. </strong>Payment for services purchased through our website
-          is processed securely by our third-party payment processor, Stripe
+          is processed securely by our third-party payment processor, Tazapay
           Checkout. By making a purchase through ZNova, you agree to abide by
-          Stripe&apos;s terms of service and privacy policy.
+          Tazapay&apos;s terms of service and privacy policy.
         </p>
         <p>
           <strong>b. </strong>We do not store or have access to your payment
-          details, as all payment information is handled directly by Stripe. For
-          more information about Stripe&apos;s security practices and policies,
-          please refer to their website.
+          details, as all payment information is handled directly by Tazapay.
+          For more information about Tazapay&apos;s security practices and
+          policies, please refer to their website.
         </p>
         <p>
           <strong>c. </strong>

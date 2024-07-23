@@ -9,7 +9,9 @@ export function useMarkNotificationAsRead() {
       return await markNotificationApi(notificationId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userNotifications'] });
+      queryClient.invalidateQueries({
+        queryKey: ['userNotifications'],
+      });
     },
     onError: (err) => {
       console.error(err);

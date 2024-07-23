@@ -4,6 +4,7 @@ import {
   categoryToOption,
   filterCategories,
 } from '../utils/multiSelectTagUtils';
+import { toast } from 'react-hot-toast';
 import styled from 'styled-components';
 import { useForm, Controller, FormProvider } from 'react-hook-form';
 import { HiTrash } from 'react-icons/hi2';
@@ -194,6 +195,12 @@ function AdminEditService() {
   };
 
   const handleDeleteImage = (index) => {
+    const nonDefaultImages = images.filter((image) => image !== '/default.png');
+    if (nonDefaultImages.length <= 1) {
+      toast.error('You must have at least one image.', { duration: 5000 });
+      return;
+    }
+
     if (window.confirm('Do you want to delete this image?')) {
       const newImages = [...images];
       newImages.splice(index, 1);
@@ -204,12 +211,6 @@ function AdminEditService() {
 
   const onSubmit = async ({ name, slug, category, packages }) => {
     const formData = new FormData();
-    images.forEach((image) => {
-      if (image instanceof File) {
-        formData.append('images', image, image.name);
-      }
-    });
-
     formData.append('name', name);
     formData.append('slug', slug);
     formData.append('serviceCategory', category?.value);
@@ -221,6 +222,22 @@ function AdminEditService() {
     formData.append('packages', JSON.stringify(updatedPackages));
     formData.append('description', JSON.stringify(body));
     formData.append('user', user?.user?._id);
+    // Track existing and new images
+    const updatedImages = [];
+
+    for (let i = 0; i < images.length; i++) {
+      if (images[i] instanceof File) {
+        formData.append('images', images[i]);
+      } else {
+        updatedImages.push(images[i]);
+      }
+    }
+
+    // Append existing images to the form data
+    updatedImages.forEach((image, index) => {
+      formData.append(`existingImages[${index}]`, JSON.stringify(image));
+    });
+
     updateService({ data: formData, serviceId: service?._id });
   };
 

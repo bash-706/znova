@@ -50,7 +50,7 @@ exports.resizeServiceImages = catchAsync(async (req, res, next) => {
 
   // Images
   if (req?.files?.images) {
-    req.body.images = [];
+    req.body.newImages = [];
     for (let i = 0; i < req.files.images.length; i++) {
       const file = req.files.images[i];
       const filename = req.params.id
@@ -62,9 +62,81 @@ exports.resizeServiceImages = catchAsync(async (req, res, next) => {
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
         .toFile(`uploads/services/${filename}`);
-      req.body.images.push(filename);
+      req.body.newImages.push(filename);
     }
   }
+  next();
+});
+
+exports.handleServiceCreating = catchAsync(async (req, res, next) => {
+  if (req.body.tags && !Array.isArray(req.body.tags)) {
+    req.body.tags = req.body.tags.split(',');
+  }
+
+  if (req.body.packages) {
+    req.body.packages = JSON.parse(req.body.packages);
+  }
+
+  if (req.body.body) {
+    req.body.body = JSON.parse(req.body.body);
+  }
+
+  if (req.body.description) {
+    req.body.description = JSON.parse(req.body.description);
+  }
+
+  if (req.body.newImages) {
+    req.body.images = req.body.newImages;
+  }
+
+  if (req.body.images && typeof req.body.images === 'string') {
+    req.body.images = JSON.parse(req.body.images);
+  }
+
+  next();
+});
+
+exports.handleServiceUpdating = catchAsync(async (req, res, next) => {
+  if (req.body.tags && !Array.isArray(req.body.tags)) {
+    req.body.tags = req.body.tags.split(',');
+  }
+
+  if (req.body.packages) {
+    req.body.packages = JSON.parse(req.body.packages);
+  }
+
+  if (req.body.body) {
+    req.body.body = JSON.parse(req.body.body);
+  }
+
+  if (req.body.description) {
+    req.body.description = JSON.parse(req.body.description);
+  }
+
+  req.body.images = [];
+  if (req.body.newImages) {
+    req.body.images = req.body.newImages;
+  }
+
+  if (
+    req.body.existingImages ||
+    (req.body.newImages && req.body.existingImages)
+  ) {
+    req.body.existingImages = req.body.existingImages.map((img) => {
+      const imgUrl = img.replace(/^"|"$/g, '');
+      const parts = imgUrl.split('/');
+      return parts[parts.length - 1];
+    });
+
+    req.body.existingImages.reverse().forEach((img) => {
+      req.body.images.unshift(img);
+    });
+  }
+
+  if (req.body.images) {
+    req.body.images = req.body.images.filter((img) => img !== 'default.png');
+  }
+
   next();
 });
 

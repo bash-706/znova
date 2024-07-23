@@ -80,10 +80,10 @@ exports.createMessage = catchAsync(async (req, res, next) => {
   const recipientId = chat.members.find((id) => id.toString() !== senderId);
 
   await Notification.create({
+    chat: chat._id,
     recipient: recipientId,
     sender: senderId,
     message: text || '',
-    read: false,
   });
 
   res.status(201).json({ status: 'success', data: { message } });

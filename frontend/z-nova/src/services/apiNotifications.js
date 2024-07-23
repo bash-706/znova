@@ -19,7 +19,7 @@ export async function getUserNotifications() {
 export async function markNotificationAsRead(notificationId) {
   try {
     const res = await axios({
-      method: 'PATCH',
+      method: 'DELETE',
       url: `${BASE_URL}/markAsRead/${notificationId}`,
       withCredentials: true,
     });

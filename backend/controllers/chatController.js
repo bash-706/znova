@@ -5,7 +5,8 @@ exports.getUserChats = catchAsync(async (req, res, next) => {
   const { userId } = req.params;
   const chats = await Chat.find({
     members: { $in: [userId] },
-  });
+  }).sort({ updatedAt: -1 });
+
   res.status(200).json({
     status: 'success',
     chats,

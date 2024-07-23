@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import moment from 'moment-timezone';
@@ -21,6 +21,7 @@ import NoChats from '../ui/NoChats';
 import Messages from '../features/chats/Messages';
 import { useSocket } from '../context/SocketContext';
 import countryToTimezone from '../utils/countryToTimezone';
+import { useQueryClient } from '@tanstack/react-query';
 
 const StyledChat = styled.div`
   display: grid;
@@ -144,10 +145,13 @@ function Chat() {
   const { state } = useLocation();
   const [messages, setMessages] = useState([]);
   const { user } = useUser();
+  const inputRef = useRef(null);
+  const queryClient = useQueryClient();
   const {
     socket,
     onlineUsers,
     notifications,
+    markNotification,
     sendMessage,
     chats,
     isLoading,
@@ -159,6 +163,18 @@ function Chat() {
     error: messagesError,
   } = useMessages(currentChat?._id);
   const { recipient } = useRecipient(user, currentChat);
+
+  const markUnreadNotifications = useCallback(
+    (chat) => {
+      const filteredNotifications = notifications.filter(
+        (notif) => notif.chat === chat._id,
+      );
+      filteredNotifications.forEach((notif) => {
+        markNotification(notif._id);
+      });
+    },
+    [notifications, markNotification],
+  );
 
   const updateCurrentChat = useCallback((chat) => {
     setCurrentChat(chat);
@@ -182,6 +198,15 @@ function Chat() {
       setCurrentChat(sortedChats.at(0));
     }
   }, [chats, state?.newChatId]);
+
+  useEffect(() => {
+    if (currentChat) {
+      markUnreadNotifications(currentChat);
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['userNotifications'] });
+      }, 100);
+    }
+  }, [currentChat, markUnreadNotifications, queryClient]);
 
   useEffect(() => {
     if (messagesData) {
@@ -218,12 +243,14 @@ function Chat() {
       senderId: user?._id,
       files,
     });
+    inputRef.current.focus();
   };
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     const updatedFiles = [...files, ...selectedFiles].slice(0, 3);
     setFiles(updatedFiles);
+    inputRef.current.focus();
   };
 
   const handleRemoveFile = (index) => {
@@ -253,22 +280,20 @@ function Chat() {
           All Conversations
           <Divider />
         </Heading>
-        {chats
-          ?.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-          .map((chat, index) => {
-            return (
-              <div key={index}>
-                <UserChat
-                  chat={chat}
-                  user={user}
-                  onlineUsers={onlineUsers}
-                  setActiveChat={updateCurrentChat}
-                  activeChat={currentChat}
-                  notifications={notifications}
-                />
-              </div>
-            );
-          })}
+        {chats.map((chat, index) => {
+          return (
+            <div key={index}>
+              <UserChat
+                chat={chat}
+                user={user}
+                onlineUsers={onlineUsers}
+                setActiveChat={updateCurrentChat}
+                activeChat={currentChat}
+                notifications={notifications}
+              />
+            </div>
+          );
+        })}
       </div>
       {currentChat && (
         <div
@@ -388,9 +413,16 @@ function Chat() {
               }}
             >
               <input
+                ref={inputRef}
                 type="text"
                 value={text}
                 onChange={(e) => setText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
                 placeholder="Send a message..."
                 style={{
                   flex: 1,

@@ -7,6 +7,6 @@ const router = express.Router();
 router.use(authController.protect);
 
 router.get('/unread', notificationController.getUnreadNotifications);
-router.put('/markAsRead/:id', notificationController.markAsRead);
+router.delete('/markAsRead/:id', notificationController.markAsRead);
 
 module.exports = router;

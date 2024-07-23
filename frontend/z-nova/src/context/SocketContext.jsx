@@ -10,6 +10,8 @@ import { io } from 'socket.io-client';
 import { useUser } from '../features/authentication/useUser';
 import { useChats } from '../features/chats/useChats';
 import { useUserNotifications } from '../features/notifications/useUserNotifications';
+import { useMarkNotificationAsRead } from '../features/notifications/useMarkNotificationAsRead';
+import { useQueryClient } from '@tanstack/react-query';
 
 const SocketContext = createContext();
 
@@ -20,8 +22,10 @@ export const SocketProvider = ({ children }) => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const { userNotifications } = useUserNotifications();
+  const { markNotification } = useMarkNotificationAsRead();
   const { user } = useUser();
   const { chats, isLoading, error } = useChats(user?._id);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const newSocket = io('http://localhost:3000');
@@ -55,12 +59,16 @@ export const SocketProvider = ({ children }) => {
     if (socket === null) return;
     socket.on('getNotification', (res) => {
       setNotifications((prev) => [...prev, res]);
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ['chats', user?._id] });
+        queryClient.invalidateQueries({ queryKey: ['chats'] });
+      }, 100);
     });
 
     return () => {
-      socket.off('getMessage');
+      socket.off('getNotification');
     };
-  }, [socket]);
+  }, [socket, queryClient, user?._id]);
 
   const sendMessage = useCallback(
     (messageData) => {
@@ -70,6 +78,15 @@ export const SocketProvider = ({ children }) => {
     [socket],
   );
 
+  const markNotificationAsRead = useCallback(
+    (notificationId) => {
+      markNotification(notificationId);
+      setNotifications((prev) =>
+        prev.filter((notif) => notif._id !== notificationId),
+      );
+    },
+    [markNotification],
+  );
   return (
     <SocketContext.Provider
       value={{
@@ -77,6 +94,7 @@ export const SocketProvider = ({ children }) => {
         onlineUsers,
         notifications,
         sendMessage,
+        markNotification: markNotificationAsRead,
         chats,
         isLoading,
         error,

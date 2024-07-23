@@ -141,7 +141,7 @@ export default function HowItWorks() {
           <Heading as="h2">04. Checkout Securely</Heading>
           <p>
             Click the <b>Buy Now</b> button to proceed to our secure checkout
-            page powered by Stripe. Complete your payment quickly and securely,
+            page powered by Tazapay. Complete your payment quickly and securely,
             knowing that your transaction is protected by industry-leading
             encryption and security measures.
           </p>
