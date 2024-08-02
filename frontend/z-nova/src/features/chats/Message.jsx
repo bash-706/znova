@@ -49,12 +49,7 @@ const StyledPdfContainer = styled.div`
   }
 
   .file-name {
-    font-size: 1.5rem;
-    text-align: center;
-    overflow: hidden;
-    overflow-wrap: break-word;
-    white-space: nowrap;
-    margin: 0 1rem;
+    color: #374151;
   }
 `;
 
@@ -101,7 +96,9 @@ function Message({ message, user }) {
             >
               <StyledPdfContainer>
                 <HiOutlineDocumentText className="file-icon" />
-                <span>{file.fileUrl.split('-').pop()}</span>
+                <span className="file-name">
+                  {file.fileUrl.split('-').pop()}
+                </span>
               </StyledPdfContainer>
             </a>
           )}

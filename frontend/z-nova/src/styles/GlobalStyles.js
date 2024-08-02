@@ -230,10 +230,13 @@ img {
   ul li {
   list-style: disc;
   }
-  
 
   h1 {
   font-size: 2.5rem; 
+}
+
+  p {
+  line-height: 2.6rem;
 }
 
   /* Code and preformatted text styles */

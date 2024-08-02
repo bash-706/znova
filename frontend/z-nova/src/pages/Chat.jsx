@@ -431,6 +431,7 @@ function Chat() {
                   border: '1px solid var(--color-grey-200)',
                   marginRight: '1rem',
                   fontSize: '1.6rem',
+                  color: '#000',
                 }}
               />
               <FileLabel htmlFor="file-upload">

@@ -21,6 +21,7 @@ router
     postController.uploadPostImage,
     postController.resizePostImage,
     postController.setUserId,
+    postController.handlePostCreating,
     postController.createPost,
   );
 
@@ -33,6 +34,7 @@ router
     authController.checkAuthorization(Post),
     postController.uploadPostImage,
     postController.resizePostImage,
+    postController.handlePostUpdating,
     postController.updatePost,
   )
   .delete(

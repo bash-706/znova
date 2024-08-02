@@ -39,6 +39,30 @@ exports.resizePostImage = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.handlePostCreating = catchAsync(async (req, res, next) => {
+  if (req.body.tags && !Array.isArray(req.body.tags)) {
+    req.body.tags = req.body.tags.split(',');
+  }
+
+  if (req.body.body) {
+    req.body.body = JSON.parse(req.body.body);
+  }
+
+  next();
+});
+
+exports.handlePostUpdating = catchAsync(async (req, res, next) => {
+  if (req.body.tags && !Array.isArray(req.body.tags)) {
+    req.body.tags = req.body.tags.split(',');
+  }
+
+  if (req.body.body) {
+    req.body.body = JSON.parse(req.body.body);
+  }
+
+  next();
+});
+
 exports.setUserId = (req, res, next) => {
   // Allowing Nested Routes
   if (!req.body.user) req.body.user = req.user._id;

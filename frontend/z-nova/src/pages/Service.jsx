@@ -318,6 +318,7 @@ function Service() {
               marginTop: '1rem',
             }}
             size="medium"
+            disabled={service?.user?._id === user?._id}
             variation="secondary"
             onClick={() =>
               createChat({ user1: user?._id, user2: service?.user?._id })
